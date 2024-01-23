@@ -1,0 +1,34 @@
+{
+  "tiras": [
+    {
+      "id": "1",
+      "ancho": "3cm",
+      "logitud": ""
+    },
+    {
+      "id": "2",
+      "ancho": "4cm",
+      "logitud": ""
+    },
+    {
+      "id": "3",
+      "ancho": "5cm",
+      "logitud": ""
+    },
+    {
+      "id": "4",
+      "ancho": "6cm",
+      "logitud": ""
+    },
+    {
+      "id": "5",
+      "ancho": "7cm",
+      "logitud": ""
+    },
+    {
+      "id": "6",
+      "ancho": "8cm",
+      "logitud": ""
+    }
+  ]
+}

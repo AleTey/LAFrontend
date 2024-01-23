@@ -1,0 +1,273 @@
+import { useEffect, useState } from "react"
+
+const newFabricFormInitialState = {
+  codigo: "",
+  nombre: "",
+  color: "",
+  tipo: "",
+  proveedor: "",
+  temporada: "",
+  id: "",
+  idProveedor: "",
+  stock: 0,
+  codeBarNumb: "",
+  tags: "",
+  img: ""
+}
+
+const fabricValidationForm = (fabricForm) => {
+  let errors = {};
+
+  if (!fabricForm.color.trim()) {
+    errors.color = "El color es un campo obligatorio"
+  }
+
+  if (!fabricForm.idProveedor.trim() || fabricForm.idProveedor === "Proveedor") {
+    errors.idProveedor = "El proveedor es un campo obligatorio"
+  }
+
+  return errors;
+
+}
+
+export const NewFabricModal = ({
+  setFabricModalIsOpen,
+  addNewFabric,
+  setEditFormIsOpen,
+  fabric = newFabricFormInitialState,
+  editFabric
+}) => {
+
+  // console.log(fabric)
+  const [fabricForm, setFabricForm] = useState(fabric);
+
+  const [textileSuppliers, setTextileSuppliers] = useState([]);
+
+  const [fabricOnEdit, setFabricOnEdit] = useState({});
+
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    if (textileSuppliers.length === 0 || fabric.id) {
+
+      const getTextileSuppliers = async () => {
+
+        try {
+          const response = await fetch("http://localhost:1000/distribuidores")
+          if (response.ok) {
+            const json = await response.json();
+            setTextileSuppliers(() => (
+              json.filter(sup => sup.sector && sup.sector.toLowerCase() === "textil")
+            ))
+            if (fabricForm.id) {
+              setFabricOnEdit(() => (
+                json.filter(sup => sup.id === fabricForm.idProveedor)
+              ))
+            } else {
+              console.log("sin id")
+            }
+          }
+        } catch (error) {
+
+        }
+      }
+      getTextileSuppliers();
+    }
+
+  }, [])
+
+  const onCloseFabricModalForm = () => {
+    if (fabricForm.id) {
+      setEditFormIsOpen(false);
+    } else {
+      setFabricModalIsOpen(false);
+    }
+  }
+
+  const onChangeFabricForm = (e) => {
+    setFabricForm({
+      ...fabricForm,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const onSubmit = () => {
+    setErrors({})
+    if (Object.keys(fabricValidationForm(fabricForm)).length === 0) {
+      if (!fabricForm.id) {
+        addNewFabric(fabricForm);
+      } else {
+        console.log("else{} on edit: " + fabricForm)
+        editFabric(fabricForm)
+        onCloseFabricModalForm();
+      }
+    } else {
+      setErrors(fabricValidationForm(fabricForm));
+      console.log(errors)
+    }
+  }
+
+  return (
+    <>
+      <div className="modal fade show" id="staticBackdrop" style={{ display: "block" }} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">Nueva tela</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={onCloseFabricModalForm}></button>
+            </div>
+            <div className="modal-body">
+
+              <div className="container">
+
+
+                <form action="" className="form-floating">
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="floatingInputNombre"
+                      name="nombre"
+                      value={fabricForm.nombre}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputNombre" className="h6">Nombre</label>
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="floatingInputColor"
+                      name="color"
+                      value={fabricForm.color}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputColor" className="h6">Color</label>
+                    {
+                      errors.color && <p className="text-danger">{errors.color}</p>
+                    }
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="floatingInputCodDis"
+                      name="codigo"
+                      value={fabricForm.codigo}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputCodDis" className="h6">Código distribuidor</label>
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="select"
+                      className="form-control"
+                      id="floatingInputTipo"
+                      name="tipo"
+                      value={fabricForm.tipo}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputTipo" className="h6">Tipo</label>
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="floatingInputTemporada"
+                      name="temporada"
+                      value={fabricForm.temporada}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputTemporada" className="h6">Temporada</label>
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="floatingInputStock"
+                      name="stock"
+                      value={fabricForm.stock}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputStock" className="h6">Stock inicial en metros</label>
+                  </div>
+
+                  <div className="form-floating mb-3">
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="floatingInputTags"
+                      name="tags"
+                      value={fabricForm.tags}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputTags" className="h6">Tags separados por coma. Ej: lima, verde, brillante</label>
+                  </div>
+
+                  {
+                    fabricOnEdit[0] ?
+                      <select
+                        className="form-select form-select-sm"
+                        name="idProveedor"
+                        defaultValue={fabric.idProveedor}
+                        onChange={onChangeFabricForm}
+                      >
+                        <option value={fabricOnEdit.id}>{fabricOnEdit && fabricOnEdit[0].empresa}</option>
+                        {textileSuppliers.map(sup => {
+                          if (sup.id !== fabric.idProveedor) {
+                            return (<option key={sup.id} value={sup.id}>
+                              {sup.empresa}
+                            </option>)
+                          }
+                        })}
+                      </select>
+                      :
+                      <select
+                        className="form-select form-select-sm"
+                        name="idProveedor"
+                        defaultValue="Proveedor"
+                        onChange={onChangeFabricForm}
+                      >
+                        <option value="Proveedor">Proveedor</option>
+                        {textileSuppliers.map(sup => (
+                          <option key={sup.id} value={sup.id}>
+                            {sup.empresa}
+                          </option>
+                        ))}
+                      </select>
+                  }
+                  {
+                    errors.idProveedor && <p className="text-danger">{errors.idProveedor}</p>
+                  }
+
+                  <div className="mb-3">
+                    <label htmlFor="formFile" className="form-label h6 mt-3">Seleccionar imagen</label>
+                    <input
+                      className="form-control mt-1"
+                      type="file"
+                      id="formFile"
+                      name="img"
+                      value={fabricForm.img}
+                      onChange={onChangeFabricForm}
+                    />
+                  </div>
+
+                </form>
+              </div>
+            </div>
+            <div className="modal-footer">
+              {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> */}
+              <button type="button" className="btn btn-primary" onClick={onSubmit}>Guardar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}

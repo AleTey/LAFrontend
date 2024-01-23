@@ -1,0 +1,108 @@
+{
+  "models": [
+    {
+      "modelo": "SALLY",
+      "tipo": "CORPI",
+      "temporada": "2023",
+      "id": "1",
+      "tags": [],
+      "insumos": [],
+      "tiras": [
+        {
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          },
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          },
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          },
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          },
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          },
+          "3cm":{
+            "s": 1,
+            "m": 1,
+            "l": 1,
+            "xl": 1,
+            "xxl": 1
+          }
+        }
+      ],
+      "img": "/src/db/imgs/SALLY.JPG"
+    },
+    {
+      "modelo": "TIRITA",
+      "tipo": "CORPI",
+      "temporada": "2023",
+      "id": "2",
+      "tags": "",
+      "insumos": [],
+      "tiras": [
+
+      ],
+      "img": "/src/db/imgs/tirita-corpi.JPG"
+    },
+    {
+      "modelo": "TIRITA",
+      "tipo": "LESS",
+      "temporada": "2023",
+      "id": "3",
+      "tags": "",
+      "insumos": [],
+      "tiras": [
+
+      ],
+      "img": ""
+    },
+    {
+      "modelo": "PARIS",
+      "tipo": "LESS",
+      "temporada": "2023",
+      "id": "4",
+      "tags": "",
+      "insumos": [],
+      "tiras": [
+
+      ],
+      "img": ""
+    },
+    {
+      "modelo": "JELLY",
+      "tipo": "LESS",
+      "temporada": "2023",
+      "id": "4",
+      "tags": "",
+      "insumos": [],
+      "tiras": [
+
+      ],
+      "img": ""
+    }
+    
+  ]
+}

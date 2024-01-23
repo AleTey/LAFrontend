@@ -1,0 +1,60 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "product_name": "bombacha colaless rainforest tirita",
+      "tipo":"less",
+      "stock": "",
+      "tela": ["rainforest"],
+      "modelo": "TIRITA LESS"
+    },
+    {
+      "id": "2",
+      "product_name": "bombacha colaless rainforest rio",
+      "tipo":"less",
+      "stock": "333",
+      "tela": ["rainforest"],
+      "modelo": "RIO LESS"
+    },
+    {
+      "id": "3",
+      "product_name": "corpi rainforest tirita",
+      "tipo":"corpi",
+      "stock": "132",
+      "tela": ["rainforest"],
+      "modelo": "TIRITA CORPI"
+    },
+    {
+      "id": "4",
+      "product_name": "bombacha amber houndstooth",
+      "tipo":"less",
+      "stock": "23",
+      "tela": ["hounstooth", "coral"],
+      "modelo": "AMBER LESS"
+    },
+    {
+      "id": "5",
+      "product_name": "corpi hounstooth amber",
+      "tipo":"corpi",
+      "stock": "12",
+      "tela": ["hounstooth", "coral"],
+      "modelo": "AMBER CORPI"
+    },
+    {
+      "id": "1",
+      "product_name": "bombacha colaless mandarine jelly",
+      "tipo":"less",
+      "stock": "55",
+      "tela": ["mandarine"],
+      "modelo": "JELLY LESS"
+    },
+    {
+      "id": "1",
+      "product_name": "corpi classy mandarine",
+      "tipo":"less",
+      "stock": "",
+      "tela": ["mandarine"],
+      "modelo": "JELLY LESS"
+    }
+  ]
+}

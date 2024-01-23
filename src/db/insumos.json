@@ -1,0 +1,176 @@
+{
+  "insumos": {
+    "elasticos": [
+      {
+        "id": "1",
+        "color": "BLANCO",
+        "grosor": "7 mm",
+        "stock": 300
+      },
+      {
+        "id": "2",
+        "color": "NEGRO",
+        "grosor": "7 mm",
+        "stock": 300
+      },
+      {
+        "id": "3",
+        "color": "BLANCO",
+        "grosor": "15 mm",
+        "stock": 300
+      },
+      {
+        "id": "4",
+        "color": "NEGRO",
+        "grosor": "15 mm",
+        "stock": 300
+      }
+    ],
+    "correderas": [
+      {
+        "id": "5",
+        "medida": "11",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1000
+      },
+      {
+        "id": "6",
+        "medida": "20",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 2000
+      }
+    ],
+    "broches": [
+      {
+        "id": "7",
+        "medida": "20mm",
+        "tipo": "casados",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1500
+      }
+    ],
+    "ganchos": [
+      {
+        "id": "8",
+        "medida": "20mm",
+        "tipo": "solteros",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1700
+      }
+    ],
+    "argollas": [
+      {
+        "id": "9",
+        "medida": "11mm",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1700
+      },
+      {
+        "id": "10",
+        "medida": "15mm",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1700
+      },
+      {
+        "id": "11",
+        "medida": "30mm",
+        "material": "zamac",
+        "color": "plateado",
+        "stock": 1700
+      }
+    ],
+    "chapita": [
+      {
+        "id": "12"
+      }
+    ],
+    "etiquetas": [
+      {
+        "id": "13",
+        "marca": "love áfrica",
+        "talle": "S"
+      },
+      {
+        "id": "14",
+        "marca": "love áfrica",
+        "talle": "M"
+      },
+      {
+        "id": "15",
+        "marca": "love áfrica",
+        "talle": "L"
+      },
+      {
+        "id": "16",
+        "marca": "love áfrica",
+        "talle": "XL"
+      },
+      {
+        "id": "17",
+        "marca": "love áfrica",
+        "talle": "XXL"
+      },
+      {
+        "id": "18",
+        "marca": "ISLA",
+        "talle": "S"
+      },
+      {
+        "id": "19",
+        "marca": "ISLA",
+        "talle": "M"
+      },
+      {
+        "id": "20",
+        "marca": "ISLA",
+        "talle": "L"
+      },
+      {
+        "id": "21",
+        "marca": "ISLA",
+        "talle": "XL"
+      },
+      {
+        "id": "22",
+        "marca": "MINI AFRICA",
+        "talle": "1"
+      },
+      {
+        "id": "23",
+        "marca": "MINI AFRICA",
+        "talle": "2"
+      },
+      {
+        "id": "24",
+        "marca": "MINI AFRICA",
+        "talle": "3"
+      },
+      {
+        "id": "25",
+        "marca": "MINI AFRICA",
+        "talle": "4"
+      },
+      {
+        "id": "26",
+        "marca": "MINI AFRICA",
+        "talle": "6"
+      },
+      {
+        "id": "27",
+        "marca": "MINI AFRICA",
+        "talle": "8"
+      },
+      {
+        "id": "28",
+        "marca": "MINI AFRICA",
+        "talle": "10"
+      }
+    ]
+  }
+}

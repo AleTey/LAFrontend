@@ -1,0 +1,36 @@
+{
+  "usuarios": [
+    {
+      "id": "",
+      "nombre": "Alejandro",
+      "apellido": "Torres Castagnaro",
+      "email": "alecastagnaro@gmail.com",
+      "password": "asd",
+      "permiso": "6"
+    },
+    {
+      "id": "",
+      "nombre": "Euge",
+      "apellido": "Luengo",
+      "email": "euge@gmail.com",
+      "password": "asd",
+      "permiso": "6"
+    },
+    {
+      "id": "",
+      "nombre": "Belgrano",
+      "apellido": "showRoom",
+      "email": "belgrano@gmail.com",
+      "password": "asd",
+      "permiso": "4"
+    },
+    {
+      "id": "",
+      "nombre": "Palermo",
+      "apellido": "showRoom",
+      "email": "palermo@gmail.com",
+      "password": "asd",
+      "permiso": "3"
+    }
+  ]
+}
