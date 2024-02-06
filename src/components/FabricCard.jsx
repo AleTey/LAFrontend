@@ -8,6 +8,7 @@ export const FabricCard = ({
   onDeleteFabric
 }) => {
 
+  // console.log(fabric)
   const [editFormIsOpen, setEditFormIsOpen] = useState(false);
 
   const agregarMetros = () => {
@@ -40,7 +41,7 @@ export const FabricCard = ({
         <ul className="list-group list-group-flush">
           <li className="list-group-item">Color: {fabric.color}</li>
           <li className="list-group-item">Id: {fabric.id}</li>
-          <li className="list-group-item">Distribuidor: {fabric.distribuidor}</li>
+          <li className="list-group-item">Distribuidor: {fabric.proveedor.empresa}</li>
           <li className="list-group-item">Tipo: {fabric.tipo}</li>
           <li className="list-group-item">Stock: {fabric.stock} M
             <button className="btn btn-outline-success btn-sm ms-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar</button>

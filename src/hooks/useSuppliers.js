@@ -29,7 +29,7 @@ export const useSuppliers = () => {
   }
 
   const addSupplier = async (supplierForm) => {
-    const response = await fetch("http://localhost:1000/distribuidores", {
+    const response = await fetch("http://localhost:8080/suppliers/supplier", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -92,7 +92,7 @@ export const useSuppliers = () => {
 
         const deleteConfirmed = async () => {
 
-          const response = await fetch(`http://localhost:1000/distribuidores/${id}`, {
+          const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
             method: "DELETE",
             headers: {
               "Content-Type": "application/json"

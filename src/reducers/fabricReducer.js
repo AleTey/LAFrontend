@@ -24,7 +24,6 @@ export const fabricReducer = (state = [], action) => {
       })
 
     case "REMOVE_FABRIC":
-      console.log(action.payload)
       return state.filter(fab => fab.id !== action.payload);
 
     default:

@@ -14,24 +14,13 @@ export const useFabric = () => {
   const [fabricWasDeleted, setFabricWasDeleted] = useState(false);
   const [fabricErrorFetch, setFabricErrorFetch] = useState("");
 
+  // const [fabricWUrlImage, setFabricWUrlImage] = useState({});
+
   const [fabrics, dispatch] = useReducer(fabricReducer, []);
 
   const onNewFabric = () => {
     setFabricModalIsOpen(true);
   }
-
-  // const getAllFabrics = async () => {
-  //   // const res = await fetch("http://localhost:3000/colors");
-  //   const res = await fetch("http://localhost:8080/fabrics");
-  //   if (res.ok) {
-  //     const json = await res.json();
-  //     console.log(json);
-  //     dispatch({
-  //       type: 'GET_ALL_FABRICS',
-  //       payload: json
-  //     })
-  //   }
-  // }
 
   const getAllFabrics = async () => {
     try {
@@ -40,12 +29,18 @@ export const useFabric = () => {
 
       // Procesar la respuesta y convertir la imagen en una URL
       const fabricsWithImageURL = json.map((fabric) => {
+
         const imageBase64 = fabric.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-
+        if (fabric.img) {
+          return {
+            ...fabric,
+            img: imageUrl,
+          };
+        }
         return {
           ...fabric,
-          img: imageUrl,
+          img: null,
         };
       });
 
@@ -60,8 +55,15 @@ export const useFabric = () => {
 
 
   const addNewFabric = async (fabricForm) => {
+    let imageFile = new FormData();
+    let imgIsPresent = false;
+    if (fabricForm.img) {
+      imageFile.append(`imageFile`, fabricForm.img)
+      fabricForm.img = "";
+      imgIsPresent = true;
+    }
     try {
-      const response = await fetch("http://localhost:3000/colors", {
+      const response = await fetch("http://localhost:8080/fabrics", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -69,12 +71,44 @@ export const useFabric = () => {
         body: JSON.stringify(fabricForm)
       })
       if (response.ok) {
-        const json = await response.json();
+        let json = await response.json();
+
+
+        const addImg = async () => {
+          const imgResponse = await fetch(`http://localhost:8080/fabrics/addimg/${json.id}`, {
+            method: 'PUT',
+            body: imageFile,
+          })
+          if (imgResponse.ok) {
+            let imgJson = await imgResponse.json();
+
+            const fabricWithImageURL = () => {
+              const imageBase64 = imgJson.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
+              const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+              if (imgJson.img) {
+                return {
+                  ...imgJson,
+                  img: imageUrl
+                }
+              }
+              return json;
+            }
+            dispatch({
+              type: 'ADD_FABRIC',
+              payload: fabricWithImageURL()
+            })
+          }
+        }
+        if (imgIsPresent) {
+          addImg();
+        } else {
+          dispatch({
+            type: 'ADD_FABRIC',
+            payload: json
+          })
+        }
+
         setFabricWasAdded(true)
-        dispatch({
-          type: 'ADD_FABRIC',
-          payload: json
-        })
         setTimeout(() => {
           setFabricWasAdded(false)
         }, 8000)
@@ -89,25 +123,65 @@ export const useFabric = () => {
     }
   }
 
+
+
   const editFabric = async (fabricForm) => {
-    console.log(fabricForm);
+
+    let imgIsPresent = false;
+    let imageFile = new FormData();
+    if (fabricForm.img) {
+      imageFile.append(`imageFile`, fabricForm.img)
+      imgIsPresent = true;
+      fabricForm.img = "";
+    }
     try {
-      console.log("Entrando al try");
-      const response = await fetch(`http://localhost:3000/colors/${fabricForm.id}`, {
+      // console.log("Entrando al try");
+      const response = await fetch(`http://localhost:8080/fabrics/${fabricForm.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(fabricForm)
       });
-      console.log(response);
       if (response.ok) {
         const json = await response.json();
+
+        const addImg = async () => {
+          const imgResponse = await fetch(`http://localhost:8080/fabrics/addimg/${json.id}`, {
+            method: 'PUT',
+            body: imageFile,
+          })
+          if (imgResponse.ok) {
+            let imgJson = await imgResponse.json();
+
+            const fabricWithImageURL = () => {
+              const imageBase64 = imgJson.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
+              const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+              if (imgJson.img) {
+                return {
+                  ...imgJson,
+                  img: imageUrl
+                }
+              }
+              return json;
+            }
+            dispatch({
+              type: 'EDIT_FABRIC',
+              payload: fabricWithImageURL()
+            })
+          }
+        }
+
+        if (imgIsPresent) {
+          addImg();
+        } else {
+          dispatch({
+            type: "EDIT_FABRIC",
+            payload: fabricForm
+          })
+        }
+
         setFabricWasEdited(true);
-        dispatch({
-          type: "EDIT_FABRIC",
-          payload: fabricForm
-        })
         setTimeout(() => {
           setFabricWasEdited(false);
         }, 8000)
@@ -132,14 +206,14 @@ export const useFabric = () => {
         const deleteFabric = async () => {
           try {
             // const response = await fetch(`http://localhost:3000/colors/${id}`, {
-            const response = await fetch(`http://localhost:3000/colors/${id}`, {
+            const response = await fetch(`http://localhost:8080/fabrics/${id}`, {
               method: "DELETE",
               headers: {
                 "Content-Type": "application/json"
               },
             })
             if (response.ok) {
-              const json = response.json();
+              // const json = await response.json();
               dispatch({
                 type: "REMOVE_FABRIC",
                 payload: id

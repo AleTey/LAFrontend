@@ -5,14 +5,16 @@ const newFabricFormInitialState = {
   nombre: "",
   color: "",
   tipo: "",
-  proveedor: "",
   temporada: "",
   id: "",
-  idProveedor: "",
+  proveedor: {
+    id: 0
+  },
   stock: 0,
   codeBarNumb: "",
+  precio: 0,
   tags: "",
-  img: ""
+  img: null
 }
 
 const fabricValidationForm = (fabricForm) => {
@@ -22,8 +24,8 @@ const fabricValidationForm = (fabricForm) => {
     errors.color = "El color es un campo obligatorio"
   }
 
-  if (!fabricForm.idProveedor.trim() || fabricForm.idProveedor === "Proveedor") {
-    errors.idProveedor = "El proveedor es un campo obligatorio"
+  if (!fabricForm.proveedor.id === 0 || fabricForm.proveedor.id === "Proveedor") {
+    errors.proveedor = "El proveedor es un campo obligatorio"
   }
 
   return errors;
@@ -38,7 +40,7 @@ export const NewFabricModal = ({
   editFabric
 }) => {
 
-  // console.log(fabric)
+  console.log(fabric)
   const [fabricForm, setFabricForm] = useState(fabric);
 
   const [textileSuppliers, setTextileSuppliers] = useState([]);
@@ -53,18 +55,18 @@ export const NewFabricModal = ({
       const getTextileSuppliers = async () => {
 
         try {
-          const response = await fetch("http://localhost:1000/distribuidores")
+          const response = await fetch("http://localhost:8080/suppliers")
           if (response.ok) {
             const json = await response.json();
             setTextileSuppliers(() => (
               json.filter(sup => sup.sector && sup.sector.toLowerCase() === "textil")
             ))
-            if (fabricForm.id) {
+            if (fabricForm.id !== 0) {
               setFabricOnEdit(() => (
-                json.filter(sup => sup.id === fabricForm.idProveedor)
+                json.filter(sup => sup.id === fabricForm.proveedor.id)
               ))
             } else {
-              console.log("sin id")
+              // console.log("sin id")
             }
           }
         } catch (error) {
@@ -85,10 +87,26 @@ export const NewFabricModal = ({
   }
 
   const onChangeFabricForm = (e) => {
-    setFabricForm({
-      ...fabricForm,
-      [e.target.name]: e.target.value
-    })
+    if (e.target.name === 'img') {
+      const file = e.target.files[0]
+      setFabricForm({
+        ...fabricForm,
+        [e.target.name]: file
+      })
+    } else
+      if (e.target.name === "proveedor") {
+        setFabricForm({
+          ...fabricForm,
+          [e.target.name]: {
+            id: e.target.value
+          }
+        })
+      } else {
+        setFabricForm({
+          ...fabricForm,
+          [e.target.name]: e.target.value
+        })
+      }
   }
 
   const onSubmit = () => {
@@ -214,13 +232,13 @@ export const NewFabricModal = ({
                     fabricOnEdit[0] ?
                       <select
                         className="form-select form-select-sm"
-                        name="idProveedor"
-                        defaultValue={fabric.idProveedor}
+                        name="proveedor"
+                        defaultValue={fabric.proveedor.id}
                         onChange={onChangeFabricForm}
                       >
                         <option value={fabricOnEdit.id}>{fabricOnEdit && fabricOnEdit[0].empresa}</option>
                         {textileSuppliers.map(sup => {
-                          if (sup.id !== fabric.idProveedor) {
+                          if (sup.id !== fabric.proveedor.id) {
                             return (<option key={sup.id} value={sup.id}>
                               {sup.empresa}
                             </option>)
@@ -230,7 +248,7 @@ export const NewFabricModal = ({
                       :
                       <select
                         className="form-select form-select-sm"
-                        name="idProveedor"
+                        name="proveedor"
                         defaultValue="Proveedor"
                         onChange={onChangeFabricForm}
                       >
@@ -243,7 +261,7 @@ export const NewFabricModal = ({
                       </select>
                   }
                   {
-                    errors.idProveedor && <p className="text-danger">{errors.idProveedor}</p>
+                    errors.proveedor && <p className="text-danger">{errors.proveedor}</p>
                   }
 
                   <div className="mb-3">
@@ -253,7 +271,7 @@ export const NewFabricModal = ({
                       type="file"
                       id="formFile"
                       name="img"
-                      value={fabricForm.img}
+                      // value={fabricForm.img}
                       onChange={onChangeFabricForm}
                     />
                   </div>
