@@ -4,7 +4,10 @@ export const Navbar = () => {
 
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <nav className="navbar navbar-default"></nav>
+    <nav className="navbar navbar-default"></nav>
+    <nav className="navbar navbar-default"></nav>
+      <nav className="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
         <div className="container-md">
           <NavLink className="navbar-brand nav-link" to="/"><span className="h4">Love Africa</span></NavLink>
           {/* <a className="navbar-brand" href="#"><span className="h4">Love Africa</span></a> */}
@@ -35,6 +38,10 @@ export const Navbar = () => {
               </li>
               <li className="nav-item">
                 <NavLink className="nav-link" to="orders">Pedidos</NavLink>
+                {/* <a className="nav-link" href="#">Pedidos</a> */}
+              </li>
+              <li className="nav-item">
+                <NavLink className="nav-link" to="inputs">Insumos</NavLink>
                 {/* <a className="nav-link" href="#">Pedidos</a> */}
               </li>
 

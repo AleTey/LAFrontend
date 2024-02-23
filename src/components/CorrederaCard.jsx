@@ -1,56 +1,62 @@
 import { useState } from "react";
-import { AddFabricStockModal } from "./AddFabricStockModal"
-import { NewFabricModal } from "./NewFabricModal";
+import { CorrederaForm } from "./CorrederaForm";
+import { NewInputModal } from "./NewInputModal";
+import { useCorredera } from "../hooks/inputs/useCorredera";
+import { useInputModal } from "../hooks/inputs/useInputModal";
 
-export const FabricCard = ({
-  fabric,
-  editFabric,
-  onDeleteFabric
-}) => {
+export const CorrederaCard = ({ corredera, onDeleteCorredera, updateCorredera }) => {
 
-  // console.log(fabric)
-  const [editFormIsOpen, setEditFormIsOpen] = useState(false);
 
-  const agregarMetros = () => {
-    <AddFabricStockModal />
-  }
+  const [editCorrederaIsOpen, setEditCorrederaIsOpen] = useState(false);
 
-  const onEditButton = () => {
-    setEditFormIsOpen(true)
+  const { inputModalIsOpen, toggle, selectedModal, modalSelectionHandler } = useInputModal();
+
+
+  const editCorrederaFormHandled = () => {
+    if (editCorrederaIsOpen) {
+      setEditCorrederaIsOpen(false)
+    } else {
+      setEditCorrederaIsOpen(true);
+    }
   }
 
   return (
     <>
+
       {
-        editFormIsOpen && <NewFabricModal fabric={fabric} setEditFormIsOpen={setEditFormIsOpen} editFabric={editFabric} />
+        inputModalIsOpen && selectedModal === "editCorredera" && editCorrederaIsOpen &&
+        <NewInputModal
+          selection={"corredera"}
+          editCorrederaFormHandled={editCorrederaFormHandled}
+          inputToEdit={corredera}
+          updateCorredera={updateCorredera}
+        />
       }
+
       <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
-        {/* <img src={img} className="card-img-top" alt="..." /> */}
-        {fabric.img ?
-          <img src={fabric.img} className="card-img-top" alt="..." />
-          :
-          <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={fabric.color} />
-        }
         <div className="card-body">
-          <h5 className="card-title">{fabric.nombre}</h5>
+          <h4 className="card-title">{corredera.nombre}</h4>
           <p className="card-text">
-            {/* Some quick example text to build on the card title and make up the bulk of the card's content. */}
           </p>
         </div>
         <ul className="list-group list-group-flush">
-          <li className="list-group-item">Color: {fabric.color}</li>
-          <li className="list-group-item">Codigo de Fabrica: {fabric.codigo}</li>
-          <li className="list-group-item">Id: {fabric.id}</li>
-          <li className="list-group-item">Proveedor : {fabric.proveedor.empresa}</li>
-          <li className="list-group-item">Tipo: {fabric.tipo}</li>
-          <li className="list-group-item">Stock: {fabric.stock} M
-            <button className="btn btn-outline-success btn-sm ms-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar</button>
-          </li>
-          <li className="list-group-item">Temporada: {fabric.temporada}</li>
-          <li className="list-group-item">Tags: {fabric.tags}</li>
-          <li className="list-group-item">Precio: : {fabric.precio}</li>
+          <li className="list-group-item"><b>Id:</b> {corredera.id}</li>
+          <li className="list-group-item"><b>Codigo de Fabrica:</b> {corredera.codigo}</li>
+          <li className="list-group-item"><b>Proveedor:</b> {corredera.proveedor.empresa}</li>
+          <li className="list-group-item"><b>Detalle:</b> {corredera.detalle}</li>
+          <li className="list-group-item"><b>Forma:</b> {corredera.forma}</li>
+          <li className="list-group-item"><b>Medida:</b> {corredera.medida} </li>
+          <li className="list-group-item"><b>Material:</b> {corredera.material}</li>
+          <li className="list-group-item"><b>Tags:</b> {corredera.detalle}</li>
+          <li className="list-group-item"><b>Color:</b> {corredera.color}</li>
+          <li className="list-group-item"><b>Cantidad por Pack:</b> {corredera.cantPorPack}</li>
+          <li className="list-group-item"><b>Precio Pack:</b> {corredera.precioPorPack}</li>
+          <li className="list-group-item"><b>Precio unidad:</b> {corredera.precioUni}</li>
+          <li className="list-group-item"><b>Stock packs:</b> {corredera.stockPacks}</li>
         </ul>
         <div className="card-body grid">
+
+
 
           <abbr title="Agregar a pedidos" className="initialism">
             <button className="btn btn-success mx-1">
@@ -62,7 +68,11 @@ export const FabricCard = ({
           </abbr>
 
           <abbr title="Editar" className="initialism">
-            <button className="btn btn-secondary mx-1" onClick={onEditButton}>
+            <button className="btn btn-secondary mx-1" onClick={() => {
+              toggle();
+              modalSelectionHandler("editCorredera")
+              setEditCorrederaIsOpen(true);
+            }} >
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-pencil" viewBox="0 0 16 16">
                 <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
               </svg>
@@ -70,7 +80,7 @@ export const FabricCard = ({
           </abbr>
 
           <abbr title="Eliminar insumo" className="initialism">
-            <button className="btn btn-danger mx-1" onClick={() => onDeleteFabric(fabric.id)}>
+            <button className="btn btn-danger mx-1" onClick={() => onDeleteCorredera(corredera.id)}>
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-x-octagon" viewBox="0 0 16 16">
                 <path d="M4.54.146A.5.5 0 0 1 4.893 0h6.214a.5.5 0 0 1 .353.146l4.394 4.394a.5.5 0 0 1 .146.353v6.214a.5.5 0 0 1-.146.353l-4.394 4.394a.5.5 0 0 1-.353.146H4.893a.5.5 0 0 1-.353-.146L.146 11.46A.5.5 0 0 1 0 11.107V4.893a.5.5 0 0 1 .146-.353L4.54.146zM5.1 1 1 5.1v5.8L5.1 15h5.8l4.1-4.1V5.1L10.9 1z" />
                 <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708" />
@@ -86,27 +96,7 @@ export const FabricCard = ({
               </svg>
             </button>
           </abbr>
-          {/* </div> */}
 
-          {/* <a href="#" className="card-link">Card link</a>
-          <a href="#" className="card-link">Another link</a> */}
-          <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div className="modal-dialog">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="exampleModalLabel">Agregar stock en mts de {fabric.color}</h1>
-                  <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div className="modal-body">
-                  ...
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" className="btn btn-primary">Agregar</button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
 

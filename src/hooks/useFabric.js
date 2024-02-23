@@ -27,10 +27,9 @@ export const useFabric = () => {
       const res = await fetch("http://localhost:8080/fabrics");
       const json = await res.json();
 
-      // Procesar la respuesta y convertir la imagen en una URL
       const fabricsWithImageURL = json.map((fabric) => {
 
-        const imageBase64 = fabric.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
+        const imageBase64 = fabric.img; 
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (fabric.img) {
           return {
@@ -48,6 +47,8 @@ export const useFabric = () => {
         type: 'GET_ALL_FABRICS',
         payload: fabricsWithImageURL,
       });
+      // console.log(fabrics)
+
     } catch (error) {
       console.error('Error fetching fabrics:', error);
     }
@@ -228,11 +229,8 @@ export const useFabric = () => {
           }
         }
         deleteFabric();
-
       }
     })
-
-
   }
 
   return {

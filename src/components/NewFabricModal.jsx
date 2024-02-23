@@ -20,9 +20,11 @@ const newFabricFormInitialState = {
 const fabricValidationForm = (fabricForm) => {
   let errors = {};
 
+
   if (!fabricForm.color.trim()) {
     errors.color = "El color es un campo obligatorio"
   }
+
 
   if (!fabricForm.proveedor.id === 0 || fabricForm.proveedor.id === "Proveedor") {
     errors.proveedor = "El proveedor es un campo obligatorio"
@@ -115,7 +117,7 @@ export const NewFabricModal = ({
       if (!fabricForm.id) {
         addNewFabric(fabricForm);
       } else {
-        console.log("else{} on edit: " + fabricForm)
+        // console.log("else{} on edit: " + fabricForm)
         editFabric(fabricForm)
         onCloseFabricModalForm();
       }

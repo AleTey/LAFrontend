@@ -32,19 +32,19 @@ export const Fabric = () => {
     <>
       {
         fabricWasAdded &&
-        <div className="alert alert-success fixed-top" role="alert">
+        <div className="alert alert-success fixed-top my-5" role="alert">
           Una nueva tela fue agregada
         </div>
       }
       {
         fabricWasEdited &&
-        <div className="alert alert-success fixed-top" role="alert">
+        <div className="alert alert-success fixed-top my-5" role="alert">
           Una nueva tela fue editada
         </div>
       }
       {
         fabricWasDeleted &&
-        <div className="alert alert-success fixed-top" role="alert">
+        <div className="alert alert-success fixed-top my-5" role="alert">
           Tela fue eliminada
         </div>
       }

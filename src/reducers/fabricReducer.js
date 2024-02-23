@@ -13,7 +13,6 @@ export const fabricReducer = (state = [], action) => {
       ]
 
     case "EDIT_FABRIC":
-      console.log(action.payload)
       return state.map(fab => {
         if (fab.id === action.payload.id) {
           return {
