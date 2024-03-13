@@ -1,210 +1,475 @@
 import { useEffect, useState } from "react"
-import { QuantityPerSize } from "./form/QuantityPerSize"
+import { Input } from "./formComponents/Input"
+import { SelectStrings } from "./formComponents/SelectStrings"
+import { useCorredera } from "../hooks/inputs/useCorredera"
+import { AccordionItem } from "./bootstrapComponents/AccordionItem"
+import { useArgolla } from "../hooks/inputs/useArgolla"
+import { useElastico } from "../hooks/inputs/useElastico"
+import { useGancho } from "../hooks/inputs/useGancho"
+import { useEtiqueta } from "../hooks/inputs/useEtiqueta"
+import { useAplique } from "../hooks/inputs/useAplique"
+
+// const modelFormInitialState = {
+//   model: "",
+//   tipo: "",
+//   temporada: "",
+//   id: "",
+//   tags: "",
+//   insumos: {
+//     elasticos: [],
+//     correderas: []
+//   },
+//   tiras: []
+// }
 
 const modelFormInitialState = {
   model: "",
   tipo: "",
-  temporada: "",
-  id: "",
-  tags: "",
-  insumos: {
-    elasticos: [],
-    correderas: []
-  },
-  tiras: []
+  // id: 0,
+  // tags: "",
+  detalleInsumos: [],
+  detalleTiraModelo: [],
+  detalle: ""
 }
-
-const checkboxInitialState = {
-  eB7: false,
-  eN7: false,
-  eB15: false,
-  eN15: false
-}
-
-const quantityPerSizeInitialState = {
-  s: "",
-  m: "",
-  l: "",
-  xl: "",
-  xxl: "",
-  xxxl: "",
-}
-
-const elasticPerSizeInitialState = {
-  eB7: { quantityPerSizeInitialState },
-  eN7: { quantityPerSizeInitialState },
-  eB15: { quantityPerSizeInitialState },
-  eN15: { quantityPerSizeInitialState }
-}
-
-// const tirasCheckBoxesInitialState = 
-// cm3: false,
-// cm4: false,
-// cm5: false,
-// cm6: false,
-// cm7: false,
-// cm8: false,
-// cm9: false,
-// cm10: false,
-
-
 
 
 export const NewModelModal = () => {
 
-
   const [modelForm, setModelForm] = useState(modelFormInitialState);
 
-  const [checkBoxes, setCheckBoxes] = useState(checkboxInitialState);
+  const [tiposPrenda, setTiposPrendas] = useState([]);
 
-  const { model, tipo, temporada, id, tags, insumos, tiras } = modelForm;
+  const [tiras, setTiras] = useState([]);
 
-  const [elasticPerSize, setElasticPerSize] = useState(elasticPerSizeInitialState);
+  const { correderas, findAllCorrederas } = useCorredera();
 
-  const [tirasCheckBoxes, setTirasCheckBoxes] = useState([]);
+  const { argollas, findAllArgollas } = useArgolla();
 
-  const [insumosDB, setInsumosDB] = useState();
+  const { elasticos, findAllElasticos } = useElastico();
 
-  const [tirasDB, setTirasDB] = useState([]);
+  const { ganchos, findAllGanchos } = useGancho();
 
-  // const [perSize, setPerSize] = useState(quantityPerSizeInitialState);
+  const { etiquetas, findAllEtiquetas } = useEtiqueta();
 
+  const { apliques, findAllApliques } = useAplique();
+
+  const [correderasSelected, setCorrederasSelected] = useState([]);
+
+  const [checkedBoxes, setCheckedBoxes] = useState({});
+
+  const [tallesDisponibles, setTallesDisponibles] = useState([]);
+
+  const [tirasChecked, setTirasChecked] = useState({})
+
+  const [detallesTiraModelo, setDetallesTiraModelo] = useState([]);
+
+
+  const fetchTiposPrenda = async () => {
+    const getTiposPrendas = await fetch("http://localhost:8080/tiposPrenda");
+    if (getTiposPrendas.ok) {
+      const tiposPrendasJson = await getTiposPrendas.json();
+      setTiposPrendas(tiposPrendasJson);
+    }
+  }
+
+  const getAllTiras = async () => {
+    const getTiras = await fetch("http://localhost:8080/tiras")
+    if (getTiras.ok) {
+      const tirasJson = await getTiras.json();
+      setTiras(tirasJson);
+    }
+  }
 
   useEffect(() => {
-
-    const fetchInsumos = async () => {
-      const insumos = await fetch("http://localhost:4000/insumos")
-      const res = await insumos.json();
-      setInsumosDB(res);
-      // console.log(insumosDB);
-      // console.log(insumosDB.correderas);
+    if (tiposPrenda.length === 0) {
+      fetchTiposPrenda();
     }
-    fetchInsumos();
+    if (tiras.length === 0) {
+      getAllTiras();
+    }
+
   }, []);
 
   useEffect(() => {
-    const fetchTiras = async () => {
-      const tiras = await fetch("http://localhost:5000/tiras")
-      const res = await tiras.json();
-      setTirasDB(res);
+    if (correderas.length === 0) {
+      findAllCorrederas();
     }
-    fetchTiras();
+    if (argollas.length === 0) {
+      findAllArgollas()
+    }
+    if (elasticos.length === 0) {
+      findAllElasticos();
+    }
+    if (ganchos.length === 0) {
+      findAllGanchos();
+    }
+    if (etiquetas.length === 0) {
+      findAllEtiquetas();
+    }
+    if (apliques.length === 0) {
+      findAllApliques();
+    }
   }, [])
 
-  useEffect(() => {
 
-    setTirasCheckBoxes(
-      tirasDB.map(tira => ({
-        ...tira,
-        selected: false
-      }))
-    );
+  //Actually Working!!!!!!!!
 
-    //  const selected = false;
-    // tirasDB.map(tira=> (
-    //   setTirasCheckBoxes(
-    //     ...tirasCheckBoxes,
-    //     tira
-    //   )
-    // ))
+  const onTallesDisponiblesChange = (e) => {
+    const { value, checked } = e.target;
 
-    // setTirasCheckBoxes(tirasDB)
+    if (checked) {
+      setTallesDisponibles([
+        ...tallesDisponibles,
+        value
+      ])
+      detallesTiraModelo.length > 0 &&
+        setDetallesTiraModelo(prevDet => {
+          return prevDet.map(detalle => {
+            return {
+              ...detalle,
+              tirasPorTalle: {
+                ...detalle.tirasPorTalle,
+                [value]: 0
+              }
+            };
+          });
+        });
+      // setDetallesTiraModelo([
+      //   detallesTiraModelo.map(detalle => {
+      //     return { ...detalle, tirasPorTalle: { ...detalle.tirasPorTalle, [value]: 0 } }
+      //   })
+      // ])
+    } else {
+      setTallesDisponibles([
+        ...tallesDisponibles.filter(talle => talle !== value)
+      ])
+      setDetallesTiraModelo(prevDetalles =>
+        prevDetalles.map(detalle => {
+          // Filtramos las claves del objeto 'tirasPorTalle' y excluimos aquella que coincida con el valor 'value'
+          const { [value]: deletedKey, ...newTirasPorTalle } = detalle.tirasPorTalle;
+          // Retornamos una copia del detalle con el nuevo objeto 'tirasPorTalle' sin la clave eliminada
+          return { ...detalle, tirasPorTalle: newTirasPorTalle };
+        })
+      );
+      // setDetallesTiraModelo([
+      //   detallesTiraModelo.map(detalle => {
+      //     return { ...detalle, tirasDetalle: { ...detalle.tirasPorTalle.filter(Object.keys(tirasPorTalle) !== value) } }
+      //   })
+      // ])
 
-    // tirasCheckBoxes.map()
-  }, [tirasDB])
+      // console.log(tallesDisponibles.length)
+      if (tallesDisponibles.length === 1) {
+        console.log(tallesDisponibles.length)
+        console.log("luego")
+        setCheckedBoxes({})
+        setTirasChecked({})
+        setCorrederasSelected([])
+        console.log(correderasSelected)
+        setDetallesTiraModelo([])
+        return
+        // setCorrederasSelected(...[])
+        // setCheckedBoxes(
+        //   Object.keys(checkedBoxes).forEach(key => {
+        //     checkedBoxes[key] = false;
+        //   })
+        // )
+      }
 
+    }
+
+    if (correderasSelected.length > 0) {
+      if (checked) {
+        setCorrederasSelected([
+          ...correderasSelected.map(inp => {
+            if (Object.keys(inp).includes('cantidad')) {
+              return inp
+            } else {
+              return { ...inp, [value]: 0 }
+            }
+          })
+        ])
+      } else {
+
+        setCorrederasSelected([
+          ...correderasSelected.map(inp => {
+            if (Object.keys(inp).includes('cantidad')) {
+              return inp
+            }
+            const inpModified = { ...inp };
+            delete inpModified[value]
+            return inpModified
+          })
+        ])
+      }
+    }
+
+
+    // if (tallesDisponibles.length > 0) {
+    //   setDetallesTiraModelo([
+    //     detallesTiraModelo.map(detalle => {
+    //       console.log(detalle.tirasPorTalle);
+    //     })
+    //   ])
+    // }
+  }
 
   const onChange = ({ target }) => {
-    // console.log(target.name)
-    // console.log(target.value)
     setModelForm({
       ...modelForm,
       [target.name]: target.value
     })
   }
 
-  const onCheckboxChange = ({ target }) => {
-    // console.log(insumosDB.correderas);
-
-    const { name, checked } = target;
-    setCheckBoxes({
-      ...checkBoxes,
-      [name]: checked
+  const checkedBoxesHandler = (id) => {
+    setCheckedBoxes({
+      ...checkedBoxes,
+      [id]: !checkedBoxes[id]
     })
   }
 
-  const OnChangeQuantity = (tipoE, valueE) => {
-    // console.log(tipoE + ": " + valueE)
+  const onChangeCorrederasSelected = (e) => {
+    const { checked, value } = e.target;
 
-    setElasticPerSize({
-      ...elasticPerSize,
-      [tipoE]: valueE
-    })
+    if (checked) {
+      setCorrederasSelected([
+        ...correderasSelected,
+        {
+          input: {
+            id: value,
+          },
+          cantidad: 0
+        }
+      ])
+    } else {
+      setCorrederasSelected([
+        ...correderasSelected.filter(corr => corr.input.id !== value)
+      ])
+    }
   }
 
-  const onCorrederasChange = (e) => {
+  const onChangeCant = (e, id, el = false) => {
+    const { name, value } = e.target;
 
-    const isChecked = e.target.checked;
-
-    setModelForm(prevModelForm => ({
-      ...prevModelForm,
-      insumos: {
-        ...prevModelForm.insumos,
-        correderas: isChecked
-          ? [...prevModelForm.insumos.correderas, e.target.name]
-          : prevModelForm.insumos.correderas.filter(corr => corr !== e.target.name),
-      },
-    }));
-  }
-
-  const onTirasCheckboxChange = ({ target }) => {
-    // console.log(insumosDB.correderas);
-
-    const { name, checked } = target;
-    // const selected = !checked;
-
-    // tirasCheckBoxes.map(tira => (
-    //   tira.map(val => (
-
-    //   ))
-    // ))
-
-    // tirasCheckBoxes.map(tiraa => (
-    //   if (tiraa.id == name) {
-
-    //   }
-    // ))
-
-    // console.log("tirasCheckBoxes:", tirasCheckBoxes);
-    // tirasCheckBoxes.map(tira => (
-    //   tira.id === name && (setTirasCheckBoxes([
-    //     ...tira,
-    //     [selected] = checked
-    //   ]))
-    // ))
-
-    // setTirasCheckBoxes(prevTirasCheckBoxes => 
-    //   prevTirasCheckBoxes.map(tira => 
-    //     tira.id === name ? { ...tira, [selected]: checked } : tira
-    //   )
-    // );
-
-    setTirasCheckBoxes(prevTirasCheckBoxes =>
-      prevTirasCheckBoxes.map(tira =>
-        tira.id === name ? { ...tira, ["selected"]: checked } : tira
+    if (el) {
+      setCorrederasSelected(
+        correderasSelected.map(inp => {
+          if (inp.input.id == id) {
+            inp[name] = value
+            return inp;
+          }
+          return inp;
+        })
       )
-    );
+    } else {
+      setCorrederasSelected(
+        correderasSelected.map(inp => {
+          if (inp.input.id == id) {
+            return { ...inp, cantidad: value }
+          }
+          return inp;
+        })
+      )
+    }
+  }
 
-    // setTirasCheckBoxes({
-    //   ...tirasCheckBoxes,
-    //   [name]: checked
-    // })
+  const onChangeElastico = (e) => {
+    const { value, checked } = e.target;
+
+    if (checked) {
+      const ela = {
+        input: {
+          id: value
+        }
+      }
+      tallesDisponibles.forEach(t => {
+        ela[t] = 0;
+      })
+      setCorrederasSelected([...correderasSelected, ela])
+
+    } else {
+      setCorrederasSelected([
+        ...correderasSelected.filter(inp => inp.input.id != value)
+      ])
+    }
+  }
+
+  const buscarValueParaCant = (id, talle) => {
+    correderasSelected.map(el => {
+      if (el.input.id == id) {
+        console.log(el[talle])
+        return el[talle];
+      }
+    })
+  }
+
+  const tirasCheckedListHandler = (e) => {
+    const { value } = e.target;
+
+    setTirasChecked({
+      ...tirasChecked,
+      [value]: !tirasChecked[value]
+    })
+  }
+
+  const OnTirasChange = (e) => {
+    const { checked, value } = e.target;
+
+    if (checked) {
+      setDetallesTiraModelo([
+        ...detallesTiraModelo,
+        {
+          tira: {
+            id: value
+          },
+          tirasPorTalle: tallesDisponibles.reduce((acc, t) => {
+            // console.log(t)
+            return {
+              ...acc,
+              [t]: 0
+            };
+          }, {})
+        }
+      ])
+    } else {
+      setDetallesTiraModelo([
+        ...detallesTiraModelo.filter(detalle => detalle.tira.id != value)
+      ])
+    }
+
+  }
+
+  const buscarValueParaCantTiras = (idT, t) => {
+    detallesTiraModelo.map(el => {
+      if (el.tira.id == idT) {
+        console.log(el.tirasPorTalle[t])
+        return el.tirasPorTalle[t];
+      }
+    })
+  }
+
+  const onChangeCantTiras = (e, tiraId) => {
+    const { name, value } = e.target;
+
+    setDetallesTiraModelo(prevDetalles => {
+      // Crear una copia del array de detallesTiraModelo y modificar el detalle correspondiente
+      const updatedDetalles = prevDetalles.map(detalle => {
+        if (detalle.tira.id == tiraId) {
+          // Crear una copia del objeto tirasPorTalle y actualizar el valor del talle
+          const updatedTirasPorTalle = { ...detalle.tirasPorTalle, [name]: value };
+          // Devolver un nuevo objeto detalle con el tirasPorTalle actualizado
+          return { ...detalle, tirasPorTalle: updatedTirasPorTalle };
+        }
+        // Si no es el detalle que queremos actualizar, devolverlo sin cambios
+        return detalle;
+      });
+
+      // Devolver el nuevo array de detallesTiraModelo actualizado
+      return updatedDetalles;
+    });
+
+    // setDetallesTiraModelo([
+    //   detallesTiraModelo.map(detalle => {
+    //     if (detalle.tira.id == tiraId) {
+    //       detalle.tirasPorTalle[name] = value;
+    //       console.log(detalle.tirasPorTalle[name])
+    //       return detalle
+    //     }
+    //     return detalle
+    //   })
+    // ])
+  }
+
+  //// SEGUNDO
+
+  // const onDetalleTiraModeloCantChange = (e) => {
+  //   const { checked, value } = e.target
+
+  //   if (checked) {
+  //     setDetallesTiraModelo([
+  //       ...detallesTiraModelo,
+  //       {
+  //         tira: {
+  //           id: value
+  //         },
+  //         tirasPorTalle: tallesDisponibles.reduce((acc, t) => {
+  //           return {
+  //             ...acc,
+  //             [t]: 0
+  //           };
+  //         }, {})
+  //       }
+  //     ])
+  //   }
+  // }
+
+  const onCantTirasChange = (e, id) => {
+    const { name, value } = e.target;
+    setDetallesTiraModelo([
+      detallesTiraModelo.map(detalle => {
+        if (detalle.tira.id == id) {
+          console.log(detalle.tira.id)
+          console.log(id)
+          detalle.tirasPorTalle[name] = value
+          console.log(detalle.tirasPorTalle)
+          return detalle;
+        }
+        return detalle;
+      })
+    ])
+
+    setCorrederasSelected(
+      correderasSelected.map(inp => {
+        if (inp.input.id == id) {
+          inp[name] = value
+          return inp;
+        }
+        return inp;
+      })
+    )
+
+  }
+
+  const cantTirasValueSearcher = (id, talle) => {
+    try {
+
+      detallesTiraModelo.map(detalle => {
+        if (detalle.tira.id && id && detalle.tira.id == id) {
+          console.log(detalle)
+          console.log(detalle.tirasPorTalle)
+          console.log(Object.keys(detalle.tirasPorTalle))
+          console.log(talle)
+          console.log(Object.entries(detalle.tirasPorTalle))
+          Object.entries(detalle.tirasPorTalle).forEach(([key, value]) => {
+            // console.log(key + " " + value);
+            if (key === talle) {
+              console.log(value);
+              return value;
+            }
+          })
+          // if (Object.entries(detalle.tirasPorTalle).key === talle) {
+          //   console.log(talle)
+          //   console.log("OK")
+          // }
+
+          // return detalle.tirasPorTalle[talle]
+        }
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    console.log("Enviando formulario")
+    modelForm.detalleInsumos = correderasSelected;
+    modelForm.detalleTiraModelo = detallesTiraModelo;
+    console.log(modelForm)
   }
 
 
   return (
     <>
-
       <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
         Nuevo modelo
       </button>
@@ -214,7 +479,7 @@ export const NewModelModal = () => {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">Nuevo insumo</h1>
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">Nuevo Modelo</h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div className="modal-body">
@@ -222,379 +487,501 @@ export const NewModelModal = () => {
               <div className="container">
 
 
-                <form action="" className="form-floating">
+                <form action="" >
 
-                  <div className="form-floating mb-3">
-                    <input
-                      type="text" className="form-control"
-                      id="floatingInputNombre"
-                      placeholder="nombre"
-                      name="model"
-                      value={model}
-                      onChange={onChange}
-                    />
-                    <label htmlFor="floatingInputNombre" className="h6">Nombre</label>
-                  </div>
+                  <Input
+                    name="model"
+                    value={modelForm.model}
+                    type="text"
+                    placeHolder="Nombre del Modelo"
+                    onChangeInput={onChange}
+                  />
 
-                  <div className="form-floating mb-3">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="floatingInputTipo"
-                      placeholder="tipo"
-                      name="tipo"
-                      value={tipo}
-                      onChange={onChange}
-                    />
-                    <label htmlFor="floatingInputTipo" className="h6">Tipo</label>
-                  </div>
+                  <SelectStrings
+                    defaultValue=""
+                    name="tipo"
+                    onChangeMethod={onChange}
+                    initialValueText="TipoPrenda"
+                    array={tiposPrenda}
+                  />
 
-                  <div className="form-floating mb-3">
-                    <input
-                      type="text"
-                      className="form-control"
-                      id="floatingInputTemporada"
-                      placeholder="Temporada"
-                      name="temporada"
-                      value={temporada}
-                      onChange={onChange}
-                    />
-                    <label htmlFor="floatingInputTemporada" className="h6">Temporada</label>
-                  </div>
+                  <h4>Talles disponibles</h4>
 
-                  <div className="form-floating mb-3">
-                    <input
-                      type="select"
-                      className="form-control"
-                      id="floatingInputTags"
-                      placeholder="tags"
-                      name="tags"
-                      value={tags}
-                      onChange={onChange}
-                    />
-                    <label htmlFor="floatingInputTags" className="h6">Tags</label>
-                  </div>
+                  <section className="d-flex justify-content-between mb-2">
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="S"
+                        id="S"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="S">
+                        S
+                      </label>
+                    </div>
+
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="M"
+                        id="M"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="M">
+                        M
+                      </label>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="L"
+                        id="L"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="L">
+                        L
+                      </label>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="XL"
+                        id="XL"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="XL">
+                        XL
+                      </label>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="XXL"
+                        id="XXL"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="XXL">
+                        XXL
+                      </label>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        value="XXXL"
+                        id="XXXL"
+                        onChange={onTallesDisponiblesChange}
+                      />
+                      <label className="form-check-label" htmlFor="XXXL">
+                        XXXL
+                      </label>
+                    </div>
+
+
+                  </section>
 
                   <h4>Insumos</h4>
                   <div className="container">
+                    {
+                      tallesDisponibles.length > 0 &&
+                      <div className="accordion" id="accordionExample">
+                        <AccordionItem
+                          id="correderas"
+                          titulo="Correderas"
+                        >
 
-                    <h6>Elástico</h6>
+                          {
+                            correderas &&
+                            correderas.map(corr => (
+                              <div key={corr.id} className="">
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    value={corr.id}
+                                    id={`flexCheckDefault${corr.id}`}
+                                    onChange={e => {
+                                      onChangeCorrederasSelected(e),
+                                        checkedBoxesHandler(corr.id)
+                                    }}
+                                  />
+                                  <label className="form-check-label" htmlFor={`flexCheckDefault${corr.id}`}>
+                                    {corr.nombre}
+                                  </label>
+                                </div>
 
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        name="eB7"
-                        type="checkbox"
-                        value={checkBoxes.eB7}
-                        id="elastico7blanco"
-                        onChange={onCheckboxChange}
-                      />
-                      <label className="form-check-label" htmlFor="elastico7blanco">
-                        Elástico 7mm blanco
-                      </label>
-                    </div>
+                                {checkedBoxes[corr.id] &&
+                                  <div className="form-floating mb-3">
+                                    <input
+                                      type="number"
+                                      className="form-control-sm"
+                                      id={`floatingInput${corr.id}`}
+                                      placeholder="Cantidad"
+                                      value={correderasSelected.cantidad}
+                                      onChange={e => onChangeCant(e, corr.id)}
+                                    />
+                                    <label htmlFor={`floatingInput${corr.id}`}></label>
+                                  </div>
 
-                    {checkBoxes.eB7 && <QuantityPerSize OnChangeQuantity={OnChangeQuantity} typeE="eB7" />}
+                                }
+                              </div>
+                            ))
+                          }
 
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="eN7"
-                        value={checkBoxes.eN7}
-                        id="elastico7negro"
-                        onChange={onCheckboxChange}
-                      />
-                      <label className="form-check-label" htmlFor="elastico7negro">
-                        Elástico 7mm negro
-                      </label>
-                    </div>
-                    {checkBoxes.eN7 && <QuantityPerSize OnChangeQuantity={OnChangeQuantity} typeE="eN7" />}
+                        </AccordionItem>
 
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="eB15"
-                        value={checkBoxes.eB15}
-                        id="elastico15blanco"
-                        onChange={onCheckboxChange}
-                      />
-                      <label className="form-check-label" htmlFor="elastico15blanco">
-                        Elástico 15mm blanco
-                      </label>
-                    </div>
-                    {checkBoxes.eB15 && <QuantityPerSize OnChangeQuantity={OnChangeQuantity} typeE="eB15" />}
+                        <AccordionItem
+                          titulo="Argollas"
+                          id="argollas"
+                        >
+                          {
+                            argollas && argollas.map(arg => (
+                              <div key={arg.id} className="">
 
-                    <div className="form-check">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        name="eN15"
-                        value={checkBoxes.eN15}
-                        id="elastico15negro"
-                        onChange={onCheckboxChange}
-                      />
-                      <label className="form-check-label" htmlFor="elastico15negro">
-                        Elástico 15mm negro
-                      </label>
-                    </div>
-                    {checkBoxes.eN15 && <QuantityPerSize OnChangeQuantity={OnChangeQuantity} typeE="eN15" />}
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    value={arg.id}
+                                    id={`flexCheckDefault${arg.id}`}
+                                    onChange={e => {
+                                      onChangeCorrederasSelected(e),
+                                        checkedBoxesHandler(arg.id)
+                                    }}
+                                  />
+                                  <label className="form-check-label" htmlFor={`flexCheckDefault${arg.id}`}>
+                                    {arg.nombre}
+                                  </label>
+                                </div>
 
-                    <h6>Correderas</h6>
+                                {checkedBoxes[arg.id] &&
+                                  <div className="input-group input-group-sm mb-3 col">
+                                    <span className="input-group-text" id="inputGroup-sizing-sm">Cantidad</span>
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      id={`floatingInput${arg.id}`}
+                                      placeholder="Cantidad"
+                                      value={correderasSelected.cantidad}
+                                      onChange={e => onChangeCant(e, arg.id)}
+                                    />
+                                    <label htmlFor={`floatingInput${arg.id}`}></label>
+                                  </div>
 
-                    {insumosDB && insumosDB.correderas && insumosDB.correderas.map(corr => (
-                      <div className="form-check" key={corr.id}>
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          name={corr.id}
-                          value={modelForm.insumos.correderas}
-                          id={`corredera ${corr.id}`}
-                          onChange={onCorrederasChange}
-                        />
-                        <label className="form-check-label" htmlFor={`corredera ${corr.id}`}>
-                          {corr.medida} {corr.material} {corr.color}
-                        </label>
+                                }
+                              </div>
+                            ))
+                          }
+                        </AccordionItem>
+
+                        <AccordionItem
+                          titulo="Elasticos"
+                          id="elasticos"
+                        >
+
+                          {
+                            elasticos &&
+                            elasticos.map(elastico => (
+                              <section key={elastico.id}>
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    value={elastico.id}
+                                    id={`flexCheckDefault${elastico.id}`}
+                                    onChange={e => {
+                                      onChangeElastico(e),
+                                        checkedBoxesHandler(elastico.id)
+                                    }}
+                                    disabled={tallesDisponibles.length === 0}
+                                  />
+                                  <label className="form-check-label" htmlFor={`flexCheckDefault${elastico.id}`}>
+                                    {elastico.nombre}
+                                  </label>
+                                </div>
+                                {/* <section className="container d-flex col gap-2"> */}
+                                <section className="row">
+                                  {
+                                    checkedBoxes[elastico.id] &&
+                                    tallesDisponibles.map(t => (
+                                      <div key={t} className="col-sm-6">
+
+                                        <div className="input-group input-group-sm mb-3 col"  >
+                                          <span className="input-group-text" id="inputGroup-sizing-sm">{t}</span>
+                                          <input
+                                            className="form-control"
+                                            name={t}
+                                            value={buscarValueParaCant(elastico.id, t)}
+                                            type="number"
+                                            onChange={(e) => { onChangeCant(e, elastico.id, true) }}
+
+                                          />
+                                        </div>
+                                      </div>
+                                    ))
+                                  }
+                                </section>
+                              </section>
+                            ))
+                          }
+                        </AccordionItem>
+
+                        <AccordionItem
+                          titulo="Ganchos"
+                          id="ganchos"
+                        >
+                          {
+                            ganchos &&
+                            ganchos.map(gancho => (
+                              <div key={gancho.id}>
+                                <div className="form-check">
+                                  <input
+                                    className="form-check-input"
+                                    type="checkbox"
+                                    // name={gancho.nombre}
+                                    value={gancho.id}
+                                    id={`gancho${gancho.id}`}
+                                    onChange={(e) => {
+                                      onChangeCorrederasSelected(e)
+                                      checkedBoxesHandler(gancho.id)
+
+                                    }}
+
+                                  />
+                                  <label className="form-check-label" htmlFor={`gancho${gancho.id}`}>
+                                    {gancho.nombre}
+                                  </label>
+                                </div>
+                                {
+                                  checkedBoxes[gancho.id] &&
+                                  <div className="input-group input-group-sm mb-3 col">
+                                    <span className="input-group-text" id="inputGroup-sizing-sm">Cantidad</span>
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      id={`floatingInput${gancho.id}`}
+                                      placeholder="Cantidad"
+                                      value={correderasSelected.cantidad}
+                                      onChange={e => onChangeCant(e, gancho.id)}
+                                    />
+                                    <label htmlFor={`floatingInput${gancho.id}`}></label>
+                                  </div>
+
+                                }
+                              </div>
+                            ))
+                          }
+                        </AccordionItem>
+
+                        <AccordionItem
+                          titulo="Etiquetas"
+                          id="etiquetas"
+                        >
+                          {
+                            etiquetas &&
+                            etiquetas.map(etiqueta => (
+                              <div key={etiqueta.id}>
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  // name={gancho.nombre}
+                                  value={etiqueta.id}
+                                  id={`etiqueta${etiqueta.id}`}
+                                  onChange={(e) => {
+                                    onChangeCorrederasSelected(e)
+                                    checkedBoxesHandler(etiqueta.id)
+
+                                  }}
+                                />
+                                <label className="form-check-label" htmlFor={`etiqueta${etiqueta.id}`}>
+                                  {etiqueta.nombre}
+                                </label>
+
+                                {
+                                  checkedBoxes[etiqueta.id] &&
+                                  <div className="input-group input-group-sm mb-3 col">
+                                    <span className="input-group-text" id="inputGroup-sizing-sm">Cantidad</span>
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      id={`floatingInput${etiqueta.id}`}
+                                      placeholder="Cantidad"
+                                      value={correderasSelected.cantidad}
+                                      onChange={e => onChangeCant(e, etiqueta.id)}
+                                    />
+                                    <label htmlFor={`floatingInput${etiqueta.id}`}></label>
+                                  </div>
+                                }
+
+                              </div>
+                            ))
+                          }
+                        </AccordionItem>
+
+                        <AccordionItem
+                          titulo="Apliques"
+                          id="aplique"
+                        >
+                          {
+                            apliques &&
+                            apliques.map(aplique => (
+                              <div key={aplique.id}>
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  // name={gancho.nombre}
+                                  value={aplique.id}
+                                  id={`aplique${aplique.id}`}
+                                  onChange={(e) => {
+                                    onChangeCorrederasSelected(e)
+                                    checkedBoxesHandler(aplique.id)
+                                  }}
+                                />
+                                <label className="form-check-label" htmlFor={`aplique${aplique.id}`}>
+                                  {aplique.nombre}
+                                </label>
+                                {
+                                  checkedBoxes[aplique.id] &&
+                                  <div className="input-group input-group-sm mb-3 col">
+                                    <span className="input-group-text" id="inputGroup-sizing-sm">Cantidad</span>
+                                    <input
+                                      type="number"
+                                      className="form-control"
+                                      id={`floatingInput${aplique.id}`}
+                                      placeholder="Cantidad"
+                                      value={correderasSelected.cantidad}
+                                      onChange={e => onChangeCant(e, aplique.id)}
+                                    />
+                                    <label htmlFor={`floatingInput${aplique.id}`}></label>
+                                  </div>
+                                }
+                              </div>
+                            ))
+                          }
+                        </AccordionItem>
+
                       </div>
-                    ))}
-
-                    {/* <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="correderas11zp" />
-                      <label className="form-check-label" htmlFor="correderas11zp">
-                        11mm zamac plateado
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="correderas20zp" />
-                      <label className="form-check-label" htmlFor="correderas20zp">
-                        20mm zamac plateado
-                      </label>
-                    </div> */}
-
-                    <h6>Broches casados</h6>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="broches-casados-zamac" />
-                      <label className="form-check-label" htmlFor="broches-casados-zamac">
-                        20mm zamac
-                      </label>
-                    </div>
-
-                    <h6>Gancho soltero</h6>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="broches-soltero-zamac-20" />
-                      <label className="form-check-label" htmlFor="broches-soltero-zamac-20">
-                        20mm zamac
-                      </label>
-                    </div>
-                    <h6>Argollas</h6>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="argollas-11-zamac" />
-                      <label className="form-check-label" htmlFor="argollas-11-zamac">
-                        11mm zamac
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="argollas-15-zamac" />
-                      <label className="form-check-label" htmlFor="argollas-15-zamac">
-                        15mm zamac
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="argollas-30-zamac" />
-                      <label className="form-check-label" htmlFor="argollas-30-zamac">
-                        30mm zamac
-                      </label>
-                    </div>
-
-
-                    <h6>Chapita</h6>
-
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="chapita-shell" />
-                      <label className="form-check-label" htmlFor="chapita-shell">
-                        Chapita shell LA
-                      </label>
-                    </div>
-
-                    <h6>Etiquetas</h6>
-
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="etiqueta-love-africa" />
-                      <label className="form-check-label" htmlFor="etiqueta-love-africa">
-                        Love Africa
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="etiqueta-isla" />
-                      <label className="form-check-label" htmlFor="etiqueta-isla">
-                        Isla
-                      </label>
-                    </div>
-                    <div className="form-check">
-                      <input className="form-check-input" type="checkbox" value="" id="etiqueta-mini-africa" />
-                      <label className="form-check-label" htmlFor="etiqueta-mini-africa">
-                        Mini Africa
-                      </label>
-                    </div>
-
+                    }
                   </div>
 
 
                   <h4 className="mt-3">TIRAS</h4>
 
-                  {
-                    
-                    // console.log(tirasCheckBoxes)
-                    tirasCheckBoxes.map(tira => (
+
+                  {/* {
+                    tiras &&
+                    tiras.map(tira => (
+
+                      // <section key={tira.id}>
                       <div className="form-check" key={tira.id}>
                         <input
                           className="form-check-input"
                           type="checkbox"
-                          name={tira.id}
-                          // value={tirasCheckBoxes.cm3}
-                          value={tira.selected}
-                          // id="tira3"
-                          id={tira.id}
-                          onChange={onTirasCheckboxChange}
+                          value={tira.id}
+                          id={`tiras${tira.id}`}
+                          onChange={e => {
+                            OnTirasChange(e),
+                              tirasCheckedListHandler(e)
+                          }}
+                          disabled={tallesDisponibles.length === 0}
                         />
-                        <label className="form-check-label" htmlFor={tira.id}>
-                          Tira{tira.ancho}
+                        <label className="form-check-label" htmlFor={`tiras${tira.id}`}>
+                          {`${tira.ancho} cm`}
                         </label>
-                      </div>         
+                        {
+                          tallesDisponibles && tallesDisponibles.map(t => {
+                            { console.log(t) }
+                            { <button></button> }
+                            // <div key={t} className="col-sm-6">
+                            <div key={t}>
+                              <div className="input-group input-group-sm mb-3 col"  >
+                                <span className="input-group-text" id="inputGroup-sizing-sm">{t}</span>
+                                <input
+                                  className="form-control"
+                                  name={t}
+                                  value={() => buscarValueParaCantTiras(tira.id, t)}
+                                  // value={buscarValueParaCantTiras(tira.id, t)}
+                                  type="number"
+                                  onChange={(e) => { onChangeCantTiras(e, tira.id) }}
+                                />
+                              </div>
+
+
+                              <div className="input-group input-group-sm mb-3 col"  >
+                                <span className="input-group-text" id="inputGroup-sizing-sm">{t}</span>
+                                <input
+                                  className="form-control"
+                                  name={t}
+                                  value={cantTirasValueSearcher(tira.id, t)}
+                                  // value={detallesTiraModelo(tira.id, t)}
+                                  type="number"
+                                  onChange={(e) => { onCantTirasChange(e, tira.id) }}
+                                />
+                              </div>
+
+                            </div>
+
+
+
+                          })
+                        }
+                      </div>
+
+                      // </section>
+                    ))
+                  } */}
+
+
+                  {
+                    tiras && tallesDisponibles.length > 0 &&
+                    tiras.map(tira => (
+                      <div key={tira.id}>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          value={tira.id}
+                          id={`tira${tira.id}`}
+                          onChange={(e) => {
+                            OnTirasChange(e)
+                            tirasCheckedListHandler(e)
+                          }}
+                        />
+                        <label className="form-check-label" htmlFor={`tira${tira.id}`}>
+                          {`${tira.ancho} cm`}
+                        </label>
+                        {
+                          tirasChecked[tira.id] && tallesDisponibles &&
+                          tallesDisponibles.map((t) => (
+                            <div key={t} className="col-sm-6">
+                              <div className="input-group input-group-sm mb-3 col"  >
+                                <span className="input-group-text" id="inputGroup-sizing-sm">{t}</span>
+                                <input
+                                  className="form-control"
+                                  name={t}
+                                  value={cantTirasValueSearcher(tira.id, t)}
+                                  // value={detallesTiraModelo(tira.id, t)}
+                                  type="number"
+                                  onChange={(e) => { onChangeCantTiras(e, tira.id) }}
+                                />
+                              </div>
+                            </div>
+                          ))
+                        }
+                      </div>
                     ))
                   }
-
-                  {/* <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm3"
-                      value={tirasCheckBoxes.cm3}
-                      id="tira3"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira3">
-                      Tira 3 cm
-                    </label>
-                  </div> */}
-
-                  {/* <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm3"
-                      value={tirasCheckBoxes.cm3}
-                      id="tira3"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira3">
-                      Tira 3 cm
-                    </label>
-                  </div> */}
-
-                  {/* <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm4"
-                      value={tirasCheckBoxes.cm4}
-                      id="tira4"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira4">
-                      Tira 4 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm5" value={tirasCheckBoxes.cm5}
-                      id="tira5"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira5">
-                      Tira 5 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm6" value={tirasCheckBoxes.cm6}
-                      id="tira6"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira6">
-                      Tira 6 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm7"
-                      value={tirasCheckBoxes.cm7}
-                      id="tira7"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira7">
-                      Tira 7 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm8"
-                      value={tirasCheckBoxes.cm8}
-                      id="tira8"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira8">
-                      Tira 8 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm9"
-                      value={tirasCheckBoxes.cm9}
-                      id="tira9"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira9">
-                      Tira 9 cm
-                    </label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      name="cm10"
-                      value={tirasCheckBoxes.cm10}
-                      id="tira10"
-                      onChange={onTirasCheckboxChange}
-                    />
-                    <label className="form-check-label" htmlFor="tira10">
-                      Tira 10 cm
-                    </label>
-                  </div> */}
 
                 </form>
               </div>
             </div>
             <div className="modal-footer">
               {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> */}
-              <button type="submit" className="btn btn-primary">Crear</button>
+              <button type="submit" className="btn btn-primary" onClick={onSubmit}>Crear</button>
             </div>
           </div>
         </div>

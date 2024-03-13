@@ -1,31 +1,31 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { InputModalContext } from "../../context/InputModalContext";
-import { correderaReducer } from "../../reducers/correderaReducer";
+import { CorrederaContext } from "../../context/CorrederaContext";
 
 
 export const useCorredera = () => {
 
   const [correderaFormIsActive, setCorrederaFormIsActive] = useState(false);
 
+  const { correderas,
+    dispatchGetAllCorrederas,
+    dispatchAddCorredera,
+    dispatchUploadCorredera,
+    dispatchDeleteCorredera } = useContext(CorrederaContext);
+
   const {
     toggle,
     modalSelectionHandler,
-    setCorrederaWasAdded,
-    setCorrederaWasDeleted } = useContext(InputModalContext);
+    setInputDbHasChanged } = useContext(InputModalContext);
 
-  const [correderas, dispatch] = useReducer(correderaReducer, []);
 
 
   const findAllCorrederas = async () => {
     const getCorrederas = await fetch("http://localhost:8080/correderas")
     if (getCorrederas.ok) {
       const correderasJson = await getCorrederas.json();
-      // setCorrederasDb(correderasJson)
-      dispatch({
-        type: "GET_ALL_CORREDERAS",
-        payload: correderasJson,
-      })
+      dispatchGetAllCorrederas(correderasJson)
     }
   }
 
@@ -42,13 +42,10 @@ export const useCorredera = () => {
       if (saveCorredera.ok) {
         const correderaJson = await saveCorredera.json();
 
-        dispatch({
-          type: "ADD_CORREDERA",
-          payload: correderaJson
-        });
-        setCorrederaWasAdded(true);
+        dispatchAddCorredera(correderaJson);
+        setInputDbHasChanged("correderaSaved");
         setTimeout(() => {
-          setCorrederaWasAdded(false);
+          setInputDbHasChanged("false");
         }, 8000)
         toggle()
         modalSelectionHandler("");
@@ -59,7 +56,7 @@ export const useCorredera = () => {
   };
 
 
-  const updateCorredera = async (modifiedFields, id) => {
+  const updateCorredera = async (modifiedFields, id, formIsOpen) => {
 
     if (modifiedFields.proveedor) {
       modifiedFields.proveedor = modifiedFields.proveedor.id;
@@ -72,12 +69,14 @@ export const useCorredera = () => {
     });
     if (editCorredera.ok) {
       const editCorrederaJson = await editCorredera.json();
-      dispatch({
-        type: "UPDATE_CORREDERA",
-        payload: editCorrederaJson
-      })
+      dispatchUploadCorredera(editCorrederaJson);
       toggle()
       modalSelectionHandler("");
+      setInputDbHasChanged("correderaUpdated");
+      setTimeout(() => {
+        setInputDbHasChanged("");
+      }, 8000);
+      formIsOpen(false);
     }
   }
 
@@ -116,15 +115,12 @@ export const useCorredera = () => {
               icon: "success"
             });
 
-            dispatch({
-              type: "DELETE_CORREDERA",
-              payload: id
-            })
+            dispatchDeleteCorredera(id);
 
-            setCorrederaWasDeleted(true);
+            setInputDbHasChanged("correderaDeleted");
             setTimeout(() => {
-              setCorrederaWasDeleted(false);
-            }, 8000)
+              setInputDbHasChanged("");
+            }, 8000);
 
           }
         }

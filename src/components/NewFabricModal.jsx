@@ -26,7 +26,7 @@ const fabricValidationForm = (fabricForm) => {
   }
 
 
-  if (!fabricForm.proveedor.id === 0 || fabricForm.proveedor.id === "Proveedor") {
+  if (fabricForm.proveedor.id === 0 || fabricForm.proveedor.id === "Proveedor") {
     errors.proveedor = "El proveedor es un campo obligatorio"
   }
 

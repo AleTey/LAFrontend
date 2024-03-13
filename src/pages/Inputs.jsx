@@ -1,33 +1,52 @@
-import { useEffect, useState } from "react"
+import { useContext } from "react"
 import { useCorredera } from "../hooks/inputs/useCorredera"
 import { Seeker } from "../components/Seeker"
 import { CorrederaCard } from "../components/CorrederaCard"
 import { ElasticoCard } from "../components/ElasticoCard";
 import { NewInputModal } from "../components/NewInputModal";
 import { useInputModal } from "../hooks/inputs/useInputModal";
+import { useElastico } from "../hooks/inputs/useElastico";
+import { ElasticosContext } from "../context/ElasticosContext";
+import { ArgollaCard } from "../components/ArgollaCard";
+import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
+import { useArgolla } from "../hooks/inputs/useArgolla";
+import { ArgollaContext } from "../context/ArgollaContext";
+import { GanchosContext } from "../context/GanchosContext";
+import { GanchoCard } from "../components/GanchoCard";
+import { useGancho } from "../hooks/inputs/useGancho";
+import { useEtiqueta } from "../hooks/inputs/useEtiqueta";
+import { AccordionItem } from "../components/bootstrapComponents/AccordionItem";
+import { EtiquetaCard } from "../components/EtiquetaCard";
+import { useAplique } from "../hooks/inputs/useAplique";
+import { ApliqueCard } from "../components/ApliqueCard";
 
 export const Inputs = () => {
 
-  const [correderasDb, setCorrederasDb] = useState([]);
-
-  const [elasticosDb, setElasticosDb] = useState([]);
-
   const { correderas,
-    correderaFormIsActive,
-    setCorrederaFormIsActive,
     findAllCorrederas,
-    addNewCorredera,
     updateCorredera,
     onDeleteCorredera } = useCorredera();
 
   const { inputModalIsOpen,
     toggle,
     selectedModal,
-    modalSelectionHandler,
-    correderaWasAdded,
-    correderaWasDeleted } = useInputModal();
+    inputDbHasChanged } = useInputModal();
 
+  const { findAllElasticos } = useElastico();
 
+  const { elasticos } = useContext(ElasticosContext);
+
+  const { argollas } = useContext(ArgollaContext);
+
+  const { findAllArgollas } = useArgolla();
+
+  // const { ganchos } = useContext(GanchosContext)
+
+  const { ganchos, findAllGanchos } = useGancho();
+
+  const { etiquetas, findAllEtiquetas } = useEtiqueta();
+
+  const { apliques, findAllApliques } = useAplique();
 
 
   const fillCorrederasDb = () => {
@@ -37,41 +56,49 @@ export const Inputs = () => {
   }
 
   const fillElasticosDb = () => {
-    const findAllElasticos = async () => {
-      const getElasticos = await fetch("http://localhost:8080/elasticos")
-      if (getElasticos.ok) {
-        const elasticosJson = await getElasticos.json();
-        setElasticosDb(elasticosJson);
-      }
-    }
-    if (elasticosDb.length === 0) {
+    if (elasticos.length === 0) {
       findAllElasticos();
+    }
+  }
+
+  const fillArgollasDb = () => {
+    if (argollas.length === 0) {
+      findAllArgollas()
+    }
+  }
+
+  const fillGanchosDb = () => {
+    if (argollas.length === 0) {
+      findAllGanchos()
+    }
+  }
+
+  const fillEtiquetasDb = () => {
+    if (etiquetas.length === 0) {
+      findAllEtiquetas()
+    }
+  }
+  const fillApliquesDb = () => {
+    if (apliques.length === 0) {
+      findAllApliques()
     }
   }
 
 
   return (
     <>
-      {correderaWasAdded &&
-        <div className="alert alert-success fixed-top my-5" role="alert">
-          Corredera agregada con exito!
-        </div>
-      }
 
       {
-        correderaWasDeleted &&
-        <div className="alert alert-success fixed-top my-5" role="alert">
-          Corredera eliminada con exito!
-        </div>
+        inputDbHasChanged &&
+        <FetchTopAlert
+          text={inputDbHasChanged}
+        />
       }
 
-
-
-      {inputModalIsOpen && selectedModal === "" &&
-        <NewInputModal
-          addNewCorredera={addNewCorredera}
-          updateCorredera={updateCorredera}
-        />
+      {inputModalIsOpen && (selectedModal === "corredera" || selectedModal === "elastico" ||
+        selectedModal === "argolla" || selectedModal === "" || selectedModal === "gancho" ||
+        selectedModal === "etiqueta" || selectedModal === "aplique") &&
+        <NewInputModal />
       }
 
       <div className="container">
@@ -132,7 +159,7 @@ export const Inputs = () => {
             <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse">
               <div className="accordion-body row">
                 {
-                  elasticosDb && elasticosDb.map(el => (
+                  elasticos && elasticos.map(el => (
                     <ElasticoCard
                       key={el.id}
                       elastico={el}
@@ -152,76 +179,96 @@ export const Inputs = () => {
                 data-bs-target="#panelsStayOpen-collapseThree"
                 aria-expanded="false"
                 aria-controls="panelsStayOpen-collapseThree"
+                onClick={fillArgollasDb}
               >
-                Preparación de corte
+                Argollas
               </button>
             </h2>
             <div id="panelsStayOpen-collapseThree" className="accordion-collapse collapse">
-              <div className="accordion-body">
-                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+              <div className="accordion-body row">
+
+                {
+                  argollas &&
+                  argollas.map(arr => (
+                    <ArgollaCard
+                      key={arr.id}
+                      argolla={arr}
+                    />
+                  ))
+                }
               </div>
             </div>
           </div>
 
           <div className="accordion-item">
             <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTalleres" aria-expanded="false" aria-controls="panelsStayOpen-collapseTalleres">
-                Talleres
+              <button
+                className="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseTalleres"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseTalleres"
+                onClick={fillGanchosDb}
+              >
+                Ganchos
               </button>
             </h2>
             <div id="panelsStayOpen-collapseTalleres" className="accordion-collapse collapse">
-              <div className="accordion-body">
-                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
+              <div className="accordion-body row">
+
+                {
+
+                  ganchos &&
+                  ganchos.map(gancho => (
+                    <GanchoCard
+                      key={gancho.id}
+                      gancho={gancho}
+                    />
+                  ))
+                }
+
               </div>
             </div>
           </div>
 
-          <div className="accordion-item">
-            <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseControl" aria-expanded="false" aria-controls="panelsStayOpen-collapseControl">
-                Control
-              </button>
-            </h2>
-            <div id="panelsStayOpen-collapseControl" className="accordion-collapse collapse">
-              <div className="accordion-body">
-                <strong>This is the third item's accordion body.</strong> It is hidden by default, until the collapse plugin adds the appropriate classes that we use to style each element. These classes control the overall appearance, as well as the showing and hiding via CSS transitions. You can modify any of this with custom CSS or overriding our default variables. It's also worth noting that just about any HTML can go within the <code>.accordion-body</code>, though the transition does limit overflow.
-              </div>
+          <AccordionItem
+            titulo="Etiquetas"
+            id="etiquetas"
+            onClick={fillEtiquetasDb}
+          >
+            <div className="row">
+              {
+                etiquetas &&
+                etiquetas.map(etiqueta => (
+                  <EtiquetaCard
+                    etiqueta={etiqueta}
+                    key={etiqueta.id}
+                  />
+                ))
+              }
             </div>
-          </div>
-        </div>
+          </AccordionItem>
 
-        {/* {
-        correderasDb.map(corredera => (
-          <CorrederaCard
-            key={corredera.id}
-            corredera={corredera}
-          />
-        ))
-      } */}
-
-
-        {/* <div class="card text-center">
-        <div class="card-header">
-          <ul class="nav nav-pills card-header-pills">
-            <li class="nav-item">
-              <a class="nav-link active" href="#">Active</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-            </li>
-          </ul>
-        </div>
-        <div class="card-body">
-          <h5 class="card-title">Special title treatment</h5>
-          <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-          <a href="#" class="btn btn-primary">Go somewhere</a>
-        </div>
-      </div> */}
-
-      </div>
+          <AccordionItem
+            titulo="Apliques"
+            id="apliques"
+            onClick={fillApliquesDb}
+          >
+            <div className="row">
+              {
+                apliques &&
+                apliques.map(aplique => (
+                  <ApliqueCard
+                    key={aplique.id}
+                    aplique={aplique}
+                  />
+                ))
+              }
+            </div>
+          </AccordionItem>
+        </div >
+      </div >
 
 
     </>

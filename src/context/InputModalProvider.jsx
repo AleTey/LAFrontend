@@ -5,9 +5,7 @@ export const InputModalProvider = ({ children }) => {
 
   const [inputModalIsOpen, setInputModalIsOpen] = useState();
   const [selectedModal, setSelectedModal] = useState("");
-  const [correderaWasAdded, setCorrederaWasAdded] = useState("");
-  const [correderaWasDeleted, setCorrederaWasDeleted] = useState(false);
-  const [correderaWasEdited, setCorrederaWasEdited] = useState(false);
+  const [inputDbHasChanged, setInputDbHasChanged] = useState("")
 
   const toggle = () => {
     setInputModalIsOpen(!inputModalIsOpen);
@@ -24,11 +22,8 @@ export const InputModalProvider = ({ children }) => {
         toggle,
         selectedModal,
         modalSelectionHandler,
-        correderaWasAdded,
-        setCorrederaWasAdded,
-        correderaWasDeleted,
-        setCorrederaWasDeleted,
-        correderaWasEdited, setCorrederaWasEdited
+        inputDbHasChanged,
+        setInputDbHasChanged
       }
     }>
       {children}

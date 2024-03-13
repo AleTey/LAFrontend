@@ -39,7 +39,9 @@ const validationCorrederaForm = (corredera) => {
 
 }
 
-export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaInitialForm, addNewCorredera, updateCorredera }) => {
+export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaInitialForm, formIsOpen }) => {
+
+  const { addNewCorredera, updateCorredera } = useCorredera();
 
   const [correderaForm, setCorrederaForm] = useState(correderaFormData)
 
@@ -47,7 +49,6 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
 
   const [formErrors, setFormErrors] = useState({});
 
-  // const { addNewCorredera, updateCorredera } = useCorredera();
 
   useEffect(() => {
     if (correderaForm.id) {
@@ -96,8 +97,6 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
       const nameCorredera = "Corredera " + correderaForm.medida.trim() + " " + correderaForm.material.trim();
       if (correderaForm.id) {
         modifiedFields.nombre = nameCorredera
-        console.log("modifiedFields: " + modifiedFields);
-        console.log("nombre: " + modifiedFields.nombre);
       } else {
         correderaForm.nombre = nameCorredera;
       }
@@ -105,7 +104,7 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
       if (!correderaForm.id) {
         addNewCorredera(correderaForm);
       } else {
-        updateCorredera(modifiedFields, correderaForm.id);
+        updateCorredera(modifiedFields, correderaForm.id, formIsOpen);
       }
 
     } else {

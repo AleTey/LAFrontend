@@ -4,23 +4,19 @@ import { useSuppliers } from "../hooks/useSuppliers";
 import { useCorredera } from "../hooks/inputs/useCorredera";
 import { useInputModal } from "../hooks/inputs/useInputModal";
 import { ElasticoForm } from "./ElasticoForm";
+import { ArgollaForm } from "./ArgollaForm";
+import { GanchoForm } from "./GanchoForm";
+import { EtiquetaForm } from "./EtiquetaForm";
+import { ApliqueForm } from "./ApliqueForm";
 
 export const NewInputModal = ({
   selection = "",
   inputToEdit,
   addNewCorredera,
   updateCorredera,
-  editCorrederaFormHandled
-}) => {
+  formIsOpen }) => {
 
-
-  const [elasticoFormIsActive, setElasticoFormIsActive] = useState(false);
-
-  const [selectedForm, setSelectedForm] = useState(selection);
-
-  const { correderaFormIsActive, setCorrederaFormIsActive } = useCorredera();
-
-  const { inputModalIsOpen, toggle, selectedModal, modalSelectionHandler } = useInputModal();
+  const { toggle, selectedModal, modalSelectionHandler } = useInputModal();
 
 
   const {
@@ -28,26 +24,16 @@ export const NewInputModal = ({
     getSuppliers
   } = useSuppliers();
 
-  const handleCorrederaButton = () => {
-    if (!correderaFormIsActive) {
-      setElasticoFormIsActive(false);
-      setCorrederaFormIsActive(true);
-    }
 
-    setSelectedForm("corredera")
-  }
-
-  const handleElasticoButton = () => {
-    if (!elasticoFormIsActive) {
-      setCorrederaFormIsActive(false);
-      setElasticoFormIsActive(true);
-    }
-    setSelectedForm("elastico")
+  const buttonSelectionHandler = (e) => {
+    modalSelectionHandler(e.target.value);
   }
 
 
   useEffect(() => {
-    getSuppliers();
+    if (suppliers.length === 0) {
+      getSuppliers();
+    }
   }, [])
 
 
@@ -59,12 +45,19 @@ export const NewInputModal = ({
           <div className="modal-content">
             <div className="modal-header">
 
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">{`${inputToEdit ? `Editar ${selection}` : `Nuevo insumo (${selectedForm})`}`}</h1>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => {
-                toggle();
-                modalSelectionHandler("");
-                editCorrederaFormHandled && editCorrederaFormHandled();
-              }}></button>
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">{`${inputToEdit ? `Editar ${selection}` : `Nuevo insumo (${selectedModal})`}`}</h1>
+              <button
+                type="button"
+                className="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+                onClick={() => {
+                  toggle();
+                  modalSelectionHandler("");
+                  if (formIsOpen) {
+                    formIsOpen(false);
+                  }
+                }}></button>
             </div>
             <div className="modal-body">
 
@@ -74,32 +67,59 @@ export const NewInputModal = ({
                 <div className="container mb-3">
 
                   <button
-                    className={`btn ${!correderaFormIsActive ? "btn-outline-primary" : "btn-primary"} me-1`}
-                    onClick={handleCorrederaButton}
+                    value="corredera"
+                    className={`btn ${selectedModal === "corredera" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
                   >
                     Corredera
                   </button>
 
                   <button
-                    className={`btn ${!elasticoFormIsActive ? "btn-outline-primary" : "btn-primary"}`}
-                    onClick={handleElasticoButton}
+                    value="elastico"
+                    className={`btn ${selectedModal === "elastico" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
                   >
                     Elastico
                   </button>
-
-
+                  <button
+                    value='argolla'
+                    className={`btn ${selectedModal === "argolla" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
+                  >
+                    Argollas
+                  </button>
+                  <button
+                    value='gancho'
+                    className={`btn ${selectedModal === "gancho" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
+                  >
+                    Gancho
+                  </button>
+                  <button
+                    value='etiqueta'
+                    className={`btn ${selectedModal === "etiqueta" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
+                  >
+                    Etiqueta
+                  </button>
+                  <button
+                    value='aplique'
+                    className={`btn ${selectedModal === "aplique" ? "btn-primary" : "btn-outline-primary"}`}
+                    onClick={buttonSelectionHandler}
+                  >
+                    Aplique
+                  </button>
                 </div>
               }
 
               {
-                correderaFormIsActive &&
+                selectedModal === "corredera" &&
                 <CorrederaForm
                   suppliers={suppliers}
                   addNewCorredera={addNewCorredera}
                   updateCorredera={updateCorredera}
                 />
               }
-
 
               {
                 selectedModal === "editCorredera" &&
@@ -109,24 +129,86 @@ export const NewInputModal = ({
                   correderaFormData={inputToEdit}
                   addNewCorredera={addNewCorredera}
                   updateCorredera={updateCorredera}
+                  formIsOpen={formIsOpen}
                 />
               }
 
               {
-                selectedForm=== "elastico" &&
+                selectedModal === "elastico" &&
                 <ElasticoForm
-                suppliers={suppliers}
+                  suppliers={suppliers}
                 />
               }
 
+              {
+                selectedModal === "editElastico" &&
+                <ElasticoForm
+                  suppliers={suppliers}
+                  elasticoFormData={inputToEdit}
+                  formIsOpen={formIsOpen}
+                />
+              }
 
+              {
+                selectedModal === "argolla" &&
+                <ArgollaForm
+                  suppliers={suppliers}
+                />
+              }
 
+              {
+                selectedModal === "editArgolla" &&
+                <ArgollaForm
+                  suppliers={suppliers}
+                  argollaFormData={inputToEdit}
+                  formIsOpen={formIsOpen}
+                />
+              }
+
+              {
+                selectedModal === "gancho" &&
+                <GanchoForm
+                  suppliers={suppliers}
+                />
+              }
+              {
+                selectedModal === "editGancho" &&
+                <GanchoForm
+                  suppliers={suppliers}
+                  ganchoFormData={inputToEdit}
+                  formIsOpen={formIsOpen}
+                />
+              }
+              {
+                selectedModal === "etiqueta" &&
+                <EtiquetaForm
+                  suppliers={suppliers}
+                />
+              }
+              {
+                selectedModal === "editEtiqueta" &&
+                <EtiquetaForm
+                  suppliers={suppliers}
+                  etiquetaFormData={inputToEdit}
+                  formIsOpen={formIsOpen}
+                />
+              }
+
+              {
+                selectedModal === "aplique" &&
+                <ApliqueForm
+                  suppliers={suppliers}
+                />
+              }
+              {
+                selectedModal === "editAplique" &&
+                <ApliqueForm
+                  suppliers={suppliers}
+                  apliqueFormData={inputToEdit}
+                  formIsOpen={formIsOpen}
+                />
+              }
             </div>
-
-            {/* <div className="modal-footer"> */}
-            {/* <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> */}
-            {/* <button type="button" className="btn btn-primary" onClick={onSubmit}>Guardar</button> */}
-            {/* </div> */}
           </div>
         </div>
       </div>

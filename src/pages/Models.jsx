@@ -9,10 +9,9 @@ export const Models = () => {
   useEffect(() => {
 
     const modelsPetition = async () => {
-      const res = await fetch("http://localhost:2000/models")
+      const res = await fetch("http://localhost:8080/models")
       const json = await res.json();
       setModels(json);
-
     }
 
     modelsPetition();
@@ -28,14 +27,13 @@ export const Models = () => {
 
         <section className="container row gap-3 mt-3">
 
-          {models.map(({ modelo, tipo, id, temporada, tags, img }) => (
+          {models.map(({ nombre, tipoPrenda, id, temporada, tags }) => (
             <ModelsCard
               key={id}
-              modelo={modelo}
-              tipo={tipo}
+              modelo={nombre}
+              tipoPrenda={tipoPrenda}
               temporada={temporada}
-              tags={tags}
-              img={img} />
+              tags={tags}/>
           ))}
 
         </section>

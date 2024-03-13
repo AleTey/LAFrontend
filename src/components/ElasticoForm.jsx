@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useElastico } from "../hooks/inputs/useElastico";
 
 const newElasticoInitialForm = {
   nombre: "",
@@ -16,33 +17,101 @@ const newElasticoInitialForm = {
   stockEnRollos: 0
 }
 
-export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialForm }) => {
+const validationElasticoForm = (elastico) => {
+  let errors = {};
+
+  if (elastico.proveedor.id === 0) {
+    errors.proveedor = "Debe seleccionar el proveedor del insumo"
+  }
+
+  if (!elastico.ancho.trim()) {
+    errors.ancho = "El ancho del elástico es un campo obligatorio"
+  } else if (elastico.ancho.trim().length < 2) {
+    errors.ancho = "Se debe indicar el numero y la unidad de medida"
+  }
+
+  if (!elastico.color.trim()) {
+    errors.color = "Ingresar el color del elástico"
+  }
+
+  return errors;
+}
+
+export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialForm, formIsOpen }) => {
 
   const [elasticoForm, setElasticoForm] = useState(elasticoFormData);
 
   const [formErrors, setFormErrors] = useState({});
 
+  const [modifiedFields, setModifiedFields] = useState({});
+
+  const { addElastico, updateElastico } = useElastico();
+
   const onChangeElasticoForm = (e) => {
 
     const { name, value } = e.target;
 
-    if (name === "proveedor") {
-      setElasticoForm({
-        ...elasticoForm,
-        [name]: {
-          id: value
-        }
-      })
+    if (!elasticoForm.proveedor.id) {
+      if (name === "proveedor") {
+        setElasticoForm({
+          ...elasticoForm,
+          [name]: {
+            id: value
+          }
+        })
+      } else {
+        setElasticoForm({
+          ...elasticoForm,
+          [name]: value
+        })
+      }
     } else {
-      setElasticoForm({
-        ...elasticoForm,
-        [name]: value
-      })
+      if (name === "proveedor") {
+        setElasticoForm({
+          ...elasticoForm,
+          [name]: {
+            id: value
+          }
+        })
+        setModifiedFields({
+          ...modifiedFields,
+          [name]: {
+            id: value
+          }
+        })
+      } else {
+        setModifiedFields({
+          ...modifiedFields,
+          [name]: value
+        })
+        setElasticoForm({
+          ...elasticoForm,
+          [name]: value
+        })
+      }
     }
+
   }
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
+    setFormErrors({});
+    if (Object.keys(validationElasticoForm(elasticoForm)).length === 0) {
+      const nameElastico = "Elastico " + elasticoForm.ancho.trim() + " " + elasticoForm.color.trim();
+      elasticoForm.nombre = nameElastico;
 
+      if (elasticoForm.id) {
+        modifiedFields.nombre = nameElastico;
+      }
+
+      if (!elasticoForm.id) {
+        addElastico(elasticoForm);
+      } else {
+        updateElastico(modifiedFields, elasticoForm.id, formIsOpen);
+      }
+    } else {
+      setFormErrors(validationElasticoForm(elasticoForm));
+    }
   }
 
   return (
@@ -113,7 +182,9 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
               placeholder="ancho"
               onChange={onChangeElasticoForm}
             />
-            <label htmlFor="elasticoAncho">Ancho</label>
+            <label htmlFor="elasticoAncho">Ancho Ej: 7mm</label>
+            {formErrors.ancho && <p className="text-danger">{formErrors.ancho}</p>}
+
           </div>
 
           <div className="form-floating mb-3">
@@ -127,7 +198,7 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
               onChange={onChangeElasticoForm}
             />
             <label htmlFor="elasticoMaterial">Material</label>
-            {formErrors.material && <p className="text-danger">{formErrors.material}</p>}
+            {/* {formErrors.material && <p className="text-danger">{formErrors.material}</p>} */}
           </div>
 
           <div className="form-floating mb-3">
@@ -203,7 +274,7 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
             <label htmlFor="elasticoDetalle">Detalles adicionales</label>
           </div>
 
-          <button className="btn btn-primary" onClick={onSubmit}>Agregar elastico</button>
+          <button className="btn btn-primary" onClick={onSubmit}>{!elasticoForm.id ? "Agregar elastico" : "Confirmar cambios"}</button>
 
         </form>
       </div>
