@@ -23,8 +23,9 @@ import { useAplique } from "../hooks/inputs/useAplique"
 // }
 
 const modelFormInitialState = {
-  model: "",
-  tipo: "",
+  nombre: "",
+  tipoPrenda: "",
+  tallesDisponibles: [],
   // id: 0,
   // tags: "",
   detalleInsumos: [],
@@ -33,9 +34,9 @@ const modelFormInitialState = {
 }
 
 
-export const NewModelModal = () => {
+export const NewModelModal = ({ modelData = modelFormInitialState }) => {
 
-  const [modelForm, setModelForm] = useState(modelFormInitialState);
+  const [modelForm, setModelForm] = useState(modelData);
 
   const [tiposPrenda, setTiposPrendas] = useState([]);
 
@@ -184,7 +185,7 @@ export const NewModelModal = () => {
             if (Object.keys(inp).includes('cantidad')) {
               return inp
             } else {
-              return { ...inp, [value]: 0 }
+              return { ...inp, cantidadPorTalle: { ...inp.cantidadPorTalle, [value]: 0 } }
             }
           })
         ])
@@ -196,7 +197,7 @@ export const NewModelModal = () => {
               return inp
             }
             const inpModified = { ...inp };
-            delete inpModified[value]
+            delete inpModified.cantidadPorTalle[value]
             return inpModified
           })
         ])
@@ -254,7 +255,7 @@ export const NewModelModal = () => {
       setCorrederasSelected(
         correderasSelected.map(inp => {
           if (inp.input.id == id) {
-            inp[name] = value
+            inp.cantidadPorTalle[name] = value
             return inp;
           }
           return inp;
@@ -279,10 +280,15 @@ export const NewModelModal = () => {
       const ela = {
         input: {
           id: value
-        }
+        },
+        cantidadPorTalle: {}
       }
       tallesDisponibles.forEach(t => {
-        ela[t] = 0;
+        // ela.tallesDisponibles[t] = 0;
+        ela.cantidadPorTalle = {
+          ...ela.cantidadPorTalle,
+          [t]: 0
+        }
       })
       setCorrederasSelected([...correderasSelected, ela])
 
@@ -296,8 +302,8 @@ export const NewModelModal = () => {
   const buscarValueParaCant = (id, talle) => {
     correderasSelected.map(el => {
       if (el.input.id == id) {
-        console.log(el[talle])
-        return el[talle];
+        console.log(el.cantidadPorTalle[talle])
+        return el.cantidadPorTalle[talle];
       }
     })
   }
@@ -459,12 +465,27 @@ export const NewModelModal = () => {
     }
   }
 
+  const saveModel = async (modelForm) => {
+    const saveModel = await fetch("http://localhost:8080/models", {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(modelForm)
+    })
+    if (saveModel.ok) {
+      const savedModel = saveModel.json();
+    }
+  }
+
   const onSubmit = (e) => {
     e.preventDefault();
     console.log("Enviando formulario")
+    modelForm.tallesDisponibles = tallesDisponibles;
     modelForm.detalleInsumos = correderasSelected;
     modelForm.detalleTiraModelo = detallesTiraModelo;
     console.log(modelForm)
+    saveModel(modelForm);
   }
 
 
@@ -486,12 +507,11 @@ export const NewModelModal = () => {
 
               <div className="container">
 
-
                 <form action="" >
 
                   <Input
-                    name="model"
-                    value={modelForm.model}
+                    name="nombre"
+                    value={modelForm.nombre}
                     type="text"
                     placeHolder="Nombre del Modelo"
                     onChangeInput={onChange}
@@ -499,7 +519,7 @@ export const NewModelModal = () => {
 
                   <SelectStrings
                     defaultValue=""
-                    name="tipo"
+                    name="tipoPrenda"
                     onChangeMethod={onChange}
                     initialValueText="TipoPrenda"
                     array={tiposPrenda}
@@ -975,6 +995,14 @@ export const NewModelModal = () => {
                       </div>
                     ))
                   }
+
+                  <Input 
+                    name='detalle'
+                    value={modelForm.detalle}
+                    type='textarea'
+                    placeHolder="Detalle"
+                    onChangeInput={onChange}
+                  />
 
                 </form>
               </div>
