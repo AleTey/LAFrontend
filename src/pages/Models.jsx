@@ -6,6 +6,8 @@ export const Models = () => {
 
   const [models, setModels] = useState([]);
 
+  const [modelFormIsOpen, setModelFormIsOpen] = useState(false);
+
   useEffect(() => {
 
     const modelsPetition = async () => {
@@ -23,17 +25,26 @@ export const Models = () => {
       <div className="container">
         <h2 className="my-3"> Models  </h2>
         <hr />
-        <NewModelModal />
+        <button
+          type="button"
+          className="btn btn-outline-primary"
+          onClick={() => setModelFormIsOpen(true)}
+        >
+          Nuevo modelo
+        </button>
+        {
+          modelFormIsOpen &&
+          <NewModelModal
+            setModelFormIsOpen={setModelFormIsOpen}
+          />
+        }
 
         <section className="container row gap-3 mt-3">
 
-          {models.map(({ nombre, tipoPrenda, id, temporada, tags }) => (
+          {models.map(modelo => (
             <ModelsCard
-              key={id}
-              modelo={nombre}
-              tipoPrenda={tipoPrenda}
-              temporada={temporada}
-              tags={tags}/>
+            key={modelo.id}
+              modelo={modelo} />
           ))}
 
         </section>

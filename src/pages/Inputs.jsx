@@ -11,7 +11,6 @@ import { ArgollaCard } from "../components/ArgollaCard";
 import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 import { useArgolla } from "../hooks/inputs/useArgolla";
 import { ArgollaContext } from "../context/ArgollaContext";
-import { GanchosContext } from "../context/GanchosContext";
 import { GanchoCard } from "../components/GanchoCard";
 import { useGancho } from "../hooks/inputs/useGancho";
 import { useEtiqueta } from "../hooks/inputs/useEtiqueta";
@@ -40,8 +39,6 @@ export const Inputs = () => {
 
   const { findAllArgollas } = useArgolla();
 
-  // const { ganchos } = useContext(GanchosContext)
-
   const { ganchos, findAllGanchos } = useGancho();
 
   const { etiquetas, findAllEtiquetas } = useEtiqueta();
@@ -68,7 +65,7 @@ export const Inputs = () => {
   }
 
   const fillGanchosDb = () => {
-    if (argollas.length === 0) {
+    if (ganchos.length === 0) {
       findAllGanchos()
     }
   }
@@ -118,15 +115,13 @@ export const Inputs = () => {
                 data-bs-target="#panelsStayOpen-collapseOne"
                 aria-expanded="false"
                 aria-controls="panelsStayOpen-collapseOne"
-                onClick={fillCorrederasDb}
-              >
+                onClick={fillCorrederasDb}>
                 Correderas
               </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse" >
               <div className="accordion-body">
                 <div className="g-flex row">
-
                   {
                     correderas && correderas.map(corredera => (
                       <CorrederaCard
@@ -151,8 +146,7 @@ export const Inputs = () => {
                 data-bs-target="#panelsStayOpen-collapseTwo"
                 aria-expanded="false"
                 aria-controls="panelsStayOpen-collapseTwo"
-                onClick={fillElasticosDb}
-              >
+                onClick={fillElasticosDb}>
                 Elásticos
               </button>
             </h2>
@@ -186,7 +180,6 @@ export const Inputs = () => {
             </h2>
             <div id="panelsStayOpen-collapseThree" className="accordion-collapse collapse">
               <div className="accordion-body row">
-
                 {
                   argollas &&
                   argollas.map(arr => (
@@ -209,16 +202,13 @@ export const Inputs = () => {
                 data-bs-target="#panelsStayOpen-collapseTalleres"
                 aria-expanded="false"
                 aria-controls="panelsStayOpen-collapseTalleres"
-                onClick={fillGanchosDb}
-              >
+                onClick={fillGanchosDb}>
                 Ganchos
               </button>
             </h2>
             <div id="panelsStayOpen-collapseTalleres" className="accordion-collapse collapse">
               <div className="accordion-body row">
-
                 {
-
                   ganchos &&
                   ganchos.map(gancho => (
                     <GanchoCard
@@ -227,7 +217,6 @@ export const Inputs = () => {
                     />
                   ))
                 }
-
               </div>
             </div>
           </div>
@@ -269,8 +258,6 @@ export const Inputs = () => {
           </AccordionItem>
         </div >
       </div >
-
-
     </>
   )
 }

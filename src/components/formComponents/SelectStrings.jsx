@@ -9,13 +9,21 @@ export const SelectStrings = ({ defaultValue, name, onChangeMethod, initialValue
         aria-label="Large select example"
         onChange={onChangeMethod}
       >
-        <option value="">{initialValueText}</option>
+        <option value={defaultValue}>{initialValueText}</option>
         {
+          array.map(item => {
+            if (item !== initialValueText) {
+
+              return <option key={item} value={item}>{item}</option>
+            }
+          })
+        }
+        {/* {
           array.map(item => (
 
             <option key={item} value={item}>{item}</option>
           ))
-        }
+        } */}
       </select>
     </>
   )
