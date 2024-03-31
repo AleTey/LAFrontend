@@ -8,6 +8,8 @@ import { useElastico } from "../hooks/inputs/useElastico"
 import { useGancho } from "../hooks/inputs/useGancho"
 import { useEtiqueta } from "../hooks/inputs/useEtiqueta"
 import { useAplique } from "../hooks/inputs/useAplique"
+import Swal from 'sweetalert2'
+import { useModel } from "../hooks/useModel"
 
 
 const modelFormInitialState = {
@@ -17,6 +19,49 @@ const modelFormInitialState = {
   detalleInsumos: [],
   detalleTiraModelo: [],
   detalle: ""
+}
+
+const validationModelForm = (modelForm) => {
+  let errors = {};
+
+  if (!modelForm.nombre.trim()) {
+    errors.nombre = "Ingresar un nombre para el modelo"
+  }
+
+  if (!modelForm.tipoPrenda || modelForm.tipoPrenda === "TipoPrenda") {
+    errors.tipoPrenda = "Se debe elegir una opción"
+  }
+
+  return errors;
+}
+
+const inputValidation = (inputsSelected, detallesTiraModelo) => {
+  let emptyInputs = false;
+
+  if (inputsSelected.length > 0) {
+    console.log(inputsSelected)
+    inputsSelected.map(el => {
+      if ((!el.cantidad || el.cantidad === 0) && (!el.cantidadPorTalle || el.cantidadPorTalle === 0)) {
+        emptyInputs = true
+        console.log("EN inputSelected")
+      }
+    })
+  }
+
+  // console.log(detallesTiraModelo)
+  if (detallesTiraModelo && detallesTiraModelo.length > 0) {
+    console.log(detallesTiraModelo)
+    detallesTiraModelo.map(el => {
+      if (el.tirasPorTalle && Object.keys(el.tirasPorTalle).length > 0) {
+        if (Object.values(el.tirasPorTalle).includes(0)) {
+          console.log("en detallesTiraModelo");
+          emptyInputs = true
+        }
+      }
+    })
+  }
+  console.log(emptyInputs)
+  return emptyInputs;
 }
 
 
@@ -40,15 +85,20 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
   const { apliques, findAllApliques } = useAplique();
 
-  const [correderasSelected, setCorrederasSelected] = useState([]);
+  const [inputsSelected, setInputsSelected] = useState([]);
 
   const [checkedBoxes, setCheckedBoxes] = useState({});
 
   const [tallesDisponibles, setTallesDisponibles] = useState([]);
 
-  const [tirasChecked, setTirasChecked] = useState({})
+  const [tirasChecked, setTirasChecked] = useState({});
 
   const [detallesTiraModelo, setDetallesTiraModelo] = useState([]);
+
+  const [formErrors, setFormErrors] = useState({});
+
+  const { saveModel, updateModel } = useModel();
+
 
 
   const fetchTiposPrenda = async () => {
@@ -90,7 +140,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
       })
 
       setTallesDisponibles(modelForm.tallesDisponibles)
-      setCorrederasSelected(modelForm.detalleInsumos)
+      setInputsSelected(modelForm.detalleInsumos)
       setDetallesTiraModelo(modelForm.detalleTiraModelo)
     }
 
@@ -158,17 +208,17 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
       if (tallesDisponibles.length === 1) {
         setCheckedBoxes({})
         setTirasChecked({})
-        setCorrederasSelected([])
+        setInputsSelected([])
         setDetallesTiraModelo([])
         return
       }
 
     }
 
-    if (correderasSelected.length > 0) {
+    if (inputsSelected.length > 0) {
       if (checked) {
-        setCorrederasSelected([
-          ...correderasSelected.map(inp => {
+        setInputsSelected([
+          ...inputsSelected.map(inp => {
             // if (Object.keys(inp).includes('cantidad')) {
             if (inp.cantidad) {
               return inp
@@ -179,8 +229,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
         ])
       } else {
 
-        setCorrederasSelected([
-          ...correderasSelected.map(inp => {
+        setInputsSelected([
+          ...inputsSelected.map(inp => {
             // if (Object.keys(inp).includes('cantidad')) {
             if (inp.cantidad) {
               return inp
@@ -209,12 +259,12 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
     })
   }
 
-  const onChangeCorrederasSelected = (e) => {
+  const onChangeInputsSelected = (e) => {
     const { checked, value } = e.target;
 
     if (checked) {
-      setCorrederasSelected([
-        ...correderasSelected,
+      setInputsSelected([
+        ...inputsSelected,
         {
           input: {
             id: value,
@@ -223,8 +273,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
         }
       ])
     } else {
-      setCorrederasSelected([
-        ...correderasSelected.filter(corr => corr.input.id != value)
+      setInputsSelected([
+        ...inputsSelected.filter(corr => corr.input.id != value)
       ])
     }
   }
@@ -233,8 +283,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
     const { name, value } = e.target;
 
     if (el) {
-      setCorrederasSelected(
-        correderasSelected.map(inp => {
+      setInputsSelected(
+        inputsSelected.map(inp => {
           if (inp.input.id == id) {
             inp.cantidadPorTalle[name] = value
             return inp;
@@ -243,8 +293,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
         })
       )
     } else {
-      setCorrederasSelected(
-        correderasSelected.map(inp => {
+      setInputsSelected(
+        inputsSelected.map(inp => {
           if (inp.input.id == id) {
             return { ...inp, cantidad: value }
           }
@@ -271,18 +321,18 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
           [t]: 0
         }
       })
-      setCorrederasSelected([...correderasSelected, ela])
+      setInputsSelected([...inputsSelected, ela])
 
     } else {
-      setCorrederasSelected([
-        ...correderasSelected.filter(inp => inp.input.id != value)
+      setInputsSelected([
+        ...inputsSelected.filter(inp => inp.input.id != value)
       ])
     }
   }
 
   const buscarValueParaCant = (id, talle) => {
     // console.log('id: ' + id);
-    correderasSelected.map(el => {
+    inputsSelected.map(el => {
       // if (!modelForm.id) {
       // console.log("input id: " + el.input.id);
       if (el.input.id == id) {
@@ -336,14 +386,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
   }
 
-  // const buscarValueParaCantTiras = (idT, t) => {
-  //   detallesTiraModelo.map(el => {
-  //     if (el.tira.id == idT) {
-  //       console.log(el.tirasPorTalle[t])
-  //       return el.tirasPorTalle[t];
-  //     }
-  //   })
-  // }
+
 
   const onChangeCantTiras = (e, tiraId) => {
     const { name, value } = e.target;
@@ -367,34 +410,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
   }
 
 
-
-  // const onCantTirasChange = (e, id) => {
-  //   const { name, value } = e.target;
-  //   setDetallesTiraModelo([
-  //     detallesTiraModelo.map(detalle => {
-  //       if (detalle.tira.id == id) {
-  //         console.log(detalle.tira.id)
-  //         console.log(id)
-  //         detalle.tirasPorTalle[name] = value
-  //         console.log(detalle.tirasPorTalle)
-  //         return detalle;
-  //       }
-  //       return detalle;
-  //     })
-  //   ])
-
-  //   setCorrederasSelected(
-  //     correderasSelected.map(inp => {
-  //       if (inp.input.id == id) {
-  //         inp[name] = value
-  //         return inp;
-  //       }
-  //       return inp;
-  //     })
-  //   )
-
-  // }
-
   const cantTirasValueSearcher = (id, talle) => {
     try {
 
@@ -406,12 +421,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
               return value;
             }
           })
-          // if (Object.entries(detalle.tirasPorTalle).key === talle) {
-          //   console.log(talle)
-          //   console.log("OK")
-          // }
-
-          // return detalle.tirasPorTalle[talle]
         }
       })
     } catch (error) {
@@ -419,46 +428,59 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
     }
   }
 
-  const saveModel = async (modelForm) => {
-    const saveModel = await fetch("http://localhost:8080/models", {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(modelForm)
-    })
-    if (saveModel.ok) {
-      const savedModel = saveModel.json();
-    }
-  }
 
-  const updateModel = async(modelForm) => {
-    const updateModel = await fetch()
-  }
 
   const onSubmit = (e) => {
     e.preventDefault();
-    modelForm.tallesDisponibles = tallesDisponibles;
-    modelForm.detalleInsumos = correderasSelected;
-    modelForm.detalleTiraModelo = detallesTiraModelo;
-    console.log(modelForm)
-    if (!modelForm.id) {
-      saveModel(modelForm);      
+    if (Object.keys(validationModelForm(modelForm)).length === 0) {
+      if (inputValidation(inputsSelected, detallesTiraModelo)) {
+        // console.log(Object.keys(validationModelForm))
+      }
+      if (!inputValidation(inputsSelected, detallesTiraModelo)) {
+        modelForm.tallesDisponibles = tallesDisponibles;
+        modelForm.detalleInsumos = inputsSelected;
+        modelForm.detalleTiraModelo = detallesTiraModelo;
+        console.log(modelForm)
+        if (!modelForm.id) {
+          saveModel(modelForm, setModelFormIsOpen);
+        } else {
+          updateModel(modelForm, setModelFormIsOpen)
+        }
+      } else {
+        Swal.fire({
+          title: "Valor de cantidad en 0",
+          text: "Uno o mas de los valores de cantidad están en 0. Si se guarda en cero por error podría traer problemas en los cálculos de costos",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#3085d6",
+          cancelButtonColor: "#d33",
+          confirmButtonText: "Continuar de todas formas!"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            modelForm.tallesDisponibles = tallesDisponibles;
+            modelForm.detalleInsumos = inputsSelected;
+            modelForm.detalleTiraModelo = detallesTiraModelo;
+            console.log(modelForm)
+            if (!modelForm.id) {
+              saveModel(modelForm);
+            } else {
+              updateModel(modelForm)
+            }
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success"
+            });
+          }
+        });
+      }
+
+    } else {
+      setFormErrors(validationModelForm(modelForm));
     }
+
+
   }
-
-  // const findValues = (tipo, id) => {
-  //   if (tipo === 'insumo') {
-  //     console.log('id: ' + id);
-  //     modelForm.detalleInsumos.map(det => {
-  //       console.log('insumo: ' + det.input.id)
-  //       return id;
-  //     })
-  //     return 0;
-  //   }
-  //   return 0
-  // }
-
 
   return (
     <>
@@ -487,7 +509,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                     placeHolder="Nombre del Modelo"
                     onChangeInput={onChange}
                   />
-
+                  {formErrors.nombre && <p className="text-danger">{formErrors.nombre}</p>}
                   {
                     !modelForm.id ?
                       <SelectStrings
@@ -506,6 +528,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                         array={tiposPrenda}
                       />
                   }
+                  {formErrors.tipoPrenda && <p className="text-danger">{formErrors.tipoPrenda}</p>}
 
                   <h4>Talles disponibles</h4>
                   {
@@ -619,7 +642,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                     value={corr.id}
                                     id={`flexCheckDefault${corr.id}`}
                                     onChange={e => {
-                                      onChangeCorrederasSelected(e),
+                                      onChangeInputsSelected(e),
                                         checkedBoxesHandler(corr.id)
                                     }}
                                     checked={checkedBoxes && checkedBoxes[corr.id]}
@@ -636,21 +659,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                       className="form-control-sm"
                                       id={`floatingInput${corr.id}`}
                                       placeholder="Cantidad"
-                                      // value={findValues('insumo', corr.id)}
-                                      // value={correderasSelected.cantidad}
-                                      value={correderasSelected.find(el => el.input.id == corr.id)?.cantidad || correderasSelected.find(el => el.input.id == corr.id)?.cantidad}
-                                      // value={modelForm ? modelForm.detalleInsumos.map(el => {
-                                      //   if (el.id == corr.id) {
-                                      //     console.log(el.id)
-                                      //     return el.cantidad
-                                      //   }
-                                      // })
-                                      //   :
-                                      //   0
-                                      // }
-                                      // value={modelForm ? modelForm.detalleInsumos.find(el => el.id === corr.id)?.cantidad || 0 : 0}
+                                      value={inputsSelected.find(el => el.input.id == corr.id)?.cantidad || inputsSelected.find(el => el.input.id == corr.id)?.cantidad}
                                       onChange={e => onChangeCant(e, corr.id)}
-                                    // checked={correderasSelected && correderasSelected[corr.id] && correderasSelected.cantidad}
                                     />
                                     <label htmlFor={`floatingInput${corr.id}`}></label>
                                   </div>
@@ -677,7 +687,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                     value={arg.id}
                                     id={`flexCheckDefault${arg.id}`}
                                     onChange={e => {
-                                      onChangeCorrederasSelected(e),
+                                      onChangeInputsSelected(e),
                                         checkedBoxesHandler(arg.id)
                                     }}
                                     checked={checkedBoxes && checkedBoxes[arg.id]}
@@ -695,7 +705,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                       className="form-control"
                                       id={`floatingInput${arg.id}`}
                                       placeholder="Cantidad"
-                                      value={correderasSelected.find(el => el.input.id == arg.id)?.cantidad}
+                                      value={inputsSelected.find(el => el.input.id == arg.id)?.cantidad}
                                       // value={modelForm.detalleInsumos.find(el => el.input.id == corr.id)?.cantidad || 0}
                                       onChange={e => onChangeCant(e, arg.id)}
                                     />
@@ -746,7 +756,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                           <input
                                             className="form-control"
                                             name={t}
-                                            value={correderasSelected && correderasSelected.find(el => el.input.id === elastico.id)?.cantidadPorTalle[t]}
+                                            value={inputsSelected && inputsSelected.find(el => el.input.id === elastico.id)?.cantidadPorTalle[t]}
                                             type="number"
                                             onChange={(e) => { onChangeCant(e, elastico.id, true) }}
 
@@ -777,7 +787,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                     value={gancho.id}
                                     id={`gancho${gancho.id}`}
                                     onChange={(e) => {
-                                      onChangeCorrederasSelected(e)
+                                      onChangeInputsSelected(e)
                                       checkedBoxesHandler(gancho.id)
                                     }}
                                     checked={checkedBoxes && checkedBoxes[gancho.id]}
@@ -796,7 +806,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                       id={`floatingInput${gancho.id}`}
                                       placeholder="Cantidad"
                                       // value={correderasSelected.cantidad}
-                                      value={correderasSelected.find(el => el.input.id == gancho.id)?.cantidad}
+                                      value={inputsSelected.find(el => el.input.id == gancho.id)?.cantidad}
                                       onChange={e => onChangeCant(e, gancho.id)}
                                     />
                                     <label htmlFor={`floatingInput${gancho.id}`}></label>
@@ -823,7 +833,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                   value={etiqueta.id}
                                   id={`etiqueta${etiqueta.id}`}
                                   onChange={(e) => {
-                                    onChangeCorrederasSelected(e)
+                                    onChangeInputsSelected(e)
                                     checkedBoxesHandler(etiqueta.id)
                                   }}
                                   checked={checkedBoxes && checkedBoxes[etiqueta.id]}
@@ -841,7 +851,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                       className="form-control"
                                       id={`floatingInput${etiqueta.id}`}
                                       placeholder="Cantidad"
-                                      value={correderasSelected.find(el => el.input.id == etiqueta.id)?.cantidad}
+                                      value={inputsSelected.find(el => el.input.id == etiqueta.id)?.cantidad}
                                       onChange={e => onChangeCant(e, etiqueta.id)}
                                     />
                                     <label htmlFor={`floatingInput${etiqueta.id}`}></label>
@@ -868,7 +878,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                   value={aplique.id}
                                   id={`aplique${aplique.id}`}
                                   onChange={(e) => {
-                                    onChangeCorrederasSelected(e)
+                                    onChangeInputsSelected(e)
                                     checkedBoxesHandler(aplique.id)
                                   }}
                                   checked={checkedBoxes && checkedBoxes[aplique.id]}
@@ -885,7 +895,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                       className="form-control"
                                       id={`floatingInput${aplique.id}`}
                                       placeholder="Cantidad"
-                                      value={correderasSelected.find(el => el.input.id == aplique.id)?.cantidad}
+                                      value={inputsSelected.find(el => el.input.id == aplique.id)?.cantidad}
                                       onChange={e => onChangeCant(e, aplique.id)}
                                     />
                                     <label htmlFor={`floatingInput${aplique.id}`}></label>

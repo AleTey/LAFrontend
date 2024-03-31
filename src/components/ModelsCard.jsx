@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { InfoModal } from "./InfoModal";
 import { NewModelModal } from "./NewModelModal";
+import { useDeleteAlert } from "../hooks/useDeleteAlert";
+import { useModel } from "../hooks/useModel";
 
 export const ModelsCard = ({ modelo }) => {
 
@@ -10,12 +12,16 @@ export const ModelsCard = ({ modelo }) => {
 
   const [editModelFormIsOpen, setEditModelFormIsOpen] = useState(false);
 
+  const { onDeleteAlert } = useDeleteAlert();
+
+  const { deleteModel } = useModel();
+
   const onEditModel = () => {
 
   }
 
-  const onDeleteModel = () => {
-
+  const onDeleteModel = (id) => {
+    onDeleteAlert(id, deleteModel);
   }
 
 
@@ -121,9 +127,11 @@ export const ModelsCard = ({ modelo }) => {
         </div>
         <ul className="list-group list-group-flush">
           <li className="list-group-item"><b>Id:</b> {modelo.id}</li>
+          <li className="list-group-item"><b>Tipo prenda:</b> {modelo.tipoPrenda}</li>
           <li className="list-group-item"><b>Detalle:</b> {modelo.detalle}</li>
           <li className="list-group-item"><b>Insumos:</b> <button className="btn btn-outline-primary btn-sm ms-2" onClick={() => setInfoInsumosIsOpen(true)}>Ver info</button></li>
           <li className="list-group-item"><b>Tiras:</b> <button className="btn btn-outline-primary btn-sm ms-2" onClick={() => setInfoTirasIsOpen(true)}>Ver info</button></li>
+          <li className="list-group-item"><b>Fecha de registro:</b> {modelo.fechaDeRegistro}</li>
 
         </ul>
         <div className="card-body grid">

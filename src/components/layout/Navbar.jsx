@@ -21,6 +21,10 @@ export const Navbar = () => {
                 {/* <a className="nav-link active" aria-current="page" href="#">Home</a> */}
               </li>
               <li className="nav-item">
+                <NavLink className="nav-link" to="/products">Productos</NavLink>
+                {/* <a className="nav-link" href="#">Pedidos</a> */}
+              </li>
+              <li className="nav-item">
                 <NavLink className="nav-link" to="/models">Modelos</NavLink>
                 {/* <a className="nav-link" href="#">Pedidos</a> */}
               </li>

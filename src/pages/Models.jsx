@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react"
 import { ModelsCard } from "../components/ModelsCard";
 import { NewModelModal } from "../components/NewModelModal";
+import { useModel } from "../hooks/useModel";
+import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 
 export const Models = () => {
 
-  const [models, setModels] = useState([]);
+  // const [models, setModels] = useState([]);
+  const { models, getAllModels, modelDbHasChanged } = useModel();
 
   const [modelFormIsOpen, setModelFormIsOpen] = useState(false);
 
+  // const { modelDbHasChanged } = useModel();
+
   useEffect(() => {
 
-    const modelsPetition = async () => {
-      const res = await fetch("http://localhost:8080/models")
-      const json = await res.json();
-      setModels(json);
-    }
-
-    modelsPetition();
+    getAllModels();
 
   }, [])
 
   return (
     <>
+      {
+        modelDbHasChanged &&
+        <FetchTopAlert
+          text={modelDbHasChanged}
+        />
+      }
       <div className="container">
         <h2 className="my-3"> Models  </h2>
         <hr />
@@ -43,7 +48,7 @@ export const Models = () => {
 
           {models.map(modelo => (
             <ModelsCard
-            key={modelo.id}
+              key={modelo.id}
               modelo={modelo} />
           ))}
 

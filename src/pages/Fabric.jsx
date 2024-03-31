@@ -16,6 +16,7 @@ export const Fabric = () => {
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabrics,
+    getAllFabricsPages,
     addNewFabric,
     editFabric,
     onDeleteFabric,

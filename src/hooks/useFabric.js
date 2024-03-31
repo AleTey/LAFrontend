@@ -29,7 +29,39 @@ export const useFabric = () => {
 
       const fabricsWithImageURL = json.map((fabric) => {
 
-        const imageBase64 = fabric.img; 
+        const imageBase64 = fabric.img;
+        const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (fabric.img) {
+          return {
+            ...fabric,
+            img: imageUrl,
+          };
+        }
+        return {
+          ...fabric,
+          img: null,
+        };
+      });
+
+      dispatch({
+        type: 'GET_ALL_FABRICS',
+        payload: fabricsWithImageURL,
+      });
+      // console.log(fabrics)
+
+    } catch (error) {
+      console.error('Error fetching fabrics:', error);
+    }
+  }
+
+  const getAllFabricsPages = async (page = 0) => {
+    try {
+      const res = await fetch(`http://localhost:8080/fabrics/${page}/2`);
+      const json = await res.json();
+
+      const fabricsWithImageURL = json.map((fabric) => {
+
+        const imageBase64 = fabric.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (fabric.img) {
           return {
@@ -242,6 +274,7 @@ export const useFabric = () => {
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabrics,
+    getAllFabricsPages,
     addNewFabric,
     editFabric,
     onDeleteFabric,

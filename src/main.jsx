@@ -11,6 +11,7 @@ import { ArgollaProvider } from './context/ArgollaContext.jsx'
 import { GanchosProvider } from './context/GanchosContext.jsx'
 import { EtiquetaProvider } from './context/EtiquetaContext.jsx'
 import { ApliquesProvider } from './context/ApliquesContext.jsx'
+import { ModelProvider } from './context/ModelContext.jsx'
 
 
 
@@ -26,7 +27,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <GanchosProvider>
                     <EtiquetaProvider>
                       <ApliquesProvider>
-                        <App />
+                        <ModelProvider>
+                          <App />
+                        </ModelProvider>
                       </ApliquesProvider>
                     </EtiquetaProvider>
                   </GanchosProvider>

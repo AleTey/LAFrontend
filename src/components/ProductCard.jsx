@@ -1,30 +1,30 @@
-export const ProductCard = () => {
+export const ProductCard = ({ product }) => {
 
-  
 
-  return(
+
+  return (
     <>
-       <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
+      <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
         {/* <img src={img} className="card-img-top" alt="..." /> */}
-        {img ?
-          <img src={img} className="card-img-top" alt="..." />
+        {product.img ?
+          <img src={product.img} className="card-img-top" alt="..." />
           :
-          <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={color} />
+          <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={product.fabric} />
         }
         <div className="card-body">
-          <h5 className="card-title">{color}</h5>
+          <h5 className="card-title">{product.nombre}</h5>
           <p className="card-text">
             {/* Some quick example text to build on the card title and make up the bulk of the card's content. */}
           </p>
         </div>
         <ul className="list-group list-group-flush">
-          <li className="list-group-item">Id: {id}</li>
-          <li className="list-group-item">Distribuidor: {distribuidor}</li>
-          <li className="list-group-item">Tipo: {tipo}</li>
-          <li className="list-group-item">Stock: {stock} M
+          <li className="list-group-item">Id: {product.id}</li>
+          <li className="list-group-item">Color forro: {product.colorForro}</li>
+          <li className="list-group-item">Costo: {product.cost}</li>
+          <li className="list-group-item">Cost: {product.cost}
             <button className="btn btn-outline-success btn-sm ms-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar</button>
           </li>
-          <li className="list-group-item">Temporada: {temporada}</li>
+          <li className="list-group-item">Temporada: {product.fechaRegistro}</li>
           {/* <li className="list-group-item">Tipo: {tipo}</li> */}
         </ul>
         <div className="card-body grid">
@@ -68,11 +68,11 @@ export const ProductCard = () => {
 
           {/* <a href="#" className="card-link">Card link</a>
           <a href="#" className="card-link">Another link</a> */}
-          <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          {/* <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div className="modal-dialog">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h1 className="modal-title fs-5" id="exampleModalLabel">Agregar stock en mts de {color}</h1>
+                  <h1 className="modal-title fs-5" id="exampleModalLabel">Agregar stock en mts de </h1>
                   <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div className="modal-body">
@@ -84,7 +84,7 @@ export const ProductCard = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
 
