@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
+import { Seeker } from "./Seeker";
 
-export const FabricSelectorOfProductModal = ({ closeModal }) => {
+export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected }) => {
 
   const [fabricPage, setFabricPage] = useState({});
 
   const [fabricPageContent, setFabricPageContent] = useState([]);
 
-  const [fabricSelected, setFabricSelected] = useState({});
+  const [fabricsFound, setFabricFound] = useState([])
+
+
 
   useEffect(() => {
     const getFabricPage = async () => {
@@ -34,9 +37,37 @@ export const FabricSelectorOfProductModal = ({ closeModal }) => {
     getFabricPage();
   }, [])
 
-  const onChangeFabricSelected = (e) => {
-
+  const onClickSelect = (e, fabric) => {
+    e.preventDefault();
+    const { value } = e.target;
+    console.log(fabric);
+    setFabricSelected(fabric);
   }
+
+  const searchFabric = async (fabric) => {
+
+    const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
+    if (getFabricsFound.ok) {
+      const fabricFoundJson = await getFabricsFound.json();
+      setFabricPage(fabricFoundJson);
+      const fabricsWithImg = fabricFoundJson.map(fabric => {
+        const imageBase64 = fabric.img;
+        const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (fabric.img) {
+          return {
+            ...fabric,
+            img: imageUrl
+          };
+        };
+        return {
+          ...fabric,
+          img: null
+        };
+      });
+      setFabricFound(fabricsWithImg);
+    };
+  };
+
 
 
   return (
@@ -52,6 +83,10 @@ export const FabricSelectorOfProductModal = ({ closeModal }) => {
 
               <div className="container sm-0">
 
+                <Seeker
+                  onClickSearch={searchFabric}
+                />
+
                 <table className="table table-striped">
 
                   <thead>
@@ -64,8 +99,8 @@ export const FabricSelectorOfProductModal = ({ closeModal }) => {
                   </thead>
                   <tbody>
                     {
-                      fabricPageContent &&
-                      fabricPageContent.map(fabric => (
+                      fabricsFound &&
+                      fabricsFound.map(fabric => (
                         <tr key={fabric.id}>
                           <th className="align-middle">{fabric.id}</th>
                           {
@@ -76,7 +111,26 @@ export const FabricSelectorOfProductModal = ({ closeModal }) => {
 
                           }
                           <th className="align-middle">{fabric.nombre}</th>
-                          <th className="align-middle"><button className="btn btn-outline-primary btn-sm">Seleccionar</button></th>
+                          <th className="align-middle">
+                            {
+                              fabricSelected && fabric.id !== fabricSelected.id ?
+                                <button
+                                  className="btn btn-outline-primary btn-sm"
+                                  value={fabric}
+                                  onClick={(e) => { onClickSelect(e, fabric), onChangeFabric(fabric.id) }}
+                                >
+                                  Seleccionar
+                                </button>
+                                :
+                                <button
+                                  className="btn btn-secondary btn-sm"
+                                  disabled
+                                >
+                                  Seleccionado
+                                </button>
+                            }
+
+                          </th>
                         </tr>
                       ))
                     }

@@ -331,22 +331,10 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
   }
 
   const buscarValueParaCant = (id, talle) => {
-    // console.log('id: ' + id);
     inputsSelected.map(el => {
-      // if (!modelForm.id) {
-      // console.log("input id: " + el.input.id);
       if (el.input.id == id) {
-        // console.log(el.cantidadPorTalle[talle])
-        // console.log("dentro del IF")
-        console.log(el.input.id)
-        console.log(id)
-        console.log(el.cantidadPorTalle[talle])
-        // console.log("return " + el.cantidadPorTalle[talle])
         return el.cantidadPorTalle[talle];
       }
-      // } else {
-
-      // }
     })
   }
 

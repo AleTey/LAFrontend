@@ -3,9 +3,13 @@ import { FabricCard } from "../components/FabricCard"
 import { Seeker } from "../components/Seeker";
 import { NewFabricModal } from "../components/NewFabricModal";
 import { useFabric } from "../hooks/useFabric";
+import { Paginator } from "../components/Paginator";
+import { useParams } from "react-router-dom";
 
 
 export const Fabric = () => {
+
+  const { page } = useParams();
 
   const {
     fabricModalIsOpen,
@@ -13,6 +17,7 @@ export const Fabric = () => {
     fabricWasEdited,
     fabricWasDeleted,
     fabrics,
+    paginator,
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabrics,
@@ -24,8 +29,8 @@ export const Fabric = () => {
 
 
   useEffect(() => {
-    getAllFabrics();
-  }, [])
+    getAllFabricsPages(page);
+  }, [, page])
 
 
 
@@ -74,6 +79,9 @@ export const Fabric = () => {
               />
             ))
           }
+          <Paginator
+            paginator={paginator}
+          />
         </section>
       </div>
     </>

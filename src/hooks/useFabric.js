@@ -18,6 +18,8 @@ export const useFabric = () => {
 
   const [fabrics, dispatch] = useReducer(fabricReducer, []);
 
+  const [paginator, setPaginator] = useState({});
+
   const onNewFabric = () => {
     setFabricModalIsOpen(true);
   }
@@ -56,10 +58,10 @@ export const useFabric = () => {
 
   const getAllFabricsPages = async (page = 0) => {
     try {
-      const res = await fetch(`http://localhost:8080/fabrics/${page}/2`);
+      const res = await fetch(`http://localhost:8080/fabrics/page/${page}/1`);
       const json = await res.json();
 
-      const fabricsWithImageURL = json.map((fabric) => {
+      const fabricsWithImageURL = json.content.map((fabric) => {
 
         const imageBase64 = fabric.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
@@ -79,8 +81,9 @@ export const useFabric = () => {
         type: 'GET_ALL_FABRICS',
         payload: fabricsWithImageURL,
       });
-      // console.log(fabrics)
 
+      setPaginator(json)
+      console.log(json)
     } catch (error) {
       console.error('Error fetching fabrics:', error);
     }
@@ -271,6 +274,7 @@ export const useFabric = () => {
     fabricWasEdited,
     fabricWasDeleted,
     fabrics,
+    paginator,
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabrics,
