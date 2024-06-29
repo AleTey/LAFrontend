@@ -1,6 +1,27 @@
+import { useEffect } from "react"
 import { FabricCutQueue } from "../components/FabricCutQueue"
 
 export const Production = () => {
+
+
+  // useEffect(() => {
+  //   const findLote = async () => {
+  //     const response = await fetch('http://localhost:8080/lotes/1', {
+  //       method: 'GET',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         // Otros headers que puedas necesitar
+  //       }
+  //     });
+  //     console.log("fetching")
+  //     console.log(response)
+  //     if (response.ok) {
+  //       const loteJson = await response.json();
+  //       console.log(loteJson)
+  //     }
+  //   }
+  //   findLote();
+  // }, [])
 
   return (
 

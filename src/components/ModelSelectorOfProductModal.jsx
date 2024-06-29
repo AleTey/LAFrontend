@@ -83,7 +83,7 @@ export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSe
                                 <button
                                   className="btn btn-outline-primary btn-sm"
                                   value={model}
-                                  onClick={(e) => { onClickSelect(e, model), onChangeModel(model.id) }}
+                                  onClick={(e) => { onClickSelect(e, model), onChangeModel(model) }}
                                 >
                                   Seleccionar
                                 </button>

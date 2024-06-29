@@ -12,6 +12,7 @@ import { GanchosProvider } from './context/GanchosContext.jsx'
 import { EtiquetaProvider } from './context/EtiquetaContext.jsx'
 import { ApliquesProvider } from './context/ApliquesContext.jsx'
 import { ModelProvider } from './context/ModelContext.jsx'
+import { ProductProvider } from './context/ProductContext.jsx'
 
 
 
@@ -28,7 +29,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <EtiquetaProvider>
                       <ApliquesProvider>
                         <ModelProvider>
-                          <App />
+                          <ProductProvider>
+                            <App />
+                          </ProductProvider>
                         </ModelProvider>
                       </ApliquesProvider>
                     </EtiquetaProvider>

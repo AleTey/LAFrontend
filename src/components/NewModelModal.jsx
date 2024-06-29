@@ -901,6 +901,8 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
                   <h4 className="mt-3">TIRAS</h4>
 
+                  
+
                   {
                     tiras && tallesDisponibles.length > 0 &&
                     tiras.map(tira => (

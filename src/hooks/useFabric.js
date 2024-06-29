@@ -58,7 +58,7 @@ export const useFabric = () => {
 
   const getAllFabricsPages = async (page = 0) => {
     try {
-      const res = await fetch(`http://localhost:8080/fabrics/page/${page}/1`);
+      const res = await fetch(`http://localhost:8080/fabrics/page/${page}/6`);
       const json = await res.json();
 
       const fabricsWithImageURL = json.content.map((fabric) => {

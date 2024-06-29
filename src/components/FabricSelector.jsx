@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
 
-export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected }) => {
+export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected, onChangeFabricForTira }) => {
 
   const [fabricPage, setFabricPage] = useState({});
 
@@ -118,6 +118,7 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
                                   className="btn btn-outline-primary btn-sm"
                                   value={fabric}
                                   onClick={(e) => { onClickSelect(e, fabric), onChangeFabric(fabric.id) }}
+                                  // , onChangeFabricForTira(e, fabric)
                                 >
                                   Seleccionar
                                 </button>

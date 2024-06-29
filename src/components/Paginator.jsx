@@ -57,7 +57,7 @@ export const Paginator = ({ paginator }) => {
                   </button>
                 </li>
             }
-
+            <h4 className="text-primary"> {paginator.pageable.pageNumber} </h4>
             {
               !paginator.last ?
                 <li className="page-item">

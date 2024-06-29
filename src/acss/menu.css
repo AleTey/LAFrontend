@@ -1,0 +1,23 @@
+.custom-image {
+  max-height: 200px;
+  max-width: 200px;
+  object-fit: fill;
+}
+
+.container-img {
+  width: 200px;
+  height: 200px;
+  /* cursor: pointer; */
+}
+
+.black {
+  color: black;
+}
+
+.white {
+  color: white;
+}
+.indigo {
+  color: indigo;
+}
+
