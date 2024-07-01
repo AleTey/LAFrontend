@@ -1,9 +1,9 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { FabricCutQueue } from "../components/FabricCutQueue"
 
 export const Production = () => {
 
-
+  const [queueLotes, setQueueLotes] = useState([]);
   // useEffect(() => {
   //   const findLote = async () => {
   //     const response = await fetch('http://localhost:8080/lotes/1', {
@@ -23,6 +23,36 @@ export const Production = () => {
   //   findLote();
   // }, [])
 
+  const onCLickQueueLote = (state) => {
+    const getLotesByState = async (state) => {
+      const lotes = await fetch(`http://localhost:8080/lotes/by-state/${state}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      if (lotes.ok) {
+        const lotesJson = await lotes.json();
+        if (state === 'COLA') {
+          setQueueLotes(loteWithImgMapper(lotesJson));
+          // setQueueLotes(lotesJson);
+        }
+      }
+    }
+    getLotesByState(state);
+  }
+
+  const loteWithImgMapper = (lotes) => {
+    return lotes.map(lote => ({
+      ...lote,
+      productsForLoteDTO: lote.productsForLoteDTO.map(producto => ({
+        ...producto,
+        img: `data:image/jpeg;base64,${producto.img}`
+      }))
+    }));
+  }
+
+
   return (
 
     <>
@@ -36,13 +66,23 @@ export const Production = () => {
 
           <div className="accordion-item">
             <h2 className="accordion-header">
-              <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
+              <button
+                className="accordion-button collapsed"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#panelsStayOpen-collapseOne"
+                aria-expanded="false"
+                aria-controls="panelsStayOpen-collapseOne"
+                onClick={() => onCLickQueueLote('COLA')}
+              >
                 Cola corte
               </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse">
               <div className="accordion-body">
-                <FabricCutQueue />
+                <FabricCutQueue
+                  queueLotes={queueLotes}
+                />
               </div>
             </div>
           </div>

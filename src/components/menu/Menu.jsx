@@ -70,13 +70,13 @@ export const Menu = () => {
                 color="indigo"
               />
             </NavLink>
-            <NavLink className="nav-link" to="/production">
+            {/* <NavLink className="nav-link" to="/production">
               <MenuIcon
                 img="src/assets/maquina.jpg"
                 text="Producción"
                 color="black"
               />
-            </NavLink>
+            </NavLink> */}
           </div>
         </div>
 
