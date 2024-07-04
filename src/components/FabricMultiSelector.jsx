@@ -113,16 +113,16 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
                           <th className="align-middle">{fabric.id}</th>
                           {
                             fabric.img ?
-                              <th><img src={fabric.img} alt="" style={{ maxWidth: '4rem' }} className="img-thumbnail" /></th>
+                              <th><img src={fabric.img} alt="" style={{ maxWidth: '5rem' }} className="img-thumbnail" /></th>
                               :
                               <th><img src="src/db/imgs/image-not-found.jpg" alt="" style={{ maxWidth: '30%' }} className="img-fluid img-fluid" /></th>
 
                           }
+
                           <th className="align-middle">{fabric.nombre}</th>
                           <th className="align-middle">
                             {
                               telasSeleccionadas.some(detalle => detalle.width == ancho && detalle.fabric.id === fabric.id) ?
-                                // fabricsSelected && fabric.id !== fabricsSelected.id ?
                                 <button
                                   className="btn btn-secondary btn-sm"
                                   onClick={(e) => onCancelFabric(e, ancho, fabric.id)}
@@ -134,8 +134,6 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
                                   className="btn btn-outline-primary btn-sm"
                                   value={fabric}
                                   onClick={(e) => {
-                                    // onClickAgregar(e, fabric),
-                                    //  onAddFabric(fabric.id), 
                                     onChangeFabric(e, fabric, ancho)
                                   }}
                                 >

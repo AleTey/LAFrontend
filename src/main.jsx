@@ -13,6 +13,7 @@ import { EtiquetaProvider } from './context/EtiquetaContext.jsx'
 import { ApliquesProvider } from './context/ApliquesContext.jsx'
 import { ModelProvider } from './context/ModelContext.jsx'
 import { ProductProvider } from './context/ProductContext.jsx'
+import { LoteProvider } from './context/LoteContext.jsx'
 
 
 
@@ -30,7 +31,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                       <ApliquesProvider>
                         <ModelProvider>
                           <ProductProvider>
-                            <App />
+                            <LoteProvider>
+                              <App />
+                            </LoteProvider>
                           </ProductProvider>
                         </ModelProvider>
                       </ApliquesProvider>
