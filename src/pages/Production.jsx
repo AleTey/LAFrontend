@@ -3,11 +3,13 @@ import { FabricCutQueue } from "../components/FabricCutQueue"
 import { LoteContext } from "../context/LoteContext";
 import { LoteCard } from "../components/LoteCard";
 import { NewLoteModal } from "../components/NewLoteModal";
+import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 
 export const Production = () => {
 
   const [newLoteIsOpen, setNewLoteIsOpen] = useState(false);
   const [queueLotes, setQueueLotes] = useState([]);
+
   const {
     lotesQueue,
     dispatchAllQueueLotes,
@@ -20,7 +22,9 @@ export const Production = () => {
     lotesControl,
     dispatchAllControlLotes,
     lotesFinalizado,
-    dispatchAllFinalizadoLotes
+    dispatchAllFinalizadoLotes,
+    loteDbHasChanged,
+    setLoteDbHasChanged
   } = useContext(LoteContext);
 
 
@@ -77,9 +81,16 @@ export const Production = () => {
 
     <>
       {
+        loteDbHasChanged &&
+        <FetchTopAlert
+          text={loteDbHasChanged}
+        />
+      }
+      {
         newLoteIsOpen &&
         <NewLoteModal
           modalIsOpen={setNewLoteIsOpen}
+          setNewLoteIsOpen={setNewLoteIsOpen}
         />
 
       }

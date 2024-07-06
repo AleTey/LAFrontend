@@ -11,11 +11,13 @@ export const LoteContext = createContext();
 
 export const LoteProvider = ({ children }) => {
   const [statusHasChanged, setStatusHasChanged] = useState(false);
+  const [loteDbHasChanged, setLoteDbHasChanged] = useState("");
   const [lotes, dispatchLotes] = useReducer(loteReducer, []);
 
   const [lotesQueue, dispatchLotesQueue] = useReducer(loteQueueReducer, []);
   const dispatchAllQueueLotes = (lotesQueue) => dispatchLotesQueue({ type: "GET_ALL_QUEUE_LOTES", payload: lotesQueue });
   const dispatchRemoveQueueLote = (id) => dispatchLotesQueue({ type: "DELETE_QUEUE_LOTE", payload: id });
+  const dispatchAddQueueLote = (loteQueue) => dispatchLotesQueue({ type: "ADD_QUEUE_LOTE", payload: loteQueue });
 
   const [lotesCut, dispatchLotesCut] = useReducer(loteCutReducer, []);
   const dispatchAllCutLotes = (lotesCut) => dispatchLotesCut({ type: "GET_ALL_CUT_LOTES", payload: lotesCut });
@@ -42,6 +44,7 @@ export const LoteProvider = ({ children }) => {
       lotes,
       lotesQueue,
       dispatchAllQueueLotes,
+      dispatchAddQueueLote,
       dispatchRemoveQueueLote,
       lotesPreparation,
       dispatchAllPreparationLotes,
@@ -59,7 +62,9 @@ export const LoteProvider = ({ children }) => {
       dispatchRemoveControlLote,
       lotesFinalizado,
       dispatchAllFinalizadoLotes,
-      dispatchRemoveFinalizadoLote
+      dispatchRemoveFinalizadoLote,
+      loteDbHasChanged,
+      setLoteDbHasChanged
     }}>
       {children}
     </LoteContext.Provider>
