@@ -3,6 +3,7 @@ import { ProductMultiSelector } from "./ProductMultiSelectior";
 import { ProductSelectedAtFormCard } from "./ProductSelectedAtFormCard";
 import { LoteContext } from "../context/LoteContext";
 import { FetchTopAlert } from "./alerts/FetchTopAlert";
+import { useLote } from "../hooks/lotes/useLote";
 
 const newLoteFormInitialValue = {
   products: [],
@@ -24,7 +25,9 @@ const loteValidationForm = (loteForm) => {
   return errors;
 }
 
-export const NewLoteModal = ({ modalIsOpen, loteFormData = newLoteFormInitialValue, setNewLoteIsOpen }) => {
+export const NewLoteModal = ({ loteFormData = newLoteFormInitialValue }) => {
+
+  const { addLote, newLoteFormIsOpen, setNewLoteFormIsOpen } = useLote();
 
   const [loteForm, setLoteForm] = useState(loteFormData);
 
@@ -39,12 +42,6 @@ export const NewLoteModal = ({ modalIsOpen, loteFormData = newLoteFormInitialVal
   const { dispatchAddQueueLote,
     setLoteDbHasChanged } = useContext(LoteContext)
 
-  // useEffect(() => {
-  //   setLoteForm({
-  //     ...loteForm,
-  //     products: productsSelected
-  //   })
-  // }, [productsSelected])
 
 
   useEffect(() => {
@@ -109,33 +106,33 @@ export const NewLoteModal = ({ modalIsOpen, loteFormData = newLoteFormInitialVal
 
   }
 
-  const addLote = async (lote) => {
-    try {
+  // const addLote = async (lote) => {
+  //   try {
 
-      const res = await fetch('http://localhost:8080/lotes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(lote)
-      })
+  //     const res = await fetch('http://localhost:8080/lotes', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify(lote)
+  //     })
 
 
-      if (res.ok) {
-        const resJson = await res.json();
-        setLoteDbHasChanged("Lote agregado con éxito")
-        setTimeout(() => {
-          setLoteDbHasChanged("")
-        }, 5000)
-        setNewLoteIsOpen(false);
-        // dispatchAddQueueLote
-      }
+  //     if (res.ok) {
+  //       const resJson = await res.json();
+  //       setLoteDbHasChanged("Lote agregado con éxito")
+  //       setTimeout(() => {
+  //         setLoteDbHasChanged("")
+  //       }, 5000)
+  //       setNewLoteIsOpen(false);
+  //       // dispatchAddQueueLote
+  //     }
 
-    } catch (error) {
-      console.log("error: " + error)
-    }
+  //   } catch (error) {
+  //     console.log("error: " + error)
+  //   }
 
-  }
+  // }
 
 
 
@@ -152,7 +149,7 @@ export const NewLoteModal = ({ modalIsOpen, loteFormData = newLoteFormInitialVal
                 className="btn-close"
                 data-bs-dismiss="modal"
                 aria-label="Close"
-                onClick={() => modalIsOpen(false)}
+                onClick={() => setNewLoteFormIsOpen(false)}
               ></button>
             </div>
             <div className="modal-body">

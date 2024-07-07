@@ -1,21 +1,12 @@
 import { useEffect, useState } from "react"
 
-const cutSpreadSheetToSend = {
-  amountPerSizeForProduct: [],
-  fabricLengthDetails: [],
-  details: "",
-  publicationDate: "",
-  tableLength: 0,
-  isFinished: false
-}
 
-export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheetIsOpen, cutSpreadSheetNotDTO = cutSpreadSheetToSend }) => {
+export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpreadSheetIsOpen }) => {
 
   const [cutSpreadSheetForm, setCutSpreadSheetForm] = useState(cutSpreadSheet);
 
   const [editMode, setEditMode] = useState(false);
 
-  const [cutSpreadSheetToSend, setCutSpreadSheetToSend] = useState(cutSpreadSheetNotDTO)
 
   useEffect(() => {
     setCutSpreadSheetForm(cutSpreadSheet)
@@ -88,36 +79,57 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheetIsOpen, cutSpr
 
   const cutSpreadSheetToSendMapper = (cutSpreadSheetForm) => {
     return {
-      id,
-      amountPerSizeForProduct:[ cutSpreadSheetForm.amountPerSizeForProductDTO.map(a => {return a})],
-      fabricLengthDetails: cutSpreadSheetForm.fabricLengthDetailsDTOs,
-      details,
-      publicationDate,
-      tableLength,
-      isFinished: cutSpreadSheetForm.isFinished
+      id: cutSpreadSheetForm.id,
+      amountPerSizeForProducts: cutSpreadSheetForm.amountPerSizeForProductDTO.map(a => {
+        return {
+          ...a,
+          product: {
+            id: a.productForLoteDTO.id
+          }
+        }
+      }
+      ),
+      fabricLengthDetails: cutSpreadSheetForm.fabricLengthDetailsDTOs.map(f => {
+        return {
+          ...f,
+          fabric: {
+            id: f.fabricNombreCodigoTipoImgDTO.id
+          }
+        }
+      }),
+      details: cutSpreadSheetForm.details,
+      tableLength: cutSpreadSheetForm.tableLength,
+      // publicationDate: cutSpreadSheetForm.publicationDate,
+      // isFinished: cutSpreadSheetForm.isFinished
     }
   }
 
   const onSubmit = () => {
-    const updateCutSpreadSheet = async (newSpreadSheet = cutSpreadSheetToSendMapper(cutSpreadSheetForm)) => {
-     console.log(newSpreadSheet)
+    console.log(cutSpreadSheetForm)
+    const updateCutSpreadSheet = async (c) => {
+      console.log(c)
       try {
-        const res = await fetch(`http://localhost:8080/cut-spreadsheets/${newSpreadSheet.id}`, {
+        console.log("enter")
+        const res = await fetch(`http://localhost:8080/cut-spreadsheets/${c.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify(newSpreadSheet)
+          body: JSON.stringify(c)
         })
+        console.log("finish")
         if (res.ok) {
+          console.log("res is ok")
           const resJson = await res.json();
           console.log(resJson);
+          setEditMode(false);
+          setCutSpreadSheet(cutSpreadSheetForm);
         }
       } catch (error) {
-
+        console.log("error" + error)
       }
     }
-    updateCutSpreadSheet(cutSpreadSheetForm);
+    updateCutSpreadSheet(cutSpreadSheetToSendMapper(cutSpreadSheetForm));
   }
 
   return (
@@ -216,36 +228,48 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheetIsOpen, cutSpr
 
           }
         </div>
-        Largo de la mesa:
+        <hr />
+        <div>
+          <b>Largo de la mesa:</b>
+          {
+            !editMode ?
+              ` ${cutSpreadSheetForm.tableLength}`
+              :
+              <input className="form-control"
+                name='tableLength'
+                value={cutSpreadSheetForm.tableLength}
+                type="number"
+                style={{ maxWidth: "10rem", minWidth: "4rem" }}
+                onChange={onChangeTableLength} />
+          }
+        </div>
+
+        <hr />
+        {/* Detalles: */}
         {
           !editMode ?
-            `${cutSpreadSheetForm.tableLength}`
+            <div>
+              <h6>Detalles adicionales</h6>
+              <p>{cutSpreadSheetForm.details}</p>
+            </div>
             :
-            <input className="form-control"
-              name='tableLength'
-              value={cutSpreadSheetForm.tableLength}
-              type="number"
-              style={{ maxWidth: "10rem", minWidth: "4rem" }}
-              onChange={onChangeTableLength} />
-        }
 
-        Detalles:
-        <div className="form-floating">
-          <textarea
-            className="form-control"
-            name="details"
-            value={cutSpreadSheetForm.details}
-            id="details"
-            style={{ height: "100px" }}
-            onChange={onChangeDetails}
-          >
-          </textarea>
-          <label htmlFor="floatingTextarea2">Detalles</label>
-        </div>
+            <div className="form-floating">
+              <textarea
+                className="form-control"
+                name="details"
+                value={cutSpreadSheetForm.details || ""}
+                id="details"
+                style={{ height: "100px" }}
+                onChange={onChangeDetails}
+              >
+              </textarea>
+              <label htmlFor="floatingTextarea2">Detalles</label>
+            </div>
+        }
 
 
         <div className="container mt-4 mb-3 d-flex row gap-3">
-
           {
             !editMode ?
               <button
@@ -262,14 +286,6 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheetIsOpen, cutSpr
                 Guardar Cambios
               </button>
           }
-          {/* <button
-            className="btn btn-primary"
-            onClick={!editMode ? () => setEditMode(true) : () => setEditMode(false)}
-          >
-            {!editMode ? "Editar planilla" : "Guardar cambios"}
-          </button> */}
-
-
 
           {
             editMode &&

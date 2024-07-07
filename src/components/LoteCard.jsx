@@ -1,161 +1,39 @@
-import { useContext, useEffect, useState } from "react"
-import { LoteCardQueueBtnActions } from "./LoteCardQueueBtnActions"
+import { useContext, useState } from "react"
 import { ProductCardBasicThumbnail } from "./ProductCardBasicThumbnail"
 import { LoteContext } from "../context/LoteContext"
 import { messageInfo } from "./alerts/messageInfo"
-import { LoteCardCutBtnActions } from "./LoteCardCutBtnActions"
 import { LoteButtonsActions } from "./LoteButtonsActions"
 import { CutSpreadSheet } from "./CutSpreadSheet"
+import { PreparationSpreadSheet } from "./PreparationSpreadSheet"
+import { useLote } from "../hooks/lotes/useLote"
 
 export const LoteCard = ({ lote }) => {
 
+  const { changeStatus,
+    findCutSpreadSheetById
+
+  } = useLote();
+
   const [cutSpreadSheetIsOpen, setCutSpreadSheetIsOpen] = useState(false);
+
+  const [preparationSpreadSheetIsOpen, setPreparationSpreadSheetIsOpen] = useState();
 
   const [cutSpreadSheet, setCutSpreadSheet] = useState({});
 
-  const { dispatchRemoveQueueLote,
-    dispatchRemoveCutLotes,
-    dispatchRemovePreparationLote,
-    dispatchRemoveWorkshopLote,
-    dispatchRemoveControlLote,
-    dispatchRemoveFinalizadoLote
-  } = useContext(LoteContext);
+  // const { dispatchRemoveQueueLote,
+  //   dispatchRemoveCutLotes,
+  //   dispatchRemovePreparationLote,
+  //   dispatchRemoveWorkshopLote,
+  //   dispatchRemoveControlLote,
+  // } = useContext(LoteContext);
 
-  // useEffect(() => { console.log(lote) }, [])
 
   const onChangeStatus = (id, status) => {
-    const changeStatus = async (id, status) => {
-      try {
-
-        const changeState = await fetch(`http://localhost:8080/lotes/update-state/${id}/${status}`, {
-          method: 'PUT'
-        })
-        if (changeState.ok) {
-
-          switch (status) {
-            case "CORTE":
-              dispatchRemoveQueueLote(id);
-              break;
-
-            case "PREPARADO":
-              dispatchRemoveCutLotes(id)
-              break;
-
-            case "TALLER":
-              dispatchRemovePreparationLote(id);
-              break;
-
-            case "CONTROL":
-              dispatchRemoveWorkshopLote(id);
-              break;
-            case "FINALIZADO":
-              dispatchRemoveControlLote(id);
-              break;
-
-            default:
-              break;
-          }
-        } else {
-          const error = new Error("Error en la solicitud");
-          error.response = changeState;
-          throw error;
-        }
-
-      } catch (error) {
-        if (error.response && error.response.status === 409) {
-          messageInfo({ message: 'Solo puedo haber un lote en estado de corte' })
-        }
-      }
-    }
     changeStatus(id, status);
   }
 
   const findCutSpreadSheet = (id) => {
-    console.log(lote)
-    const findCutSpreadSheetById = async (id) => {
-      console.log(lote)
-      const res = await fetch(`http://localhost:8080/cut-spreadsheets/${id}`);
-
-      if (res.ok) {
-        const cutSpreadSheetJson = await res.json();
-        console.log(cutSpreadSheetJson)
-
-        setCutSpreadSheet({
-          ...cutSpreadSheetJson,
-          amountPerSizeForProductDTO:
-            cutSpreadSheetJson.amountPerSizeForProductDTO
-              .map(d => {
-                const imgUrl = `data:image/jpeg;base64,${d.productForLoteDTO.img}`;
-                if (d.productForLoteDTO.img) {
-                  return {
-                    ...d,
-                    productForLoteDTO: {
-                      ...d.productForLoteDTO,
-                      img: imgUrl
-                    }
-                  };
-                };
-                return {
-                  ...d,
-                  productForLoteDTO: {
-                    ...d.productForLoteDTO,
-                    img: null
-                  }
-                };
-              }),
-
-
-          fabricLengthDetailsDTOs:
-            cutSpreadSheetJson.fabricLengthDetailsDTOs.map(fDetail => {
-              if (fDetail.fabricNombreCodigoTipoImgDTO.img) {
-                const imgUrl = `data:image/jpeg;base64,${fDetail.fabricNombreCodigoTipoImgDTO.img}`
-                return {
-                  ...fDetail,
-                  fabricNombreCodigoTipoImgDTO: {
-                    ...fDetail.fabricNombreCodigoTipoImgDTO,
-                    img: imgUrl
-                  }
-                }
-              }
-              return {
-                ...fDetail,
-                fabricNombreCodigoTipoImgDTO: {
-                  ...fDetail.fabricNombreCodigoTipoImgDTO,
-                  img: null
-                }
-              }
-            })
-
-        })
-
-
-
-        // setCutSpreadSheet({
-        //   ...cutSpreadSheet,
-        //   fabricLengthDetailsDTOs:
-        //     cutSpreadSheet.fabricLengthDetailsDTOs.map(fDetail => {
-        //       if (fDetail.fabricNombreCodigoTipoImgDTO.img) {
-        //         const imgUrl = `data:image/jpeg;bases6,${fDetail.fabricNombreCodigoTipoImgDTO.img}`
-        //         return {
-        //           ...fDetail,
-        //           fabricNombreCodigoTipoImgDTO: {
-        //             ...fDetail.fabricNombreCodigoTipoImgDTO,
-        //             img: imgUrl
-        //           }
-        //         }
-        //       }
-        //       return {
-        //         ...fDetail,
-        //         fabricNombreCodigoTipoImgDTO: {
-        //           ...fDetail.fabricNombreCodigoTipoImgDTO,
-        //           img: null
-        //         }
-        //       }
-        //     })
-        // })
-      }
-    }
-    findCutSpreadSheetById(id);
+    findCutSpreadSheetById(id, setCutSpreadSheet);
   }
 
   return (
@@ -198,14 +76,25 @@ export const LoteCard = ({ lote }) => {
         <div className="card-footer text-body-secondary">
           fecha de creación: {lote.creationDate}
         </div>
+
+        {/* PLANILLAS */}
+
         {
           cutSpreadSheetIsOpen &&
           <div className="card-footer text-body-secondary">
             <CutSpreadSheet
               cutSpreadSheet={cutSpreadSheet}
+              setCutSpreadSheet={setCutSpreadSheet}
               setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
             />
           </div>
+        }
+
+        {
+          preparationSpreadSheetIsOpen &&
+          <PreparationSpreadSheet
+
+          />
         }
       </div>
     </>

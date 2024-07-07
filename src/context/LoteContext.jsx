@@ -12,6 +12,7 @@ export const LoteContext = createContext();
 export const LoteProvider = ({ children }) => {
   const [statusHasChanged, setStatusHasChanged] = useState(false);
   const [loteDbHasChanged, setLoteDbHasChanged] = useState("");
+  const [newLoteFormIsOpen, setNewLoteFormIsOpen] = useState(false);
   const [lotes, dispatchLotes] = useReducer(loteReducer, []);
 
   const [lotesQueue, dispatchLotesQueue] = useReducer(loteQueueReducer, []);
@@ -22,6 +23,7 @@ export const LoteProvider = ({ children }) => {
   const [lotesCut, dispatchLotesCut] = useReducer(loteCutReducer, []);
   const dispatchAllCutLotes = (lotesCut) => dispatchLotesCut({ type: "GET_ALL_CUT_LOTES", payload: lotesCut });
   const dispatchRemoveCutLotes = (id) => dispatchLotesCut({ type: "DELETE_CUT_LOTE", payload: id });
+  const dispatchAddCutLote = (loteCut) => dispatchLotesCut({ type: "ADD_CUT_LOTE", payload: loteCut })
 
   const [lotesPreparation, dispatchLotesPreparation] = useReducer(lotePreparationReducer, []);
   const dispatchAllPreparationLotes = (lotesPreparation) => dispatchLotesPreparation({ type: "GET_ALL_PREPARATION_LOTES", payload: lotesPreparation });
@@ -46,12 +48,13 @@ export const LoteProvider = ({ children }) => {
       dispatchAllQueueLotes,
       dispatchAddQueueLote,
       dispatchRemoveQueueLote,
+      lotesCut,
+      dispatchAllCutLotes,
+      dispatchAddCutLote,
+      dispatchRemoveCutLotes,
       lotesPreparation,
       dispatchAllPreparationLotes,
       dispatchRemovePreparationLote,
-      lotesCut,
-      dispatchAllCutLotes,
-      dispatchRemoveCutLotes,
       lotesWorkshop,
       dispatchAllWorkshopLotes,
       dispatchRemoveWorkshopLote,
@@ -64,7 +67,9 @@ export const LoteProvider = ({ children }) => {
       dispatchAllFinalizadoLotes,
       dispatchRemoveFinalizadoLote,
       loteDbHasChanged,
-      setLoteDbHasChanged
+      setLoteDbHasChanged,
+      newLoteFormIsOpen,
+      setNewLoteFormIsOpen
     }}>
       {children}
     </LoteContext.Provider>

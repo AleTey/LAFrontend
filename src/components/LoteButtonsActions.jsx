@@ -1,4 +1,10 @@
+import { useEffect } from "react"
+
 export const LoteButtonsActions = ({ loteId, loteStatus, onChangeStatus, findCutSpreadSheet, lote, setCutSpreadSheetIsOpen }) => {
+
+  useEffect(()=>{
+    console.log(lote)
+  },[])
 
   const CutSheetButton = () => {
     findCutSpreadSheet(lote.cutSpreadsheetForLoteDTO.id)
@@ -13,7 +19,7 @@ export const LoteButtonsActions = ({ loteId, loteStatus, onChangeStatus, findCut
         <div className="container mt-3 d-flex column gap-3">
           <button
             className="btn btn-primary"
-            onClick={() => onChangeStatus(loteId, "CORTE")}
+            onClick={() => onChangeStatus(loteId, "CORTE", lote)}
           >
             Cortar
           </button>
