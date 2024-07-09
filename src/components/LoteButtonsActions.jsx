@@ -1,14 +1,30 @@
 import { useEffect } from "react"
 
-export const LoteButtonsActions = ({ loteId, loteStatus, onChangeStatus, findCutSpreadSheet, lote, setCutSpreadSheetIsOpen }) => {
+export const LoteButtonsActions = ({
+  loteId,
+  loteStatus,
+  onChangeStatus,
+  findCutSpreadSheet,
+  lote,
+  setCutSpreadSheetIsOpen,
+  findPreparationSpreadSheet,
+  setPreparationSpreadSheet,
+  setPreparationSpreadSheetIsOpen
 
-  useEffect(()=>{
-    console.log(lote)
-  },[])
+}) => {
+
+  // useEffect(() => {
+  //   console.log(lote)
+  // }, [])
 
   const CutSheetButton = () => {
     findCutSpreadSheet(lote.cutSpreadsheetForLoteDTO.id)
     setCutSpreadSheetIsOpen(true)
+  }
+
+  const preparationSpreadSheetBtn = () => {
+    findPreparationSpreadSheet(lote.preparationSpreadSheetForDTO.id);
+    setPreparationSpreadSheetIsOpen(true);
   }
 
   return (
@@ -58,6 +74,13 @@ export const LoteButtonsActions = ({ loteId, loteStatus, onChangeStatus, findCut
             className="btn btn-secondary"
           >
             Planilla corte
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={preparationSpreadSheetBtn}
+          >
+            Planilla preparado
           </button>
 
         </div>

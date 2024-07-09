@@ -16,9 +16,11 @@ export const LoteCard = ({ lote }) => {
 
   const [cutSpreadSheetIsOpen, setCutSpreadSheetIsOpen] = useState(false);
 
+  const [cutSpreadSheet, setCutSpreadSheet] = useState({});
+
   const [preparationSpreadSheetIsOpen, setPreparationSpreadSheetIsOpen] = useState();
 
-  const [cutSpreadSheet, setCutSpreadSheet] = useState({});
+  const [preparationSpreadSheet, setPreparationSpreadsheet] = useState({});
 
   // const { dispatchRemoveQueueLote,
   //   dispatchRemoveCutLotes,
@@ -34,6 +36,53 @@ export const LoteCard = ({ lote }) => {
 
   const findCutSpreadSheet = (id) => {
     findCutSpreadSheetById(id, setCutSpreadSheet);
+  }
+
+  const findPreparationSpreadSheet = (id) => {
+    const findPreparationSpreadSheetById = async (id) => {
+      const res = await fetch(`http://localhost:8080/preparation-spreadsheet/dto/${id}`)
+
+      if (res.ok) {
+        const resJson = await res.json();
+        console.log(resJson);
+
+        let inputsImage = "";
+        if (resJson.img !== null) {
+          inputsImage = `data:image/jpeg;base64,${resJson.img}`
+        } else {
+          inputsImage = null;
+        }
+
+        setPreparationSpreadsheet({
+          ...resJson,
+          amountPerSizeForProductDTOs: resJson.amountPerSizeForProductDTOs.map(amount => {
+            const imgUrl = `data:image/jpeg;base64,${amount.productForLoteDTO.img}`;
+            if (amount.productForLoteDTO.img) {
+              return {
+                ...amount,
+                productForLoteDTO: {
+                  ...amount.productForLoteDTO,
+                  img: imgUrl
+                }
+              }
+            }
+            return {
+              ...amount,
+              productForLoteDTO: {
+                ...amount.productForLoteDTO,
+                img: null
+              }
+            }
+
+          }),
+          img: inputsImage
+          // img: `data:image/jpeg;base64,${resJson.img}`
+        })
+        console.log(preparationSpreadSheet);
+      }
+
+    }
+    findPreparationSpreadSheetById(id)
   }
 
   return (
@@ -70,6 +119,10 @@ export const LoteCard = ({ lote }) => {
             findCutSpreadSheet={findCutSpreadSheet}
             lote={lote}
             setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
+            findPreparationSpreadSheet={findPreparationSpreadSheet}
+            setPreparationSpreadSheet={setPreparationSpreadsheet}
+            setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
+
           />
 
         </div>
@@ -92,9 +145,13 @@ export const LoteCard = ({ lote }) => {
 
         {
           preparationSpreadSheetIsOpen &&
-          <PreparationSpreadSheet
-
-          />
+          <div className="card-footer text-body-secondary d-flex justify-content-center">
+            <PreparationSpreadSheet
+              preparationSpreadSheet={preparationSpreadSheet}
+              setPreparationSpreadSheet={setPreparationSpreadsheet}
+              setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
+            />
+          </div>
         }
       </div>
     </>
