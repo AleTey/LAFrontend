@@ -1,10 +1,10 @@
 import { useEffect } from "react"
 
-export const AmountPerSizeTable = ({ amount, editMode, onSheetChange }) => {
+export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 'success' }) => {
 
-  useEffect(() => {
-    console.log(amount)
-  }, [])
+  // useEffect(() => {
+  //   console.log(amount)
+  // }, [])
 
   return (
     <>
@@ -20,7 +20,7 @@ export const AmountPerSizeTable = ({ amount, editMode, onSheetChange }) => {
         </div>
         <div className="container col">
 
-          <table className="table table-success">
+          <table className={`table table-${color}`}>
             <thead>
               <tr>
                 <th>Talle</th>

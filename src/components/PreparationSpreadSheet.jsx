@@ -92,7 +92,6 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
       }),
       details: preparationSheet.details,
     }
-
   }
 
   const onSubmit = () => {
@@ -148,7 +147,9 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
     <>
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
-          <h1 className="modal-title fs-5" id="staticBackdropLabel">Planilla preparación</h1>
+          {/* <div className="d-flex justify-content-center"> */}
+            <h2 className="modal-title" id="staticBackdropLabel">Planilla preparación</h2>
+          {/* </div> */}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setPreparationSpreadSheetIsOpen(false)} ></button>
         </div>
         <hr />
@@ -202,7 +203,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
             <textarea name="details" id="" className="form-control" value={preparationSpreadSheetForm.details || ""} onChange={onChangeDetails}></textarea>
         }
 
-<hr />
+        <hr />
 
         <h5>Imagen de insumos enviados/ a enviar</h5>
 

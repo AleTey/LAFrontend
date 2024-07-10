@@ -9,7 +9,10 @@ export const LoteButtonsActions = ({
   setCutSpreadSheetIsOpen,
   findPreparationSpreadSheet,
   setPreparationSpreadSheet,
-  setPreparationSpreadSheetIsOpen
+  setPreparationSpreadSheetIsOpen,
+  setWorkshopSpreadsheetIsOpen,
+  setWorkshopSpreadSheet,
+  findWorkshopSpreadsheet
 
 }) => {
 
@@ -25,6 +28,11 @@ export const LoteButtonsActions = ({
   const preparationSpreadSheetBtn = () => {
     findPreparationSpreadSheet(lote.preparationSpreadSheetForDTO.id);
     setPreparationSpreadSheetIsOpen(true);
+  }
+
+  const workshopSpreadSheet = () => {
+    findWorkshopSpreadsheet(lote.workShopSpreadSheetForDTO.id);
+    setWorkshopSpreadsheetIsOpen(true);
   }
 
   return (
@@ -72,6 +80,7 @@ export const LoteButtonsActions = ({
 
           <button
             className="btn btn-secondary"
+            onClick={CutSheetButton}
           >
             Planilla corte
           </button>
@@ -82,6 +91,7 @@ export const LoteButtonsActions = ({
           >
             Planilla preparado
           </button>
+
 
         </div>
       }
@@ -99,6 +109,12 @@ export const LoteButtonsActions = ({
             className="btn btn-secondary"
           >
             Planilla corte
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={workshopSpreadSheet}
+          >
+            Planilla taller
           </button>
         </div>
       }

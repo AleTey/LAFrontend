@@ -6,6 +6,7 @@ import { LoteButtonsActions } from "./LoteButtonsActions"
 import { CutSpreadSheet } from "./CutSpreadSheet"
 import { PreparationSpreadSheet } from "./PreparationSpreadSheet"
 import { useLote } from "../hooks/lotes/useLote"
+import { WorkshopSpreadSheep } from "./WorkshopSpreadSheet"
 
 export const LoteCard = ({ lote }) => {
 
@@ -21,6 +22,12 @@ export const LoteCard = ({ lote }) => {
   const [preparationSpreadSheetIsOpen, setPreparationSpreadSheetIsOpen] = useState();
 
   const [preparationSpreadSheet, setPreparationSpreadsheet] = useState({});
+
+  const [workshopSpreadSheetIsOpen, setWorkshopSpreadsheetIsOpen] = useState(false);
+
+  const [workshopSpreadSheet, setWorkshopSpreadSheet] = useState([]);
+
+
 
   // const { dispatchRemoveQueueLote,
   //   dispatchRemoveCutLotes,
@@ -82,7 +89,71 @@ export const LoteCard = ({ lote }) => {
       }
 
     }
-    findPreparationSpreadSheetById(id)
+    if (!preparationSpreadSheet.id) {
+      findPreparationSpreadSheetById(id)
+    }
+  }
+
+  const findWorkshopSpreadsheet = (id) => {
+
+    const findWorkshopSpreadsheetById = async (id) => {
+      try {
+        const res = await fetch(`http://localhost:8080/workshop-spreadsheet/dto/${id}`);
+
+        if (res.ok) {
+          const resJson = await res.json();
+          console.log(resJson)
+
+          setWorkshopSpreadSheet({
+            ...resJson,
+            amountPerSizeForProducts: resJson.amountPerSizeForProducts.map(amount => {
+              if (amount.productForLoteDTO.img) {
+                return {
+                  ...amount,
+                  productForLoteDTO: {
+                    ...amount.productForLoteDTO,
+                    img: `data:image/jpeg;base64,${amount.productForLoteDTO.img}`
+                  }
+                }
+              }
+              return {
+                ...amount,
+                productForLoteDTO: {
+                  ...amount.productForLoteDTO,
+                  img: null
+                }
+              }
+            }),
+            amountPerSizeDefectiveForProducts: resJson.amountPerSizeDefectiveForProducts.map(amountDefective => {
+              if (amountDefective.productForLoteDTO.img) {
+                return {
+                  ...amountDefective,
+                  productForLoteDTO: {
+                    ...amountDefective.productForLoteDTO,
+                    img: `data:image/jpeg;base64,${amountDefective.productForLoteDTO.img}`
+                  }
+                }
+              }
+              return {
+                ...amountDefective,
+                productForLoteDTO: {
+                  ...amountDefective.productForLoteDTO,
+                  img: null
+                }
+              }
+            })
+
+
+          });
+        }
+      } catch (error) {
+
+      }
+    }
+    if (!workshopSpreadSheet.id) {
+      findWorkshopSpreadsheetById(id);
+    }
+
   }
 
   return (
@@ -122,6 +193,9 @@ export const LoteCard = ({ lote }) => {
             findPreparationSpreadSheet={findPreparationSpreadSheet}
             setPreparationSpreadSheet={setPreparationSpreadsheet}
             setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
+            setWorkshopSpreadsheetIsOpen={setWorkshopSpreadsheetIsOpen}
+            setWorkshopSpreadSheet={setWorkshopSpreadSheet}
+            findWorkshopSpreadsheet={findWorkshopSpreadsheet}
 
           />
 
@@ -153,6 +227,18 @@ export const LoteCard = ({ lote }) => {
             />
           </div>
         }
+
+        {
+          workshopSpreadSheetIsOpen &&
+          <div className="card-footer text-body-secondary d-flex justify-content-center">
+            <WorkshopSpreadSheep
+              workshopSpreadSheet={workshopSpreadSheet}
+              setWorkshopSpreadSheet={setWorkshopSpreadSheet}
+              setWorkshopSpreadSheetIsOpen={setWorkshopSpreadsheetIsOpen}
+            />
+          </div>
+        }
+
       </div>
     </>
   )
