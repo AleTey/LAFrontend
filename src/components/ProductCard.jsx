@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useProduct } from "../hooks/useProduct";
 import { useDeleteAlert } from "../hooks/useDeleteAlert";
 import { NewProductModal } from "./NewProductModal";
+import { CodeBarModel } from "./CodeBarModel";
 
 export const ProductCard = ({ product }) => {
 
@@ -12,6 +13,8 @@ export const ProductCard = ({ product }) => {
   const { deleteProduct } = useProduct();
 
   const { onDeleteAlert } = useDeleteAlert();
+
+  const [codeBarModelIsOpen, setCodeBarModelIsOpen] = useState(false);
 
   const onDelete = (id) => {
     onDeleteAlert(id, deleteProduct);
@@ -24,6 +27,15 @@ export const ProductCard = ({ product }) => {
         <NewProductModal
           productData={product}
           setProductFormIsOpen={setEditProductFormIsOpen}
+        />
+      }
+
+      {
+        codeBarModelIsOpen &&
+        <CodeBarModel
+          barcodeNumber={product.codeBarNumber}
+          productNombre={product.nombre}
+          setCodeBarModelIsOpen={setCodeBarModelIsOpen}
         />
       }
 
@@ -46,6 +58,14 @@ export const ProductCard = ({ product }) => {
           <li className="list-group-item">Costo: {product.cost}</li>
           <li className="list-group-item">Cost: {product.cost}
             <button className="btn btn-outline-success btn-sm ms-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar</button>
+          </li>
+          <li className="list-group-item">Code: {product.codeBarNumber}
+            <button
+              className="btn btn-success"
+              onClick={() => setCodeBarModelIsOpen(true)}
+            >
+              Codigo-barras
+            </button>
           </li>
           <li className="list-group-item">Temporada: {product.fechaRegistro}</li>
           {/* <li className="list-group-item">Tipo: {tipo}</li> */}
