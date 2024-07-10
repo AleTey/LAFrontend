@@ -8,11 +8,11 @@ export const LoteButtonsActions = ({
   lote,
   setCutSpreadSheetIsOpen,
   findPreparationSpreadSheet,
-  setPreparationSpreadSheet,
   setPreparationSpreadSheetIsOpen,
   setWorkshopSpreadsheetIsOpen,
-  setWorkshopSpreadSheet,
-  findWorkshopSpreadsheet
+  findWorkshopSpreadsheet,
+  findControlSpreadSheet,
+  setControlSpreadSheetIsOpen
 
 }) => {
 
@@ -33,6 +33,11 @@ export const LoteButtonsActions = ({
   const workshopSpreadSheet = () => {
     findWorkshopSpreadsheet(lote.workShopSpreadSheetForDTO.id);
     setWorkshopSpreadsheetIsOpen(true);
+  }
+
+  const controlSpreadSheetBtn = () => {
+    findControlSpreadSheet(lote.controlSpreadSheetForDTO.id);
+    setControlSpreadSheetIsOpen(true);
   }
 
   return (
@@ -107,9 +112,18 @@ export const LoteButtonsActions = ({
 
           <button
             className="btn btn-secondary"
+            onClick={CutSheetButton}
           >
             Planilla corte
           </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={preparationSpreadSheetBtn}
+          >
+            Planilla preparado
+          </button>
+
           <button
             className="btn btn-secondary"
             onClick={workshopSpreadSheet}
@@ -130,8 +144,64 @@ export const LoteButtonsActions = ({
 
           <button
             className="btn btn-secondary"
+            onClick={CutSheetButton}
           >
             Planilla corte
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={preparationSpreadSheetBtn}
+          >
+            Planilla preparado
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={workshopSpreadSheet}
+          >
+            Planilla taller
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={controlSpreadSheetBtn}
+          >
+            Planilla control
+          </button>
+        </div>
+      }
+
+      {
+        loteStatus == "FINALIZADO" &&
+        <div className="container mt-3 d-flex column gap-3">
+
+          <button
+            className="btn btn-secondary"
+            onClick={CutSheetButton}
+          >
+            Planilla corte
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={preparationSpreadSheetBtn}
+          >
+            Planilla preparado
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={workshopSpreadSheet}
+          >
+            Planilla taller
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={controlSpreadSheetBtn}
+          >
+            Planilla control
           </button>
         </div>
       }

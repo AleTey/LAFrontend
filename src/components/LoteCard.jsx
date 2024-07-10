@@ -1,12 +1,11 @@
-import { useContext, useState } from "react"
+import { useState } from "react"
 import { ProductCardBasicThumbnail } from "./ProductCardBasicThumbnail"
-import { LoteContext } from "../context/LoteContext"
-import { messageInfo } from "./alerts/messageInfo"
 import { LoteButtonsActions } from "./LoteButtonsActions"
 import { CutSpreadSheet } from "./CutSpreadSheet"
 import { PreparationSpreadSheet } from "./PreparationSpreadSheet"
 import { useLote } from "../hooks/lotes/useLote"
 import { WorkshopSpreadSheep } from "./WorkshopSpreadSheet"
+import { ControlSpreadSheet } from "./ControlSpreadSheet"
 
 export const LoteCard = ({ lote }) => {
 
@@ -25,9 +24,11 @@ export const LoteCard = ({ lote }) => {
 
   const [workshopSpreadSheetIsOpen, setWorkshopSpreadsheetIsOpen] = useState(false);
 
-  const [workshopSpreadSheet, setWorkshopSpreadSheet] = useState([]);
+  const [workshopSpreadSheet, setWorkshopSpreadSheet] = useState({});
 
+  const [controlSpreadSheetIsOpen, setControlSpreadSheetIsOpen] = useState(false);
 
+  const [controlSpreadSheet, setControlSpreadSheet] = useState({})
 
   // const { dispatchRemoveQueueLote,
   //   dispatchRemoveCutLotes,
@@ -156,6 +157,49 @@ export const LoteCard = ({ lote }) => {
 
   }
 
+  const findControlSpreadSheet = (id) => {
+
+    const findControlSpreedSheetById = async (id) => {
+
+      try {
+        const res = await fetch(`http://localhost:8080/control-spreadsheet/dto/${id}`);
+
+        if (res.ok) {
+          const resJson = await res.json();
+          console.log(resJson);
+          setControlSpreadSheet({
+            ...resJson,
+            amountPerSizeForProductDTO: resJson.amountPerSizeForProductDTO.map(a => {
+              if (a.productForLoteDTO.img) {
+                return {
+                  ...a,
+                  productForLoteDTO: {
+                    ...a.productForLoteDTO,
+                    img: `data:image/jpeg;base64,${a.productForLoteDTO.img}`
+                  }
+                }
+              }
+              return {
+                ...a,
+                productForLoteDTO: {
+                  ...a.productForLoteDTO,
+                  img: null
+                }
+              }
+            })
+          })
+        }
+
+      } catch (error) {
+
+      }
+
+
+
+    }
+    findControlSpreedSheetById(id);
+  }
+
   return (
     <>
 
@@ -191,12 +235,11 @@ export const LoteCard = ({ lote }) => {
             lote={lote}
             setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
             findPreparationSpreadSheet={findPreparationSpreadSheet}
-            setPreparationSpreadSheet={setPreparationSpreadsheet}
             setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
             setWorkshopSpreadsheetIsOpen={setWorkshopSpreadsheetIsOpen}
-            setWorkshopSpreadSheet={setWorkshopSpreadSheet}
             findWorkshopSpreadsheet={findWorkshopSpreadsheet}
-
+            findControlSpreadSheet={findControlSpreadSheet}
+            setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
           />
 
         </div>
@@ -235,6 +278,17 @@ export const LoteCard = ({ lote }) => {
               workshopSpreadSheet={workshopSpreadSheet}
               setWorkshopSpreadSheet={setWorkshopSpreadSheet}
               setWorkshopSpreadSheetIsOpen={setWorkshopSpreadsheetIsOpen}
+            />
+          </div>
+        }
+
+        {
+          controlSpreadSheetIsOpen &&
+          <div className="card-footer text-body-secondary d-flex justify-content-center">
+            <ControlSpreadSheet
+              controlSpreadSheet={controlSpreadSheet}
+              setControlSpreadSheet={setControlSpreadSheet}
+              setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
             />
           </div>
         }

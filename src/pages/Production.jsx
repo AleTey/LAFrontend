@@ -38,8 +38,8 @@ export const Production = () => {
       {
         newLoteFormIsOpen &&
         <NewLoteModal
-          // modalIsOpen={setNewLoteIsOpen}
-          // setNewLoteIsOpen={setNewLoteIsOpen}
+        // modalIsOpen={setNewLoteIsOpen}
+        // setNewLoteIsOpen={setNewLoteIsOpen}
         />
 
       }
@@ -210,7 +210,10 @@ export const Production = () => {
             <div id="panelsStayOpen-collapseFinalizado" className="accordion-collapse collapse">
               <div className="accordion-body">
                 {lotesFinalizado && lotesFinalizado.map(lote => (
-                  <LoteCard key={lote.id} lote={lote} />
+                  <LoteCard
+                    key={lote.id}
+                    lote={lote}
+                  />
                 ))}
               </div>
             </div>

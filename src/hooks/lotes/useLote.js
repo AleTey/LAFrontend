@@ -39,7 +39,7 @@ export const useLote = () => {
     })
     if (lotes.ok) {
       const lotesJson = await lotes.json();
-
+      console.log(lotesJson)
       switch (state) {
         case "COLA":
           dispatchAllQueueLotes(loteWithImgMapper(lotesJson));
