@@ -93,6 +93,7 @@ export const useFabric = () => {
   const addNewFabric = async (fabricForm) => {
     let imageFile = new FormData();
     let imgIsPresent = false;
+
     if (fabricForm.img) {
       imageFile.append(`imageFile`, fabricForm.img)
       fabricForm.img = "";
@@ -162,10 +163,15 @@ export const useFabric = () => {
 
 
   const editFabric = async (fabricForm) => {
-
     let imgIsPresent = false;
     let imageFile = new FormData();
     if (fabricForm.img) {
+      try {
+        if (fabricForm.img.split(",")[0] === "data:image/jpeg;base64") {
+          return
+        }
+      } catch (error) {
+      }
       imageFile.append(`imageFile`, fabricForm.img)
       imgIsPresent = true;
       fabricForm.img = "";

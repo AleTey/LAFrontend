@@ -21,7 +21,7 @@ const supplierFormInitialState = {
 const validationForm = (form) => {
 
   let errors = {};
-
+  console.log("validating 1")
   let regexName = /^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$/;
   let regexEmail = /^(\w+[/./-]?){1,}@[a-z]+[/.]\w{2,}$/;
   let regexComments = /^.{1,255}$/;
@@ -103,11 +103,18 @@ export const NewSupplierModal = () => {
 
   const onSubmit = (e) => {
     e.preventDefault();
-    if (setErrors(validationForm(supplierForm))) {
-      console.log("invalid");
-    } else {
+    // if (setErrors(validationForm(supplierForm))) {
+    console.log("onSubmit")
+    if (Object.keys(validationForm(supplierForm)).length === 0) {
       console.log("valid");
-      addSupplier();
+      if (!supplierForm.id) {
+        addSupplier();
+      } else {
+        updateSupplier(supplierForm);
+      }
+    } else {
+
+      console.log("invalid");
     }
     // setErrors(validationForm(supplierForm));
     // if (Object.keys(validationForm(supplierForm)).length !== 0) {
@@ -117,6 +124,20 @@ export const NewSupplierModal = () => {
     //   console.log("valid: " + errors);
     //   console.log(errors);
     // }
+  }
+
+  const updateSupplier = async (form) => {
+    const res = await fetch(`http://localhost:8080/suppliers/${form.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(form)
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+
+    }
   }
 
   const addSupplier = async () => {
@@ -340,7 +361,7 @@ export const NewSupplierModal = () => {
                 className="btn btn-primary"
                 onClick={onSubmit}
               >
-                Guardar
+                Guardarr
               </button>
             </div>
           </div>

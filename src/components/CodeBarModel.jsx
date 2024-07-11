@@ -30,7 +30,6 @@ export const CodeBarModel = ({ barcodeNumber, productNombre, setCodeBarModelIsOp
 
               <div className="container d-flex row justify-content-center gap-4">
                 {barcodeNumber && <svg ref={barcodeRef} />}
-                {/* <i className="bi bi-printer-fill"></i> */}
                 <button className="btn btn-success">
                   <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" className="bi bi-printer-fill" viewBox="0 0 16 16">
                     <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1" />

@@ -49,9 +49,9 @@ const validationForm = (form) => {
     errors.celContacto = "Formato invalido"
   }
 
-  if (!form.caracteristica.trim()) {
-    errors.caracteristica = "El campo es obligatorio";
-  }
+  // if (!form.caracteristica.trim()) {
+  //   errors.caracteristica = "El campo es obligatorio";
+  // }
 
   if (!form.emailContacto.trim()) {
     errors.emailContacto = "El campo es obligatorio"

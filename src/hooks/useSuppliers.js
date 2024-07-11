@@ -54,7 +54,7 @@ export const useSuppliers = () => {
   }
 
   const editSupplier = async (id, supplierForm) => {
-    const response = await fetch(`http://localhost:1000/distribuidores/${id}`, {
+    const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"

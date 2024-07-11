@@ -69,6 +69,7 @@ export const Suppliers = () => {
               setSupplierWasAdded={setSupplierWasAdded}
               setModalIsOpen={setModalIsOpen}
               addSupplier={addSupplier}
+              editSupplier={editSupplier}
             />
           }
         </div>

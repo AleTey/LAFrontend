@@ -14,6 +14,7 @@ import { ApliquesProvider } from './context/ApliquesContext.jsx'
 import { ModelProvider } from './context/ModelContext.jsx'
 import { ProductProvider } from './context/ProductContext.jsx'
 import { LoteProvider } from './context/LoteContext.jsx'
+import { OrderProvider } from './context/OrdersContext.jsx'
 
 
 
@@ -32,7 +33,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                         <ModelProvider>
                           <ProductProvider>
                             <LoteProvider>
-                              <App />
+                              <OrderProvider>
+                                <App />
+                              </OrderProvider>
                             </LoteProvider>
                           </ProductProvider>
                         </ModelProvider>
