@@ -274,7 +274,7 @@ export const useFabric = () => {
     })
   }
 
-  const searchFabricByString = async (fabric, setFabricFound) => {
+  const searchFabricByString = async (fabric) => {
     const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
     if (getFabricsFound.ok) {
       const fabricFoundJson = await getFabricsFound.json();
@@ -293,7 +293,10 @@ export const useFabric = () => {
           img: null
         };
       });
-      setFabricFound(fabricsWithImg);
+      dispatch({
+        type: 'GET_ALL_FABRICS',
+        payload: fabricsWithImg,
+      });
     };
   };
 

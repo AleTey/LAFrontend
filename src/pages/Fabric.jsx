@@ -5,6 +5,7 @@ import { NewFabricModal } from "../components/NewFabricModal";
 import { useFabric } from "../hooks/useFabric";
 import { Paginator } from "../components/Paginator";
 import { useParams } from "react-router-dom";
+import { Searcher } from "../components/Searcher";
 
 
 export const Fabric = () => {
@@ -70,10 +71,14 @@ export const Fabric = () => {
           Nueva tela
         </button>
 
-        <Seeker
+        <Searcher
+          onClickSearch={searchFabricByString}
+        />
+
+        {/* <Seeker
           onClickSearch={searchFabricByString}
           setElementsFounded={setElementsFounded}
-        />
+        /> */}
 
         <section className="container row">
 

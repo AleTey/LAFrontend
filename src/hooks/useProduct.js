@@ -159,6 +159,31 @@ export const useProduct = () => {
 
   }
 
+  const searchProductByString = async (string) => {
+    try {
+      const res = await fetch(`http://localhost:8080/productos/find-by-string/${string}`);
+      if (res.ok) {
+        const resJson = await res.json();
+        dispatchAllProducts(convertProductListToProductsWithImgList(resJson));
+      }
+    } catch (error) {
+
+    }
+  }
+
+  const convertProductListToProductsWithImgList = (productList) => {
+    const productsWithImgs = productList.map(product => {
+      if (product.img) {
+        return {
+          ...product,
+          img: `data:image/jpeg;base64,${product.img}`
+        }
+      }
+      return product
+    })
+    return productsWithImgs;
+  }
+
 
   return {
     products,
@@ -166,6 +191,7 @@ export const useProduct = () => {
     addNewProduct,
     deleteProduct,
     updateProduct,
+    searchProductByString,
     productDbHasChanged
   }
 }

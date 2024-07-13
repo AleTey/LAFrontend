@@ -4,6 +4,7 @@ import { NewProductModal } from "../components/NewProductModal";
 import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 import { useProduct } from "../hooks/useProduct";
 import { Seeker } from "../components/Seeker";
+import { Searcher } from "../components/Searcher";
 
 export const Products = () => {
 
@@ -11,6 +12,7 @@ export const Products = () => {
 
   const { products,
     getAllProducts,
+    searchProductByString,
     productDbHasChanged
   } = useProduct();
 
@@ -20,6 +22,8 @@ export const Products = () => {
   useEffect(() => {
     getAllProducts();
   }, [])
+
+
 
   return (
     <>
@@ -41,18 +45,24 @@ export const Products = () => {
           className="btn btn-outline-primary"
           onClick={() => setProductFormIsOpen(true)}>Nuevo Producto</button>
         <hr />
-<Seeker 
-
-/>
+        {/* <Seeker
+        onClickSearch={searchProductByString}
+          setElementsFounded={searchProductByString}
+        /> */}
+        <Searcher
+          onClickSearch={searchProductByString}
+        />
         <section className="container row">
           {
-            products &&
-            products.map(product => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
-            ))
+            products.length > 0 ?
+              products.map(product => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                />
+              ))
+              :
+              <h6>No se han encontrado resultados para tu búsqueda</h6>
           }
         </section>
       </div>
