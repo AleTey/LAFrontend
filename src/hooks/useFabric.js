@@ -58,7 +58,7 @@ export const useFabric = () => {
 
   const getAllFabricsPages = async (page = 0) => {
     try {
-      const res = await fetch(`http://localhost:8080/fabrics/page/${page}/6`);
+      const res = await fetch(`http://localhost:8080/fabrics/page/${page}/3`);
       const json = await res.json();
 
       const fabricsWithImageURL = json.content.map((fabric) => {
@@ -274,6 +274,29 @@ export const useFabric = () => {
     })
   }
 
+  const searchFabricByString = async (fabric, setFabricFound) => {
+    const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
+    if (getFabricsFound.ok) {
+      const fabricFoundJson = await getFabricsFound.json();
+      // setFabricPage(fabricFoundJson);
+      const fabricsWithImg = fabricFoundJson.map(fabric => {
+        const imageBase64 = fabric.img;
+        const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (fabric.img) {
+          return {
+            ...fabric,
+            img: imageUrl
+          };
+        };
+        return {
+          ...fabric,
+          img: null
+        };
+      });
+      setFabricFound(fabricsWithImg);
+    };
+  };
+
   return {
     fabricModalIsOpen,
     fabricWasAdded,
@@ -288,5 +311,6 @@ export const useFabric = () => {
     addNewFabric,
     editFabric,
     onDeleteFabric,
+    searchFabricByString,
   }
 }

@@ -98,13 +98,10 @@ export const Orders = () => {
             </div>
             <a
               href={`https://wa.me/${group.proveedor.caracteristica}${group.proveedor.celContacto}?text=${textEncoder(group.inputs)}`}
-
               target="_blank"
             >
-              {/* <img src={group.inputs[0].img} alt="" /> */}
               <button
                 className="btn"
-              // onClick={() => encoderText(group.inputs)}
               >
                 <img src="src/assets/whatsApp.png" alt="" />
               </button>

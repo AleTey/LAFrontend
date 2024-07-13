@@ -3,6 +3,7 @@ import { ProductCard } from "../components/ProductCard";
 import { NewProductModal } from "../components/NewProductModal";
 import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 import { useProduct } from "../hooks/useProduct";
+import { Seeker } from "../components/Seeker";
 
 export const Products = () => {
 
@@ -40,7 +41,9 @@ export const Products = () => {
           className="btn btn-outline-primary"
           onClick={() => setProductFormIsOpen(true)}>Nuevo Producto</button>
         <hr />
+<Seeker 
 
+/>
         <section className="container row">
           {
             products &&

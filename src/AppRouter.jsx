@@ -9,6 +9,7 @@ import { Models } from "./pages/Models"
 import { Production } from "./pages/Production"
 import { Inputs } from "./pages/Inputs"
 import { Navbar } from "./components/layout/Navbar"
+import { Warehouse } from "./pages/Warehouse"
 
 export const AppRouter = () => {
 
@@ -27,6 +28,7 @@ export const AppRouter = () => {
         <Route path="models" element={<Models />} />
         <Route path="production" element={<Production />} />
         <Route path="inputs" element={<Inputs />} />
+        <Route path="warehouse" element={<Warehouse />} />
       </Routes>
 
     </>

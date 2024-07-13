@@ -17,6 +17,7 @@ export const ProductProvider = ({ children }) => {
 
   const dispatchDeleteProduct = (id) => dispatch({ type: "DELETE_PRODUCT", payload: id });
 
+  
 
 
   return (

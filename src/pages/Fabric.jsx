@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import { useState, useEffect } from "react"
 import { FabricCard } from "../components/FabricCard"
 import { Seeker } from "../components/Seeker";
 import { NewFabricModal } from "../components/NewFabricModal";
@@ -10,6 +10,8 @@ import { useParams } from "react-router-dom";
 export const Fabric = () => {
 
   const { page } = useParams();
+
+  const [elementsFounded, setElementsFounded] = useState();
 
   const {
     fabricModalIsOpen,
@@ -25,6 +27,7 @@ export const Fabric = () => {
     addNewFabric,
     editFabric,
     onDeleteFabric,
+    searchFabricByString,
   } = useFabric();
 
 
@@ -66,22 +69,44 @@ export const Fabric = () => {
         <button type="button" className="btn btn-outline-primary" onClick={onNewFabric}>
           Nueva tela
         </button>
-        <Seeker />
+
+        <Seeker
+          onClickSearch={searchFabricByString}
+          setElementsFounded={setElementsFounded}
+        />
 
         <section className="container row">
+
+
+
+
           {
-            fabrics.map(fabric => (
-              <FabricCard
-                key={fabric.id}
-                fabric={fabric}
-                editFabric={editFabric}
-                onDeleteFabric={onDeleteFabric}
-              />
-            ))
+
+            elementsFounded ?
+              elementsFounded.map(fabric => (
+                <FabricCard
+                  key={fabric.id}
+                  fabric={fabric}
+                  editFabric={editFabric}
+                  onDeleteFabric={onDeleteFabric}
+                />
+              ))
+              :
+              fabrics.map(fabric => (
+                <FabricCard
+                  key={fabric.id}
+                  fabric={fabric}
+                  editFabric={editFabric}
+                  onDeleteFabric={onDeleteFabric}
+                />
+              ))
           }
-          <Paginator
-            paginator={paginator}
-          />
+          {
+            !elementsFounded &&
+            <Paginator
+              paginator={paginator}
+            />
+          }
         </section>
       </div>
     </>

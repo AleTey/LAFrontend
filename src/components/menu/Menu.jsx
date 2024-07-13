@@ -63,6 +63,13 @@ export const Menu = () => {
 
         <div className="row gap-4 m-4">
           <div className="col-12 d-flex flex-column flex-md-row align-items-center justify-content-center gap-4">
+            <NavLink className="nav-link" to="/warehouse">
+              <MenuIcon
+                img="src/assets/warehouse.jpeg"
+                text="Deposito"
+                color="black"
+              />
+            </NavLink>
             <NavLink className="nav-link" to="/models">
               <MenuIcon
                 img="src/assets/nuevaColeccion.jpg"

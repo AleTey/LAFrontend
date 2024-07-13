@@ -16,7 +16,7 @@ export const OrderCardNoImg = ({ input }) => {
           {/* <a href="#" className="card-link">Card link</a> */}
           {/* <a href="#" className="card-link">Another link</a> */}
           <div className="container d-flex justify-content-center mt-3">
-            <button onClick={() => onRemoveFromOrderList(input)} type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button onClick={() => onRemoveFromOrderList(input)} type="button" className="btn-close"></button>
           </div>
         </div>
       </div >
