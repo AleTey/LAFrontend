@@ -5,22 +5,47 @@ import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 import { useProduct } from "../hooks/useProduct";
 import { Seeker } from "../components/Seeker";
 import { Searcher } from "../components/Searcher";
+import { useParams } from "react-router-dom";
+import { Paginator } from "../components/Paginator";
 
 export const Products = () => {
 
   // const [products, setProducts] = useState();
 
+  const { page } = useParams();
+
+  const [searchIsActive, setSearchIsActive] = useState(false);
+
+  const [stringToSearch, setStringToSearch] = useState("")
+
+  const [pageOneAllProducts, setPageOneAllProducts] = useState([]);
+
   const { products,
+    productsFounded,
     getAllProducts,
-    searchProductByString,
-    productDbHasChanged
+    getPageOfProductsOnSearch,
+    productDbHasChanged,
+    productPaginator
   } = useProduct();
 
   const [productFormIsOpen, setProductFormIsOpen] = useState(false);
 
-
   useEffect(() => {
-    getAllProducts();
+    // console.log(page)
+    if (searchIsActive) {
+      getPageOfProductsOnSearch(stringToSearch, page)
+    } else {
+      getAllProducts(page);
+    }
+    console.log("PRODUCTS  USE EFFECT")
+    console.log(productPaginator)
+    console.log(productPaginator.totalPages)
+  }, [, page])
+  useEffect(() => {
+    // getPageOfProductsOnSearch
+    console.log("PRODUCTS  USE EFFECT")
+    console.log(productPaginator)
+    console.log(productPaginator.totalPages)
   }, [])
 
 
@@ -50,9 +75,17 @@ export const Products = () => {
           setElementsFounded={searchProductByString}
         /> */}
         <Searcher
-          onClickSearch={searchProductByString}
+          onClickSearch={getPageOfProductsOnSearch}
+          pageNumber={page}
+          setSearchIsActive={setSearchIsActive}
+          path={'products'}
+          setStringToSearch={setStringToSearch}
         />
         <section className="container row">
+
+          {/* {
+            productsFounded.length === 0 &&
+          } */}
           {
             products.length > 0 ?
               products.map(product => (
@@ -63,8 +96,93 @@ export const Products = () => {
               ))
               :
               <h6>No se han encontrado resultados para tu búsqueda</h6>
+
           }
+
+          {/* {
+            searchIsActive ? (
+              productsFounded.length === 0 ? (
+                <h6>No se han encontrado resultados para tu búsqueda</h6>
+              ) : (
+                productsFounded.map(p => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                  />
+                ))
+              )
+            ) : (
+              products.map(product => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                />
+              ))
+            )
+          } */}
+
+          {/* {searchIsActive && productsFounded.length === 0 ?
+            (<h6>No se han encontrado resultados para tu búsqueda</h6>
+
+            ) : (
+              productsFounded.length > 0 ?
+                productsFounded.map(p => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                  />
+                ))
+            ) : (
+              products.map(product => (
+          <ProductCard
+            key={product.id}
+            product={product}
+          />
+          ))
+          )
+          } */}
+
+
+          {/* {
+            productsFounded.length > 0 ?
+              productsFounded.map(p => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                />
+              ))
+              :
+
+
+              (stringToSearch && productsFounded.length === 0 ?
+                <h6>No se han encontrado resultados para tu búsqueda</h6>
+                :
+                productsFounded.length === 0 && !stringToSearch ?
+                  products.map(product => (
+                    <ProductCard
+                      key={product.id}
+                      product={product}
+                    />
+                  )))
+
+          } */}
+
+          {/* // (products.length > 0 && !stringToSearch ? */}
+          {/* //   products.map(product => ( */}
+          {/* //     <ProductCard */}
+          {/* //       key={product.id} */}
+          {/* //       product={product} */}
+          {/* //     /> */}
+          {/* //   )) */}
+          {/* //   :
+              //   <h6>No se han encontrado resultados para tu búsqueda</h6>) */}
         </section>
+      </div>
+      <div>
+        <Paginator
+          paginator={productPaginator}
+          path='products'
+        />
       </div>
     </>
   )

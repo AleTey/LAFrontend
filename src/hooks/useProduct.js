@@ -1,7 +1,9 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ProductContext } from "../context/ProductContext";
 
 export const useProduct = () => {
+
+  const [productsFounded, setProductsFounded] = useState([]);
 
   const { products,
     dispatchAllProducts,
@@ -9,13 +11,25 @@ export const useProduct = () => {
     dispatchUpdateProduct,
     dispatchDeleteProduct,
     productDbHasChanged,
-    setProductDbHasChanged } = useContext(ProductContext);
+    setProductDbHasChanged,
+    productPaginator,
+    setProductPaginator
+  } = useContext(ProductContext);
 
-  const getAllProducts = async () => {
-    const getAllProducts = await fetch("http://localhost:8080/productos")
+  const getAllProducts = async (pageNumber = 0) => {
+    const url = new URL('http://localhost:8080/productos/page')
+    url.searchParams.append('page', pageNumber);
+    url.searchParams.append('size', 3);
+    console.log(url.toString());
+    const getAllProducts = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
     if (getAllProducts.ok) {
       const getAllProductsJson = await getAllProducts.json();
-      const productWithImgUrl = getAllProductsJson.map(product => {
+      const productWithImgUrl = getAllProductsJson.content.map(product => {
         const imageBase64 = product.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (product.img) {
@@ -30,7 +44,45 @@ export const useProduct = () => {
         };
       })
       dispatchAllProducts(productWithImgUrl);
-      // setProducts(productWithImgUrl);
+      setProductPaginator(getAllProductsJson);
+      setProductPaginator({
+        ...Object.entries(getAllProductsJson)
+          .filter(([key, value]) => key !== 'content')
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      });
+    }
+  }
+
+  const getPageOfProductsOnSearch = async (string, pageNumber = 0) => {
+    console.log(pageNumber)
+    const url = new URL('http://localhost:8080/productos/page/search');
+    url.searchParams.append('string', string);
+    url.searchParams.append('page', pageNumber);
+    url.searchParams.append('size', 1);
+    const res = await fetch(url.toString());
+
+    if (res.ok) {
+      const resJson = await res.json();
+      const productsWithImg = resJson.content.map(p => {
+        if (p.img) {
+          return {
+            ...p,
+            img: `data:image/jpeg;base64,${p.img}`
+          }
+        }
+        return {
+          ...p,
+          img: null
+        }
+      })
+      console.log(productsWithImg);
+      dispatchAllProducts(productsWithImg);
+      setProductsFounded(productsWithImg);
+      setProductPaginator({
+        ...Object.entries(resJson)
+          .filter(([key, value]) => key !== 'content')
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      });
     }
   }
 
@@ -187,11 +239,14 @@ export const useProduct = () => {
 
   return {
     products,
+    productsFounded,
     getAllProducts,
+    getPageOfProductsOnSearch,
     addNewProduct,
     deleteProduct,
     updateProduct,
     searchProductByString,
-    productDbHasChanged
+    productDbHasChanged,
+    productPaginator
   }
 }

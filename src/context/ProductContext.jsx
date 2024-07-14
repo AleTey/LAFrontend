@@ -7,6 +7,8 @@ export const ProductProvider = ({ children }) => {
 
   const [products, dispatch] = useReducer(productReducer, []);
 
+  const [productPaginator, setProductPaginator] = useState({});
+
   const [productDbHasChanged, setProductDbHasChanged] = useState("");
 
   const dispatchAllProducts = (products) => dispatch({ type: "GET_ALL_PRODUCTS", payload: products });
@@ -17,7 +19,7 @@ export const ProductProvider = ({ children }) => {
 
   const dispatchDeleteProduct = (id) => dispatch({ type: "DELETE_PRODUCT", payload: id });
 
-  
+
 
 
   return (
@@ -28,7 +30,9 @@ export const ProductProvider = ({ children }) => {
       dispatchUpdateProduct,
       dispatchDeleteProduct,
       productDbHasChanged,
-      setProductDbHasChanged
+      setProductDbHasChanged,
+      productPaginator,
+      setProductPaginator
     }}>
       {children}
     </ProductContext.Provider>

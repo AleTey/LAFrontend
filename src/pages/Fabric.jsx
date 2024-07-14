@@ -110,6 +110,7 @@ export const Fabric = () => {
             !elementsFounded &&
             <Paginator
               paginator={paginator}
+              path='fabric'
             />
           }
         </section>
