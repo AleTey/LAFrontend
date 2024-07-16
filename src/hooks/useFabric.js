@@ -274,31 +274,64 @@ export const useFabric = () => {
     })
   }
 
-  const searchFabricByString = async (fabric) => {
-    const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
-    if (getFabricsFound.ok) {
-      const fabricFoundJson = await getFabricsFound.json();
-      // setFabricPage(fabricFoundJson);
-      const fabricsWithImg = fabricFoundJson.map(fabric => {
+  const searchFabricByString = async (string, page = 0) => {
+    const url = new URL('http://localhost:8080/fabrics/searchByString');
+    url.searchParams.append('string', string);
+    url.searchParams.append('page', page);
+    url.searchParams.append('size', 1);
+    const res = await fetch(url.toString());
+    if (res.ok) {
+      const json = await res.json();
+      const fabricsWithImageURL = json.content.map((fabric) => {
+
         const imageBase64 = fabric.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (fabric.img) {
           return {
             ...fabric,
-            img: imageUrl
+            img: imageUrl,
           };
-        };
+        }
         return {
           ...fabric,
-          img: null
+          img: null,
         };
       });
+
       dispatch({
         type: 'GET_ALL_FABRICS',
-        payload: fabricsWithImg,
+        payload: fabricsWithImageURL,
       });
-    };
+
+      setPaginator(json)
+      console.log(json)
+    }
   };
+  // const searchFabricByString = async (fabric) => {
+  //   const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
+  //   if (getFabricsFound.ok) {
+  //     const fabricFoundJson = await getFabricsFound.json();
+  //     // setFabricPage(fabricFoundJson);
+  //     const fabricsWithImg = fabricFoundJson.map(fabric => {
+  //       const imageBase64 = fabric.img;
+  //       const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+  //       if (fabric.img) {
+  //         return {
+  //           ...fabric,
+  //           img: imageUrl
+  //         };
+  //       };
+  //       return {
+  //         ...fabric,
+  //         img: null
+  //       };
+  //     });
+  //     dispatch({
+  //       type: 'GET_ALL_FABRICS',
+  //       payload: fabricsWithImg,
+  //     });
+  //   };
+  // };
 
   return {
     fabricModalIsOpen,

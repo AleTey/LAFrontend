@@ -10,14 +10,21 @@ export const ProductCard = ({ product }) => {
 
   const [editProductFormIsOpen, setEditProductFormIsOpen] = useState(false);
 
-  const { deleteProduct } = useProduct();
+  const { deleteProduct, calculateCost } = useProduct();
 
   const { onDeleteAlert } = useDeleteAlert();
 
   const [codeBarModelIsOpen, setCodeBarModelIsOpen] = useState(false);
 
+  const [productCost, setProductCost] = useState(0);
+
   const onDelete = (id) => {
     onDeleteAlert(id, deleteProduct);
+  }
+
+  const onCalculateCost = async () => {
+    const res = await calculateCost(product.id);
+    setProductCost(res);
   }
 
   return (
@@ -65,6 +72,17 @@ export const ProductCard = ({ product }) => {
               onClick={() => setCodeBarModelIsOpen(true)}
             >
               Codigo-barras
+            </button>
+          </li>
+          <li className="list-group-item">Costo: {productCost !== 0 ? productCost : ""}
+            <br />
+            <button
+              type="button"
+              className="btn btn-success"
+              onClick={onCalculateCost}
+            // onClick={() => setProductCost(calculateCost(product.id))}
+            >
+              Calcular
             </button>
           </li>
           <li className="list-group-item">Temporada: {product.fechaRegistro}</li>

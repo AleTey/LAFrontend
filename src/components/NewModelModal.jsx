@@ -219,7 +219,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
       if (checked) {
         setInputsSelected([
           ...inputsSelected.map(inp => {
-            // if (Object.keys(inp).includes('cantidad')) {
             if (inp.cantidad) {
               return inp
             } else {
@@ -231,7 +230,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
         setInputsSelected([
           ...inputsSelected.map(inp => {
-            // if (Object.keys(inp).includes('cantidad')) {
             if (inp.cantidad) {
               return inp
             }
@@ -371,10 +369,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
         ...detallesTiraModelo.filter(detalle => detalle.tira.id != value)
       ])
     }
-
   }
-
-
 
   const onChangeCantTiras = (e, tiraId) => {
     const { name, value } = e.target;
@@ -388,11 +383,9 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
           // Devolver un nuevo objeto detalle con el tirasPorTalle actualizado
           return { ...detalle, tirasPorTalle: updatedTirasPorTalle };
         }
-        // Si no es el detalle que queremos actualizar, devolverlo sin cambios
         return detalle;
       });
 
-      // Devolver el nuevo array de detallesTiraModelo actualizado
       return updatedDetalles;
     });
   }
@@ -400,7 +393,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
   const cantTirasValueSearcher = (id, talle) => {
     try {
-
       detallesTiraModelo.map(detalle => {
         if (detalle.tira.id && id && detalle.tira.id == id) {
           Object.entries(detalle.tirasPorTalle).forEach(([key, value]) => {
@@ -415,8 +407,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
       console.log(error);
     }
   }
-
-
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -472,11 +462,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
   return (
     <>
-      {/* <button type="button" className="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-        Nuevo modelo
-      </button> */}
-
-
       <div className="modal fade show" id="staticBackdrop" style={{ display: "block" }} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -528,12 +513,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                           value="S"
                           id="S"
                           onChange={onTallesDisponiblesChange}
-                          // checked={modelForm.tallesDisponibles && modelForm.tallesDisponibles.includes('S')}
                           checked={tallesDisponibles && tallesDisponibles.includes('S')}
-                        // checked={modelForm.tallesDisponibles && modelForm.tallesDisponibles.hasOwnProperty('S')}
-                        // checked={modelForm.tallesDisponibles?.['S']}
-                        // checked={!!(modelForm.tallesDisponibles && modelForm.tallesDisponibles['S'])}
-
                         />
                         <label className="form-check-label" htmlFor="S">
                           S
@@ -732,7 +712,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                     {elastico.nombre}
                                   </label>
                                 </div>
-                                {/* <section className="container d-flex col gap-2"> */}
                                 <section className="row">
                                   {
                                     checkedBoxes[elastico.id] &&
@@ -771,7 +750,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                   <input
                                     className="form-check-input"
                                     type="checkbox"
-                                    // name={gancho.nombre}
                                     value={gancho.id}
                                     id={`gancho${gancho.id}`}
                                     onChange={(e) => {
@@ -862,7 +840,6 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                                 <input
                                   className="form-check-input"
                                   type="checkbox"
-                                  // name={gancho.nombre}
                                   value={aplique.id}
                                   id={`aplique${aplique.id}`}
                                   onChange={(e) => {
@@ -898,10 +875,7 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
                     }
                   </div>
 
-
                   <h4 className="mt-3">TIRAS</h4>
-
-                  
 
                   {
                     tiras && tallesDisponibles.length > 0 &&

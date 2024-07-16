@@ -14,6 +14,10 @@ export const Fabric = () => {
 
   const [elementsFounded, setElementsFounded] = useState();
 
+  const [searchIsActive, setSearchIsActive] = useState(false);
+
+  const [stringToSearch, setStringToSearch] = useState("")
+
   const {
     fabricModalIsOpen,
     fabricWasAdded,
@@ -23,7 +27,6 @@ export const Fabric = () => {
     paginator,
     setFabricModalIsOpen,
     onNewFabric,
-    getAllFabrics,
     getAllFabricsPages,
     addNewFabric,
     editFabric,
@@ -33,7 +36,11 @@ export const Fabric = () => {
 
 
   useEffect(() => {
-    getAllFabricsPages(page);
+    if (searchIsActive) {
+      searchFabricByString(stringToSearch, page);
+    } else {
+      getAllFabricsPages(page);
+    }
   }, [, page])
 
 
@@ -73,19 +80,34 @@ export const Fabric = () => {
 
         <Searcher
           onClickSearch={searchFabricByString}
+          pageNumber={page}
+          path='fabric'
+          setSearchIsActive={setSearchIsActive}
+          setStringToSearch={setStringToSearch}
         />
 
-        {/* <Seeker
-          onClickSearch={searchFabricByString}
-          setElementsFounded={setElementsFounded}
-        /> */}
-
         <section className="container row">
-
-
-
-
           {
+            fabrics.length > 0 ?
+              fabrics.map(fabric => (
+                <FabricCard
+                  key={fabric.id}
+                  editFabric={editFabric}
+                  onDeleteFabric={onDeleteFabric}
+                  fabric={fabric}
+                />
+              ))
+              :
+              <h6>No se han encontrado resultados para tu búsqueda</h6>
+
+          }
+        </section>
+
+        {
+          searchIsActive &&
+          <h6 className="mt-3">{paginator.numberOfElements}/{paginator.totalElements} Telas encontrados</h6>
+        }
+        {/* {
 
             elementsFounded ?
               elementsFounded.map(fabric => (
@@ -105,15 +127,14 @@ export const Fabric = () => {
                   onDeleteFabric={onDeleteFabric}
                 />
               ))
-          }
-          {
-            !elementsFounded &&
-            <Paginator
-              paginator={paginator}
-              path='fabric'
-            />
-          }
-        </section>
+          } */}
+        {
+          !elementsFounded &&
+          <Paginator
+            paginator={paginator}
+            path='fabric'
+          />
+        }
       </div>
     </>
   )

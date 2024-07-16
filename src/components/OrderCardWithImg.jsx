@@ -6,7 +6,7 @@ export const OrderCardWithImg = ({ input }) => {
 
   return (
     <>
-      <div className="card" style={{ width: "9rem" }}>
+      <div className="card" style={{ width: "11rem" }}>
         <img src={input.img} className="card-img-top" alt={input.nombre} />
         <div className="card-body">
           <h5 className="card-title">{input.nombre}</h5>

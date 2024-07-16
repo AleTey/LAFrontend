@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
+import { Paginator } from "./Paginator";
+import { useParams } from "react-router-dom";
+import { Searcher } from "./Searcher";
 
 export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected, onChangeFabricForTira }) => {
 
@@ -8,6 +11,12 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
   const [fabricPageContent, setFabricPageContent] = useState([]);
 
   const [fabricsFound, setFabricFound] = useState([])
+
+  const [paginator, setPaginator] = useState({});
+
+  const [fabricToSearch, setFabricToSearch] = useState("");
+
+  const { page } = useParams();
 
 
 
@@ -45,12 +54,18 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
   }
 
   const searchFabric = async (fabric) => {
-
-    const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
+    console.log("entrando searchFabric")
+    console.log(fabric);
+    const url = new URL('http://localhost:8080/fabrics/searchByString');
+    url.searchParams.append('string', fabric);
+    url.searchParams.append('page', 0);
+    url.searchParams.append('size', 15);
+    const getFabricsFound = await fetch(url.toString());
     if (getFabricsFound.ok) {
       const fabricFoundJson = await getFabricsFound.json();
+      console.log(fabricFoundJson)
       setFabricPage(fabricFoundJson);
-      const fabricsWithImg = fabricFoundJson.map(fabric => {
+      const fabricsWithImg = fabricFoundJson.content.map(fabric => {
         const imageBase64 = fabric.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (fabric.img) {
@@ -68,8 +83,6 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
     };
   };
 
-
-
   return (
     <>
       <div className="modal fade show sm-0" id="staticBackdrop" style={{ display: "block" }} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -83,8 +96,10 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
 
               <div className="container sm-0">
 
-                <Seeker
+                <Searcher
                   onClickSearch={searchFabric}
+                  pageNumber={page}
+                  setStringToSearch={setFabricToSearch}
                 />
 
                 <table className="table table-striped">
@@ -117,8 +132,8 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
                                 <button
                                   className="btn btn-outline-primary btn-sm"
                                   value={fabric}
-                                  onClick={(e) => { onClickSelect(e, fabric), onChangeFabric(fabric.id) }}
-                                  // , onChangeFabricForTira(e, fabric)
+                                  onClick={(e) => { onClickSelect(e, fabric), onChangeFabric(fabric.id), closeModal(false) }}
+                                // , onChangeFabricForTira(e, fabric)
                                 >
                                   Seleccionar
                                 </button>
@@ -139,6 +154,10 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
                 </table>
 
               </div>
+              {/* <Paginator
+                paginator={fabricPage}
+                path='fabric/fabric-selector'
+              /> */}
             </div>
             <div className="modal-footer">
             </div>

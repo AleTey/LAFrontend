@@ -101,8 +101,8 @@ export const Inputs = () => {
       <div className="container">
         <h2 className="my-3"> Insumos  </h2>
         <hr />
-        <button className="btn btn-outline-primary" onClick={toggle}>Nuevo Insumo</button>
-        <Seeker />
+        <button className="btn btn-outline-primary mb-3" onClick={toggle}>Nuevo Insumo</button>
+        {/* <Seeker /> */}
 
         <div className="accordion" id="accordionPanelsStayOpenExample">
 

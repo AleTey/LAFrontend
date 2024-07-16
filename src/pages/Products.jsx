@@ -83,9 +83,7 @@ export const Products = () => {
         />
         <section className="container row">
 
-          {/* {
-            productsFounded.length === 0 &&
-          } */}
+
           {
             products.length > 0 ?
               products.map(product => (
@@ -98,7 +96,10 @@ export const Products = () => {
               <h6>No se han encontrado resultados para tu búsqueda</h6>
 
           }
-
+          {
+            searchIsActive &&
+            <h6 className="mt-3">{productPaginator.numberOfElements}/{productPaginator.totalElements} productos encontrados</h6>
+          }
           {/* {
             searchIsActive ? (
               productsFounded.length === 0 ? (

@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { ProductContext } from "../context/ProductContext";
+import { messageInfo } from "../components/alerts/messageInfo";
 
 export const useProduct = () => {
 
@@ -236,6 +237,38 @@ export const useProduct = () => {
     return productsWithImgs;
   }
 
+  // const calculateCost = async (id) => {
+  //   console.log("calculate cost")
+  //   const res = await fetch(`http://localhost:8080/productos/product-cost/${id}`);
+  //   console.log(res);
+  //   if (res.ok) {
+  //     const resJson = await res.json();
+  //     console.log(typeof resJson)
+  //     return resJson;
+  //   }
+  // }
+
+  const calculateCost = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8080/productos/product-cost/${id}`);
+      console.log(res);
+      if (res.ok) {
+        const resJson = await res.json();
+        console.log(typeof resJson) // Esto debería imprimir el tipo de dato de resJson
+        return resJson;
+      } else {
+        const error = new Error("Error en la solicitud");
+        error.response = res;
+        throw error;
+      }
+
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        messageInfo({ message: "Para poder calcular el costo de un producto, tiene que haber como mínimo un lote finalizado del mismo." })
+      }
+    }
+  }
+
 
   return {
     products,
@@ -246,6 +279,7 @@ export const useProduct = () => {
     deleteProduct,
     updateProduct,
     searchProductByString,
+    calculateCost,
     productDbHasChanged,
     productPaginator
   }

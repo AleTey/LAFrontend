@@ -1,68 +1,29 @@
 import { useEffect, useState } from "react"
 import { Seeker } from "../components/Seeker"
 import { WarehouseCard } from "../components/WarehouseCard";
+import { useWarehouse } from "../hooks/useWarehouse";
+import { Searcher } from "../components/Searcher";
+import { useParams } from "react-router-dom";
+import { Paginator } from "../components/Paginator";
 
 export const Warehouse = () => {
 
   const [warehouseList, setWarehouseList] = useState([]);
 
-  // const getAllWarehouses = () => {
-  //   const findAll = async() => {
-  //     const res = await fetch('http://localhost:8080/warehouse');
-  //     if (res.ok) {
-  //       const resJson = await res.json();
-  //       setWarehouseList(resJson);
-  //       console.log(resJson);
-  //     }
-  //   }
-  // }
-  const findAll = async () => {
-    const res = await fetch('http://localhost:8080/warehouse');
-    if (res.ok) {
-      const resJson = await res.json();
-      console.log(resJson)
+  const [stringToSearch, setStringToSearch] = useState("");
 
-      const wareHouseListWithImg = resJson.map(w => {
-        if (w.product.img) {
-          return {
-            ...w,
-            product: {
-              ...w.product,
-              img: `data:image/jpeg;base64,${w.product.img}`
-            }
-          }
-        } else {
-          return {
-            ...w,
-            product: {
-              ...w.product,
-              img: null
-            }
-          }
-        }
-      })
-
-      setWarehouseList(wareHouseListWithImg);
+  const { warehouses, paginator, findPageByString, onUpdateWarehouseList, findAll } = useWarehouse();
 
 
-      console.log(resJson);
-    }
-  }
+  const { page } = useParams();
 
-  const onUpdateWarehouseList = (warehouse) => {
-    setWarehouseList(
-      warehouseList.map(w => {
-        if (w.id === warehouse.id) {
-          return { ...warehouse };
-        }
-        return { ...w };
-      })
-    )
-  }
 
   useEffect(() => {
-    findAll();
-  }, []);
+    if (stringToSearch) {
+      findPageByString(stringToSearch, page);
+    }
+    // findAll();
+  }, [, page]);
 
   return (
     <>
@@ -70,12 +31,15 @@ export const Warehouse = () => {
         <h3 className="my-3">Depósito</h3>
         <hr />
 
-        <Seeker
-
+        <Searcher
+          path={'warehouse'}
+          pageNumber={page}
+          onClickSearch={findPageByString}
+          setStringToSearch={setStringToSearch}
         />
 
         {
-          warehouseList && warehouseList.map(w => (
+          warehouses && warehouses.map(w => (
             <WarehouseCard
               key={w.id}
               warehouse={w}
@@ -83,6 +47,11 @@ export const Warehouse = () => {
             />
           ))
         }
+
+        <Paginator
+          paginator={paginator}
+          path={'warehouse'}
+        />
 
       </div>
     </>
