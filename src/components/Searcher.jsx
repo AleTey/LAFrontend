@@ -23,27 +23,31 @@ export const Searcher = ({ onClickSearch, pageNumber = 0, setSearchIsActive, pat
   }
 
   const handleSearch = () => {
-    onClickSearch(inputContent, pageNumber);
-    if (setSearchIsActive) {
-      setSearchIsActive(true);
-    }
-    setStringToSearch(inputContent)
-    if (path) {
-      navigate(`/${path}/page/0`)
-    }
-  }
-
-  const handleKeyDow = (e) => {
-    if (e.key === 'Enter') {
+    if (inputContent.trim()) {
       onClickSearch(inputContent, pageNumber);
       if (setSearchIsActive) {
         setSearchIsActive(true);
       }
       setStringToSearch(inputContent)
       if (path) {
-        navigate(`/${path}/page/0`);
+        navigate(`/${path}/page/0`)
       }
+    }
+  }
 
+  const handleKeyDow = (e) => {
+    if (inputContent.trim()) {
+      if (e.key === 'Enter') {
+        onClickSearch(inputContent, pageNumber);
+        if (setSearchIsActive) {
+          setSearchIsActive(true);
+        }
+        setStringToSearch(inputContent)
+        if (path) {
+          navigate(`/${path}/page/0`);
+        }
+
+      }
     }
   }
 

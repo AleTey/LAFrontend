@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable"
 import { InputQuantityTable } from "./InputQuantityTable";
+import { ImageModal } from "./imageModal";
 
 export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationSpreadSheet, setPreparationSpreadSheetIsOpen }) => {
 
@@ -11,6 +12,8 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
   const [inputQuantityForSpreadSheetList, setInputQuantityForSpreadSheetList] = useState([]);
 
   const [editMode, setEditMode] = useState(false);
+
+  const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
 
 
   useEffect(() => {
@@ -145,10 +148,17 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
 
   return (
     <>
+      {imageModalIsOpen &&
+        <ImageModal
+          image={preparationSpreadSheetForm.img}
+          title="titulo"
+          modalIsOpen={setImageModalIsOpen}
+        />
+      }
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
           {/* <div className="d-flex justify-content-center"> */}
-            <h2 className="modal-title" id="staticBackdropLabel">Planilla preparación</h2>
+          <h2 className="modal-title" id="staticBackdropLabel">Planilla preparación</h2>
           {/* </div> */}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setPreparationSpreadSheetIsOpen(false)} ></button>
         </div>
@@ -208,7 +218,10 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
         <h5>Imagen de insumos enviados/ a enviar</h5>
 
         {/* <div className="container"> */}
-        <img src={preparationSpreadSheetForm.img || 'src/db/imgs/image-not-found.jpg'} style={{ maxWidth: "30rem" }} alt="" />
+        <div onClick={() => { setImageModalIsOpen(true) }} style={{ maxWidth: "12rem" }}>
+          <img src={preparationSpreadSheetForm.img || 'src/db/imgs/image-not-found.jpg'} style={{ maxWidth: "10rem" }} alt="" />
+        </div>
+
         {/* </div> */}
 
 

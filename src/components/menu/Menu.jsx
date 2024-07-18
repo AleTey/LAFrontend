@@ -70,7 +70,7 @@ export const Menu = () => {
                 color="black"
               />
             </NavLink>
-            <NavLink className="nav-link" to="/models">
+            <NavLink className="nav-link" to="/new-collection">
               <MenuIcon
                 img="src/assets/nuevaColeccion.jpg"
                 text="Nueva Colección"
