@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
 import { Paginator } from "./Paginator";
 import { useParams } from "react-router-dom";
 import { Searcher } from "./Searcher";
+import { useFabric } from "../hooks/useFabric";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
 export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected, onChangeFabricForTira }) => {
 
@@ -18,33 +20,37 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
 
   const { page } = useParams();
 
+  const { searchFabricByString } = useFabric();
+
+  const {login} = useContext(AuthContext);
 
 
-  useEffect(() => {
-    const getFabricPage = async () => {
-      const getFabricPage = await fetch("http://localhost:8080/fabrics/page/1/2");
-      if (getFabricPage.ok) {
-        const fabricPageJson = await getFabricPage.json();
-        setFabricPage(fabricPageJson);
-        const fabricsWithImg = fabricPageJson.content.map(fabric => {
-          const imageBase64 = fabric.img;
-          const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-          if (fabric.img) {
-            return {
-              ...fabric,
-              img: imageUrl
-            };
-          };
-          return {
-            ...fabric,
-            img: null
-          };
-        });
-        setFabricPageContent(fabricsWithImg);
-      };
-    };
-    getFabricPage();
-  }, [])
+
+  // useEffect(() => {
+  //   const getFabricPage = async () => {
+  //     const getFabricPage = await fetch("http://localhost:8080/fabrics/page/1/2");
+  //     if (getFabricPage.ok) {
+  //       const fabricPageJson = await getFabricPage.json();
+  //       setFabricPage(fabricPageJson);
+  //       const fabricsWithImg = fabricPageJson.content.map(fabric => {
+  //         const imageBase64 = fabric.img;
+  //         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+  //         if (fabric.img) {
+  //           return {
+  //             ...fabric,
+  //             img: imageUrl
+  //           };
+  //         };
+  //         return {
+  //           ...fabric,
+  //           img: null
+  //         };
+  //       });
+  //       setFabricPageContent(fabricsWithImg);
+  //     };
+  //   };
+  //   getFabricPage();
+  // }, [])
 
   const onClickSelect = (e, fabric) => {
     e.preventDefault();
@@ -53,14 +59,22 @@ export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, set
     setFabricSelected(fabric);
   }
 
+  // const searchFabric = (string, p) => {
+  //   searchFabricByString(string, p, setFabricFound)
+  // }
+
   const searchFabric = async (fabric) => {
     console.log("entrando searchFabric")
     console.log(fabric);
-    const url = new URL('http://localhost:8080/fabrics/searchByString');
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/searchByString`);
     url.searchParams.append('string', fabric);
     url.searchParams.append('page', 0);
     url.searchParams.append('size', 15);
-    const getFabricsFound = await fetch(url.toString());
+    const getFabricsFound = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getFabricsFound.ok) {
       const fabricFoundJson = await getFabricsFound.json();
       console.log(fabricFoundJson)

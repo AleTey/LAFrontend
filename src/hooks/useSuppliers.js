@@ -1,8 +1,13 @@
-import {useReducer, useState } from "react"
+import { useContext, useReducer, useState } from "react"
 import Swal from "sweetalert2";
 import { suppliersReducer } from "../reducers/suppliersReducer";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { useAuth } from "../auth/hook/useAuth";
 
 export const useSuppliers = () => {
+
+  // const { handlerLogout } = useAuth();
+  const { login, handlerLogout } = useContext(AuthContext);
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -12,26 +17,41 @@ export const useSuppliers = () => {
 
   const [suppliers, dispatch] = useReducer(suppliersReducer, []);
 
-  // console.log(suppliers)
+
 
   const onNewSupplier = () => {
     setModalIsOpen(true);
   }
 
   const getSuppliers = async () => {
-    // const res = await fetch("http://localhost:1000/distribuidores")
-    const res = await fetch("http://localhost:8080/suppliers")
-    const json = await res.json();
-    dispatch({
-      type: 'LOADING-SUPPLIERS',
-      payload: json
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/suppliers`, {
+      method: 'GET',
+      headers: {
+        "Authorization": sessionStorage.getItem('token'),
+        "Content-Type": "application/json"
+      }
     })
+    if (res.ok) {
+      console.log("fetch suppliers")
+      const json = await res.json();
+      dispatch({
+        type: 'LOADING-SUPPLIERS',
+        payload: json
+      })
+      console.log(suppliers);
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
   }
 
   const addSupplier = async (supplierForm) => {
-    const response = await fetch("http://localhost:8080/suppliers/supplier", {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/suppliers/supplier`, {
       method: "POST",
       headers: {
+        "Authorization": sessionStorage.getItem("token"),
         "Content-Type": "application/json"
       },
       body: JSON.stringify(supplierForm)
@@ -48,15 +68,18 @@ export const useSuppliers = () => {
       }, 5000);
       // onCloseModal();
     } else {
-      console.log(response);
-      console.log("ERROR")
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
   const editSupplier = async (id, supplierForm) => {
-    const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/suppliers/${id}`, {
       method: "PUT",
       headers: {
+        "Authorization": sessionStorage.getItem("token"),
         "Content-Type": "application/json"
       },
       body: JSON.stringify(supplierForm)
@@ -72,8 +95,10 @@ export const useSuppliers = () => {
         setSupplierWasEdited(false);
       }, 5000);
     } else {
-      console.log(response);
-      console.log("ERROR")
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -92,14 +117,15 @@ export const useSuppliers = () => {
 
         const deleteConfirmed = async () => {
 
-          const response = await fetch(`http://localhost:8080/suppliers/${id}`, {
+          const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/suppliers/${id}`, {
             method: "DELETE",
             headers: {
+              "Authorization": sessionStorage.getItem("token"),
               "Content-Type": "application/json"
             },
           });
           if (response.ok) {
-            const json = response.json();
+            // const json = response.json();
             dispatch({
               type: "REMOVE-SUPPLIER",
               payload: id
@@ -114,13 +140,46 @@ export const useSuppliers = () => {
               icon: "success"
             });
           } else {
-            //ELIMINAR CONSOLE LOG
-            console.log("Error en el if");
+            const error = await res.json();
+            if (error.message === "Please Login") {
+              handlerLogout();
+            }
           }
         }
         deleteConfirmed();
       }
     });
+  }
+
+  const getSimplestSuppliers = async (setTextileSuppliers, setFabricOnEdit, fabricForm) => {
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/suppliers/simplest`, {
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
+      })
+      if (response.ok) {
+        const json = await response.json();
+        console.log(json)
+        setTextileSuppliers(json)
+        // setTextileSuppliers(() => (
+        //   json.filter(sup => sup.sector && sup.sector.toLowerCase() === "textil")
+        // ))
+        if (fabricForm.id !== 0) {
+          setFabricOnEdit(() => (
+            json.filter(sup => sup.id === fabricForm.proveedor.id)
+          ))
+        } else {
+          const error = await res.json();
+          if (error.message === "Please Login") {
+            handlerLogout();
+          }
+        }
+      }
+    } catch (error) {
+
+    }
   }
 
   return {
@@ -136,6 +195,7 @@ export const useSuppliers = () => {
     getSuppliers,
     addSupplier,
     editSupplier,
-    onDeleteSupplier
+    onDeleteSupplier,
+    getSimplestSuppliers
   }
 }

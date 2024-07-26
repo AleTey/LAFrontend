@@ -1,6 +1,7 @@
 import { useContext } from "react"
 import { EtiquetaContext } from "../../context/EtiquetaContext"
 import { InputModalContext } from "../../context/InputModalContext";
+import { AuthContext } from "../../auth/context/AuthContext.Jsx";
 
 export const useEtiqueta = () => {
   const { etiquetas,
@@ -11,11 +12,23 @@ export const useEtiqueta = () => {
 
   const { modalSelectionHandler, toggle, setInputDbHasChanged } = useContext(InputModalContext);
 
+  const { handlerLogout } = useContext(AuthContext);
+
+
   const findAllEtiquetas = async () => {
-    const getAllEtiquetas = await fetch("http://localhost:8080/etiquetas");
+    const getAllEtiquetas = await fetch(`${import.meta.env.VITE_API_BASE_URL}/etiquetas`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getAllEtiquetas.ok) {
       const etiquetasJson = await getAllEtiquetas.json();
       dispatchAllEtiquetas(etiquetasJson);
+    } else {
+      const error = await getAllEtiquetas.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -23,9 +36,10 @@ export const useEtiqueta = () => {
     if (etiquetas.length === 0) {
 
     }
-    const addEtiqueta = await fetch("http://localhost:8080/etiquetas", {
+    const addEtiqueta = await fetch(`${import.meta.env.VITE_API_BASE_URL}/etiquetas`, {
       method: "POST",
       headers: {
+        "Authorization": sessionStorage.getItem("token"),
         "Content-Type": "application/json"
       },
       body: JSON.stringify(etiqueta)
@@ -40,6 +54,11 @@ export const useEtiqueta = () => {
       setTimeout(() => {
         setInputDbHasChanged("");
       }, 8000)
+    } else {
+      const error = await addEtiqueta.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -47,8 +66,11 @@ export const useEtiqueta = () => {
 
     const params = new URLSearchParams(modifiedEtiqueta).toString();
 
-    const updateEtiqueta = await fetch(`http://localhost:8080/etiquetas/${id}?${params}`, {
-      method: "PUT"
+    const updateEtiqueta = await fetch(`${import.meta.env.VITE_API_BASE_URL}/etiquetas/${id}?${params}`, {
+      method: "PUT",
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
     })
     if (updateEtiqueta.ok) {
       const etiquetaJson = await updateEtiqueta.json();
@@ -60,19 +82,33 @@ export const useEtiqueta = () => {
         setInputDbHasChanged("");
       }, 8000)
       formIsOpen(false);
+    } else {
+      const error = await updateEtiqueta.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
 
   const deleteEtiqueta = async (id) => {
-    const deleteEtiqueta = await fetch(`http://localhost:8080/etiquetas/${id}`, {
-      method: "DELETE"
+    const deleteEtiqueta = await fetch(`${import.meta.env.VITE_API_BASE_URL}/etiquetas/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
     })
     if (deleteEtiqueta.ok) {
+      dispatchDeleteEtiqueta(id);
       modalSelectionHandler("Etiqueta eliminada")
       setTimeout(() => {
         modalSelectionHandler("")
       }, 8000)
+    } else {
+      const error = await deleteEtiqueta.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 

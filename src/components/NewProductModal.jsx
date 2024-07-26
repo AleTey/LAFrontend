@@ -83,9 +83,6 @@ export const NewProductModal = ({ setProductFormIsOpen, productData = productFor
 
   useEffect(() => {
     if (productForm.id) {
-      // if (isBase64Image(productForm.fabric.img)) {
-
-
       const imgBase64 = productForm.fabric.img;
       const imgUrl = `data:image/jpeg;base64,${imgBase64}`;
 
@@ -131,57 +128,6 @@ export const NewProductModal = ({ setProductFormIsOpen, productData = productFor
         return d.fabric;
       })
       setTelasSeleccionadasParaTiras(fabricsForTelasSeleccionadas);
-      // }
-
-      // setProductForm({
-      //   ...productForm,
-      //   modelAndStripsForProduct: {
-      //     ...productForm.modelAndStripsForProduct,
-      //     stripDetailsForProducts: stripDetailsWithImg
-      //   }
-      // })
-
-      // setProductForm({
-      //   ...productForm,
-      //   modelAndStripsForProduct: {
-      //     ...productForm.modelAndStripsForProduct,
-      //     stripDetailsForProducts:
-      //       productForm.modelAndStripsForProduct.stripDetailsForProducts.map(d => {
-      //         return {
-      //           ...stripDetailsWithImg.map(fabricWithImg => {
-      //             if (d.fabric.id == fabricWithImg.id) {
-      //               return {
-      //                 ...d,
-      //                 fabric: {
-      //                   ...d.fabric,
-      //                   img: fabricWithImg.img
-      //                 }
-      //               }
-      //             }
-      //             return
-      //           })
-      //         }
-      //       })
-
-      //   }
-      // })
-
-      // setTelasSeleccionadasParaTiras([
-      //   ...productForm.modelAndStripsForProduct.stripDetailsForProducts.map(d => {
-      //     if (d.fabric.img) {
-      //       const imgBase64 = d.fabric.img;
-      //       const imgUrl = `data:image/jpeg;base64,${imgBase64}`;
-      //       return {
-      //         ...d,
-      //         fabric: {
-      //           ...d.fabric,
-      //           img: imgUrl
-      //         }
-      //       }
-      //     }
-      //     return d;
-      //   })
-      // ])
     }
   }, [])
 
@@ -206,19 +152,6 @@ export const NewProductModal = ({ setProductFormIsOpen, productData = productFor
       }
     })
   }
-
-  // const onChangeFabric = (fabricId) => {
-  //   // e.preventDefault();
-  //   console.log(fabricId)
-  //   setProductForm({
-  //     ...productForm,
-  //     fabric: {
-  //       id: fabricId
-  //     }
-  //   })
-  // }
-
-
 
   const onChangeModel = (model) => {
 
@@ -364,7 +297,7 @@ export const NewProductModal = ({ setProductFormIsOpen, productData = productFor
 
     if (Object.keys(productValidationForm(productForm)).length === 0) {
       if (productForm.id) {
-        updateProduct(productForm);
+        updateProduct(productForm, setProductFormIsOpen);
       } else {
         addNewProduct(productForm, setProductFormIsOpen);
         console.log("Errors 0")

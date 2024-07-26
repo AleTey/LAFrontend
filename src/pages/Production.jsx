@@ -4,6 +4,8 @@ import { LoteCard } from "../components/LoteCard";
 import { NewLoteModal } from "../components/NewLoteModal";
 import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
 import { useLote } from "../hooks/lotes/useLote"
+import { hasAnyRole } from "../auth/utils/hasAnyRole";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
 export const Production = () => {
 
@@ -21,6 +23,7 @@ export const Production = () => {
     setNewLoteFormIsOpen
   } = useLote();
 
+  const { login } = useContext(AuthContext);
 
   const onClickSectionLote = (state) => {
     getLotesByState(state);
@@ -38,8 +41,6 @@ export const Production = () => {
       {
         newLoteFormIsOpen &&
         <NewLoteModal
-        // modalIsOpen={setNewLoteIsOpen}
-        // setNewLoteIsOpen={setNewLoteIsOpen}
         />
 
       }
@@ -48,15 +49,18 @@ export const Production = () => {
         <h2 className="my-3"> Producción  </h2>
         <hr />
 
-        <div className="container mb-3 d-flex column gap-2">
-          <button
-            className="btn btn-primary"
-            onClick={() => setNewLoteFormIsOpen(true)}
-          >
-            Nuevo lote
-          </button>
-        </div>
+        {
 
+          hasAnyRole(login.user.authorities, ["CREATE_LOTE"]) &&
+          <div className="container mb-3 d-flex column gap-2">
+            <button
+              className="btn btn-primary"
+              onClick={() => setNewLoteFormIsOpen(true)}
+            >
+              Nuevo lote
+            </button>
+          </div>
+        }
         <div className="accordion" id="accordionPanelsStayOpenExample">
 
           <div className="accordion-item">

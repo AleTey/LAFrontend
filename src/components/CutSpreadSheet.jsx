@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { useCutSpreadsheet } from "../hooks/lotes/useCutSpreadsheet";
 
 
 export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpreadSheetIsOpen }) => {
@@ -6,6 +8,9 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
   const [cutSpreadSheetForm, setCutSpreadSheetForm] = useState(cutSpreadSheet);
 
   const [editMode, setEditMode] = useState(false);
+
+
+  const { updateCutSpreadSheet } = useCutSpreadsheet();
 
 
   useEffect(() => {
@@ -99,37 +104,11 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
       }),
       details: cutSpreadSheetForm.details,
       tableLength: cutSpreadSheetForm.tableLength,
-      // publicationDate: cutSpreadSheetForm.publicationDate,
-      // isFinished: cutSpreadSheetForm.isFinished
     }
   }
 
   const onSubmit = () => {
-    console.log(cutSpreadSheetForm)
-    const updateCutSpreadSheet = async (c) => {
-      console.log(c)
-      try {
-        console.log("enter")
-        const res = await fetch(`http://localhost:8080/cut-spreadsheets/${c.id}`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(c)
-        })
-        console.log("finish")
-        if (res.ok) {
-          console.log("res is ok")
-          const resJson = await res.json();
-          console.log(resJson);
-          setEditMode(false);
-          setCutSpreadSheet(cutSpreadSheetForm);
-        }
-      } catch (error) {
-        console.log("error" + error)
-      }
-    }
-    updateCutSpreadSheet(cutSpreadSheetToSendMapper(cutSpreadSheetForm));
+    updateCutSpreadSheet(cutSpreadSheetToSendMapper(cutSpreadSheetForm), setCutSpreadSheet, setEditMode);
   }
 
   return (

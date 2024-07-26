@@ -15,39 +15,45 @@ import { ModelProvider } from './context/ModelContext.jsx'
 import { ProductProvider } from './context/ProductContext.jsx'
 import { LoteProvider } from './context/LoteContext.jsx'
 import { OrderProvider } from './context/OrdersContext.jsx'
+import { AuthProvider } from './auth/context/AuthContext.Jsx'
+import { FabricProvider } from './context/FabricContext.jsx'
 
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <SupplierProvider>
-        <InputModalProvider>
-          <InputsProvider>
-            <ElasticosProvider>
-              <CorrederaProvider>
-                <ArgollaProvider>
-                  <GanchosProvider>
-                    <EtiquetaProvider>
-                      <ApliquesProvider>
-                        <ModelProvider>
-                          <ProductProvider>
-                            <LoteProvider>
-                              <OrderProvider>
-                                <App />
-                              </OrderProvider>
-                            </LoteProvider>
-                          </ProductProvider>
-                        </ModelProvider>
-                      </ApliquesProvider>
-                    </EtiquetaProvider>
-                  </GanchosProvider>
-                </ArgollaProvider>
-              </CorrederaProvider>
-            </ElasticosProvider>
-          </InputsProvider>
-        </InputModalProvider>
-      </SupplierProvider>
+      <AuthProvider>
+        <SupplierProvider>
+          <FabricProvider>
+            <InputModalProvider>
+              <InputsProvider>
+                <ElasticosProvider>
+                  <CorrederaProvider>
+                    <ArgollaProvider>
+                      <GanchosProvider>
+                        <EtiquetaProvider>
+                          <ApliquesProvider>
+                            <ModelProvider>
+                              <ProductProvider>
+                                <LoteProvider>
+                                  <OrderProvider>
+                                    <App />
+                                  </OrderProvider>
+                                </LoteProvider>
+                              </ProductProvider>
+                            </ModelProvider>
+                          </ApliquesProvider>
+                        </EtiquetaProvider>
+                      </GanchosProvider>
+                    </ArgollaProvider>
+                  </CorrederaProvider>
+                </ElasticosProvider>
+              </InputsProvider>
+            </InputModalProvider>
+          </FabricProvider>
+        </SupplierProvider>
+      </AuthProvider>
     </BrowserRouter>
   </React.StrictMode>,
 )

@@ -24,7 +24,7 @@ const validationCorrederaForm = (corredera) => {
 
 
   if (corredera.proveedor.id == 0 || corredera.proveedor.id === "Proveedor") {
-    errors.proveedor = "Este campo es obligatorio"
+    errors.proveedor = "El campo proveedor es obligatorio"
   }
 
   if (!corredera.medida.trim()) {
@@ -102,6 +102,7 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
       }
 
       if (!correderaForm.id) {
+        console.log(correderaForm);
         addNewCorredera(correderaForm);
       } else {
         updateCorredera(modifiedFields, correderaForm.id, formIsOpen);

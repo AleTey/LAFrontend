@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { ProductCard } from "../components/ProductCard";
 import { NewProductModal } from "../components/NewProductModal";
 import { FetchTopAlert } from "../components/alerts/FetchTopAlert";
@@ -7,6 +7,8 @@ import { Seeker } from "../components/Seeker";
 import { Searcher } from "../components/Searcher";
 import { useParams } from "react-router-dom";
 import { Paginator } from "../components/Paginator";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { hasAnyRoleV2 } from "../auth/utils/hasAnyRole";
 
 export const Products = () => {
 
@@ -19,6 +21,8 @@ export const Products = () => {
   const [stringToSearch, setStringToSearch] = useState("")
 
   const [pageOneAllProducts, setPageOneAllProducts] = useState([]);
+
+  const { login } = useContext(AuthContext);
 
   const { products,
     productsFounded,
@@ -66,9 +70,12 @@ export const Products = () => {
       }
       <div className="container-sm">
         <h3 className="my-3">Productos</h3>
-        <button
-          className="btn btn-outline-primary"
-          onClick={() => setProductFormIsOpen(true)}>Nuevo Producto</button>
+        {
+          hasAnyRoleV2(["CREATE_PRODUCT"]) &&
+          <button
+            className="btn btn-outline-primary"
+            onClick={() => setProductFormIsOpen(true)}>Nuevo Producto</button>
+        }
         <hr />
         {/* <Seeker
         onClickSearch={searchProductByString}

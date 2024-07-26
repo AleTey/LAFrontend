@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { LoteContext } from "../../context/LoteContext";
 import { messageInfo } from "../../components/alerts/messageInfo";
+import { AuthContext } from "../../auth/context/AuthContext.Jsx";
+import { hasAnyRole, hasAnyRoleV2 } from "../../auth/utils/hasAnyRole";
 
 export const useLote = () => {
 
@@ -24,16 +26,20 @@ export const useLote = () => {
     dispatchRemoveControlLote,
     lotesFinalizado,
     dispatchAllFinalizadoLotes,
+    dispatchRemoveFinalizado,
     loteDbHasChanged,
     setLoteDbHasChanged,
     newLoteFormIsOpen,
     setNewLoteFormIsOpen
   } = useContext(LoteContext);
 
+  const { login, handlerLogout } = useContext(AuthContext);
+
   const getLotesByState = async (state) => {
-    const lotes = await fetch(`http://localhost:8080/lotes/by-state/${state}`, {
+    const lotes = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/by-state/${state}`, {
       method: 'GET',
       headers: {
+        'Authorization': sessionStorage.getItem('token'),
         'Content-Type': 'application/json'
       }
     })
@@ -62,17 +68,22 @@ export const useLote = () => {
         default:
           break;
       }
+    } else {
+      const error = await lotes.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
+
   }
-
-
 
   const addLote = async (lote) => {
     try {
 
-      const res = await fetch('http://localhost:8080/lotes', {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes`, {
         method: 'POST',
         headers: {
+          'Authorization': sessionStorage.getItem('token'),
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(lote)
@@ -87,6 +98,11 @@ export const useLote = () => {
         }, 5000)
         setNewLoteFormIsOpen(false);
         dispatchAddQueueLote(oneLoteWithImgMapper(resJson))
+      } else {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
 
     } catch (error) {
@@ -95,42 +111,92 @@ export const useLote = () => {
 
   }
 
-  const changeStatus = async (id, status, lote) => {
-    console.log(lote)
+  // const changeStatus = (id, status) =>{
+
+  // }
+
+  const dispatcher = (id, status, direction) => {
+    // const direction = d;
+    try {
+      console.log("DIRECTION DISPATCHER")
+      console.log(direction)
+      switch (status) {
+        case "COLA":
+          dispatchRemoveCutLotes(id);
+          break;
+
+        case "CORTE":
+          if (direction = "next") {
+            dispatchRemoveQueueLote(id);
+          }
+          else {
+            dispatchRemovePreparationLote(id);
+          }
+          break;
+
+        case "PREPARADO":
+          if (direction = "next") {
+            dispatchRemoveCutLotes(id)
+          } else {
+            dispatchRemoveWorkshopLote(id);
+          }
+          break;
+
+        case "TALLER":
+          if (direction = "next") {
+            dispatchRemovePreparationLote(id);
+          } else {
+            dispatchRemoveControlLote(id);
+          }
+          break;
+
+        case "CONTROL":
+          if (direction = "next") {
+            dispatchRemoveWorkshopLote(id);
+          } else {
+            dispatchRemoveFinalizado(id);
+          }
+          break;
+        case "FINALIZADO":
+          dispatchRemoveControlLote(id);
+          break;
+
+        default:
+          break;
+      }
+
+    } catch (error) {
+      if (error.response && error.response.status === 409) {
+        messageInfo({ message: 'Solo puedo haber un lote en estado de corte' })
+      }
+    }
+  }
+  const dispatcherRemove = (id, status) => {
     try {
 
-      const changeState = await fetch(`http://localhost:8080/lotes/update-state/${id}/${status}`, {
-        method: 'PUT'
-      })
-      if (changeState.ok) {
+      switch (status) {
 
-        switch (status) {
-          case "CORTE":
-            dispatchRemoveQueueLote(id);
-            break;
+        case "CORTE":
+          dispatchRemoveCutLotes(id)
+          break;
 
-          case "PREPARADO":
-            dispatchRemoveCutLotes(id)
-            break;
+        case "PREPARADO":
+          dispatchRemovePreparationLote(id);
+          break;
 
-          case "TALLER":
-            dispatchRemovePreparationLote(id);
-            break;
+        case "TALLER":
+          dispatchRemoveWorkshopLote(id);
+          break;
 
-          case "CONTROL":
-            dispatchRemoveWorkshopLote(id);
-            break;
-          case "FINALIZADO":
-            dispatchRemoveControlLote(id);
-            break;
+        case "CONTROL":
+          dispatchRemoveControlLote(id);
+          break;
+        case "FINALIZADO":
+          dispatchRemoveFinalizado(id);
+          break;
 
-          default:
-            break;
-        }
-      } else {
-        const error = new Error("Error en la solicitud");
-        error.response = changeState;
-        throw error;
+        default:
+          break;
       }
 
     } catch (error) {
@@ -140,59 +206,132 @@ export const useLote = () => {
     }
   }
 
-  const findCutSpreadSheetById = async (id, setCutSpreadSheet) => {
-    const res = await fetch(`http://localhost:8080/cut-spreadsheets/${id}`);
+  const changeStatus = (id, status) => {
+    if (hasAnyRole(login.user.authorities, ["ROLE_WORKSHOP"])) {
+      changeStateWorkshop(id, status);
+    }
+    if (hasAnyRole(login.user.authorities, ["ROLE_ADMIN"])) {
+      changeStateAdmin(id, status);
+    }
+    if (hasAnyRole(login.user.authorities, ["ROLE_CONTROLLER"])) {
+      changeStateController(id, status);
+    }
 
+    if (hasAnyRole(login.user.authorities, ["ROLE_CUTTER"])) {
+      changeStateCutter(id, status);
+    }
+
+  }
+
+  const changeStateAdmin = async (id, status, direction = "") => {
+    console.log("FETCH")
+    console.log(direction)
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/update-state/${id}/${status}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': sessionStorage.getItem('token'),
+      }
+    })
     if (res.ok) {
-      const cutSpreadSheetJson = await res.json();
-      console.log(cutSpreadSheetJson)
+      if (direction === "prev") {
+        dispatcherRemove(id, nextState(status));
+      }
+      dispatcher(id, status);
+    } else {
+      try {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
+      } catch (error) {
 
-      setCutSpreadSheet({
-        ...cutSpreadSheetJson,
-        amountPerSizeForProductDTO:
-          cutSpreadSheetJson.amountPerSizeForProductDTO
-            .map(d => {
-              const imgUrl = `data:image/jpeg;base64,${d.productForLoteDTO.img}`;
-              if (d.productForLoteDTO.img) {
-                return {
-                  ...d,
-                  productForLoteDTO: {
-                    ...d.productForLoteDTO,
-                    img: imgUrl
-                  }
-                };
-              };
-              return {
-                ...d,
-                productForLoteDTO: {
-                  ...d.productForLoteDTO,
-                  img: null
-                }
-              };
-            }),
+      }
+      return false;
+    }
+  }
+  const changeStateCutter = async (id, status) => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/update-state-cutter/${id}/${status}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': sessionStorage.getItem('token'),
+      }
+    })
+    if (res.ok) {
+      dispatcher(id, status);
+    } else {
+      try {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
+      } catch (error) {
 
-        fabricLengthDetailsDTOs:
-          cutSpreadSheetJson.fabricLengthDetailsDTOs.map(fDetail => {
-            if (fDetail.fabricNombreCodigoTipoImgDTO.img) {
-              const imgUrl = `data:image/jpeg;base64,${fDetail.fabricNombreCodigoTipoImgDTO.img}`
-              return {
-                ...fDetail,
-                fabricNombreCodigoTipoImgDTO: {
-                  ...fDetail.fabricNombreCodigoTipoImgDTO,
-                  img: imgUrl
-                }
-              }
-            }
-            return {
-              ...fDetail,
-              fabricNombreCodigoTipoImgDTO: {
-                ...fDetail.fabricNombreCodigoTipoImgDTO,
-                img: null
-              }
-            }
-          })
+      }
+      return false;
+    }
+  }
 
-      })
+  const changeStateWorkshop = async (id, status) => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/update-state-workshop/${id}/${status}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': sessionStorage.getItem('token')
+      }
+    });
+    if (res.ok) {
+      dispatcher(id, status);
+    } else {
+      try {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
+      } catch (error) {
+
+      }
+
+      return false;
+    }
+  }
+
+  const changeStateController = async (id, status) => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/update-state-controller/${id}/${status}`, {
+      method: "PUT",
+      headers: {
+        'Authorization': sessionStorage.getItem('token')
+      }
+    })
+    if (res.ok) {
+      dispatcher(id, status);
+    } else {
+      try {
+        const error = await res.json();
+        if (error && error.message && error.message === "Please Login") {
+          handlerLogout();
+        }
+      } catch (error) {
+
+      }
+
+      return false;
+    }
+  }
+
+  const getLotesForWorkshop = async () => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/lotes-workshop`, {
+      headers: {
+        'Authorization': sessionStorage.getItem("token")
+      }
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+      dispatchAllWorkshopLotes(loteWithImgMapper(resJson));
+
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -216,6 +355,27 @@ export const useLote = () => {
     }));
   }
 
+  const previousState = (currentState) => {
+    console.log("previousStatus")
+    const status = ["COLA", "CORTE", "PREPARADO", "TALLER", "CONTROL", "FINALIZADO"];
+    const currentIndex = status.indexOf(currentState);
+    if (currentIndex <= 0) {
+      return null;
+    }
+    console.log(status[currentIndex - 1]);
+    return status[currentIndex - 1];
+  }
+  const nextState = (currentState) => {
+    console.log("previousStatus")
+    const status = ["COLA", "CORTE", "PREPARADO", "TALLER", "CONTROL", "FINALIZADO"];
+    const currentIndex = status.indexOf(currentState);
+    if (currentIndex >= status.length) {
+      return null;
+    }
+    console.log(status[currentIndex - 1]);
+    return status[currentIndex + 1];
+  }
+
   return {
     lotesQueue,
     lotesPreparation,
@@ -224,11 +384,15 @@ export const useLote = () => {
     lotesControl,
     lotesFinalizado,
     getLotesByState,
+    getLotesForWorkshop,
     addLote,
     changeStatus,
-    findCutSpreadSheetById,
+    // findCutSpreadSheetById,
     loteDbHasChanged,
     newLoteFormIsOpen,
-    setNewLoteFormIsOpen
+    setNewLoteFormIsOpen,
+    loteWithImgMapper,
+    previousState,
+    changeStateAdmin
   }
 }

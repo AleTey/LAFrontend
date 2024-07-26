@@ -2,6 +2,7 @@ import { useContext } from "react"
 import { ArgollaContext } from "../../context/ArgollaContext"
 import { useInputModal } from "./useInputModal"
 import Swal from "sweetalert2";
+import { AuthContext } from "../../auth/context/AuthContext.Jsx";
 
 
 export const useArgolla = () => {
@@ -15,13 +16,24 @@ export const useArgolla = () => {
 
   const { toggle, modalSelectionHandler, setInputDbHasChanged } = useInputModal();
 
+  const {handlerLogout} = useContext(AuthContext);
+
 
   const findAllArgollas = async () => {
-    const getArgollas = await fetch("http://localhost:8080/argollas");
+    const getArgollas = await fetch(`${import.meta.env.VITE_API_BASE_URL}/argollas`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getArgollas.ok) {
       const argollasJson = await getArgollas.json();
 
       dispatchAllArgollas(argollasJson);
+    } else {
+      const error = await getArgollas.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -32,9 +44,10 @@ export const useArgolla = () => {
       findAllArgollas();
     }
 
-    const addArgolla = await fetch("http://localhost:8080/argollas", {
+    const addArgolla = await fetch(`${import.meta.env.VITE_API_BASE_URL}/argollas`, {
       method: "POST",
       headers: {
+        "Authorization": sessionStorage.getItem("token"),
         "Content-Type": "application/json"
       },
       body: JSON.stringify(argollaForm)
@@ -48,6 +61,11 @@ export const useArgolla = () => {
       setTimeout(() => {
         setInputDbHasChanged("")
       }, 8000)
+    } else {
+      const error = await addArgolla.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -57,8 +75,11 @@ export const useArgolla = () => {
 
     const params = new URLSearchParams(modifiedFields).toString();
 
-    const updateArgolla = await fetch(`http://localhost:8080/argollas/${id}?${params}`, {
+    const updateArgolla = await fetch(`${import.meta.env.VITE_API_BASE_URL}/argollas/${id}?${params}`, {
       method: "PUT",
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
     })
     if (updateArgolla.ok) {
       const updateArgollaJson = await updateArgolla.json();
@@ -70,13 +91,21 @@ export const useArgolla = () => {
         setInputDbHasChanged("");
       }, 8000)
       formIsOpen(false);
+    } else {
+      const error = await updateArgolla.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
   const deleteArgolla = async (id) => {
     try {
-      const deleteArgolla = await fetch(`http://localhost:8080/argollas/${id}`, {
+      const deleteArgolla = await fetch(`${import.meta.env.VITE_API_BASE_URL}/argollas/${id}`, {
         method: "DELETE",
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
       })
       if (deleteArgolla.ok) {
 
@@ -92,6 +121,11 @@ export const useArgolla = () => {
           icon: "success"
         });
       } else {
+        const error = await getElasticos.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
+
         swalWithBootstrapButtons.fire({
           title: "Ocurrió un error",
           text: "Your file has been deleted.",
@@ -100,11 +134,6 @@ export const useArgolla = () => {
       }
     } catch (error) {
       console.log(error);
-      // swalWithBootstrapButtons.fire({
-      //   title: "Ocurrió un error",
-      //   text: { error },
-      //   icon: "error"
-      // });
     }
   }
 

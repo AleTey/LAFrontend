@@ -18,26 +18,20 @@ export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSe
 
   const searchModel = async (model) => {
 
-    const getFoundedModels = await fetch(`http://localhost:8080/models/searchByString/${model}`);
+    const getFoundedModels = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models/searchByString/${model}`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getFoundedModels.ok) {
       const fondedModelJson = await getFoundedModels.json();
       setModels(fondedModelJson);
-      // const fabricsWithImg = fondedModelJson.map(model => {
-      //   const imageBase64 = model.img;
-      //   const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-      //   if (fabric.img) {
-      //     return {
-      //       ...fabric,
-      //       img: imageUrl
-      //     };
-      //   };
-      //   return {
-      //     ...fabric,
-      //     img: null
-      //   };
-      // });
-      // setFabricFound(fabricsWithImg);
-    };
+    } else {
+      const error = await getFoundedModels.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
   };
 
 

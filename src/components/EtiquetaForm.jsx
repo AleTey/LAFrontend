@@ -13,7 +13,7 @@ const newEtiquetaInitialState = {
   },
   detalle: "",
   marca: "",
-  precioUnidad: "",
+  precioUnidad: 0,
   stock: ""
 }
 
@@ -88,8 +88,12 @@ export const EtiquetaForm = ({ suppliers, etiquetaFormData = newEtiquetaInitialS
     e.preventDefault();
 
     if (Object.keys(validationEtiquetaForm(etiquetaForm)).length === 0) {
+      if (etiquetaForm.id) {
+        modifiedFields.nombre = "Etiqueta " + etiquetaForm.marca;
+      } else {
+        etiquetaForm.nombre = "Etiqueta " + etiquetaForm.marca;
+      }
 
-      modifiedFields.nombre = "Etiqueta " + etiquetaForm.marca;
 
       if (!etiquetaForm.id) {
         addEtiqueta(etiquetaForm);

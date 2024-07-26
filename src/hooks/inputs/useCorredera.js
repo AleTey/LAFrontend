@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import Swal from "sweetalert2";
 import { InputModalContext } from "../../context/InputModalContext";
 import { CorrederaContext } from "../../context/CorrederaContext";
+import { AuthContext } from "../../auth/context/AuthContext.Jsx";
 
 
 export const useCorredera = () => {
@@ -19,21 +20,33 @@ export const useCorredera = () => {
     modalSelectionHandler,
     setInputDbHasChanged } = useContext(InputModalContext);
 
+  const { handlerLogout } = useContext(AuthContext);
+
 
 
   const findAllCorrederas = async () => {
-    const getCorrederas = await fetch("http://localhost:8080/correderas")
+    const getCorrederas = await fetch(`${import.meta.env.VITE_API_BASE_URL}/correderas`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
     if (getCorrederas.ok) {
       const correderasJson = await getCorrederas.json();
       dispatchGetAllCorrederas(correderasJson)
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
   const addNewCorredera = async (newCorredera) => {
     try {
-      const saveCorredera = await fetch("http://localhost:8080/correderas", {
+      const saveCorredera = await fetch(`${import.meta.env.VITE_API_BASE_URL}/correderas`, {
         method: "POST",
         headers: {
+          "Authorization": sessionStorage.getItem("token"),
           "Content-Type": "application/json"
         },
         body: JSON.stringify(newCorredera)
@@ -49,6 +62,12 @@ export const useCorredera = () => {
         }, 8000)
         toggle()
         modalSelectionHandler("");
+      } else {
+        const error = await saveCorredera.json();
+        console.log(error);
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
     } catch (error) {
       console.error(error);
@@ -64,8 +83,11 @@ export const useCorredera = () => {
 
     const params = new URLSearchParams(modifiedFields).toString();
 
-    const editCorredera = await fetch(`http://localhost:8080/correderas/${id}?${params}`, {
+    const editCorredera = await fetch(`${import.meta.env.VITE_API_BASE_URL}/correderas/${id}?${params}`, {
       method: "PUT",
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
     });
     if (editCorredera.ok) {
       const editCorrederaJson = await editCorredera.json();
@@ -77,6 +99,11 @@ export const useCorredera = () => {
         setInputDbHasChanged("");
       }, 8000);
       formIsOpen(false);
+    } else {
+      const error = await editCorredera.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -101,9 +128,10 @@ export const useCorredera = () => {
       if (result.isConfirmed) {
         const deleteCorredera = async () => {
 
-          const deleteCorredera = await fetch(`http://localhost:8080/correderas/${id}`, {
+          const deleteCorredera = await fetch(`${import.meta.env.VITE_API_BASE_URL}/correderas/${id}`, {
             method: "DELETE",
             headers: {
+              "Authorization": sessionStorage.getItem("token"),
               "Content-Type": "application/json"
             }
           })
@@ -122,6 +150,11 @@ export const useCorredera = () => {
               setInputDbHasChanged("");
             }, 8000);
 
+          } else {
+            const error = await deleteCorredera.json();
+            if (error.message === "Please Login") {
+              handlerLogout();
+            }
           }
         }
         deleteCorredera()

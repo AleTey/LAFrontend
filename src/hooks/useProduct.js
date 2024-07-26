@@ -18,13 +18,14 @@ export const useProduct = () => {
   } = useContext(ProductContext);
 
   const getAllProducts = async (pageNumber = 0) => {
-    const url = new URL('http://localhost:8080/productos/page')
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page`)
     url.searchParams.append('page', pageNumber);
     url.searchParams.append('size', 3);
     console.log(url.toString());
     const getAllProducts = await fetch(url.toString(), {
       method: 'GET',
       headers: {
+        "Authorization": sessionStorage.getItem("token"),
         'Content-Type': 'application/json'
       }
     });
@@ -51,16 +52,25 @@ export const useProduct = () => {
           .filter(([key, value]) => key !== 'content')
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       });
+    } else {
+      const error = await getAllProducts.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
   const getPageOfProductsOnSearch = async (string, pageNumber = 0) => {
     console.log(pageNumber)
-    const url = new URL('http://localhost:8080/productos/page/search');
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/search`);
     url.searchParams.append('string', string);
     url.searchParams.append('page', pageNumber);
     url.searchParams.append('size', 1);
-    const res = await fetch(url.toString());
+    const res = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
 
     if (res.ok) {
       const resJson = await res.json();
@@ -84,6 +94,11 @@ export const useProduct = () => {
           .filter(([key, value]) => key !== 'content')
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       });
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -97,8 +112,11 @@ export const useProduct = () => {
 
 
     try {
-      const newProduct = await fetch('http://localhost:8080/productos/producto', {
+      const newProduct = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/producto`, {
         method: 'POST',
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        },
         body: formData
       })
 
@@ -121,9 +139,11 @@ export const useProduct = () => {
         }
 
         console.log(response);
-      }
-      if (!newProduct.ok) {
-        console.log("not ok")
+      } else {
+        const error = await newProduct.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
     } catch (error) {
       console.log(error)
@@ -133,8 +153,11 @@ export const useProduct = () => {
 
 
   const deleteProduct = async (id) => {
-    const deleteProduct = await fetch(`http://localhost:8080/productos/${id}`, {
-      method: "DELETE"
+    const deleteProduct = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
     });
     if (deleteProduct.ok) {
       dispatchDeleteProduct(id);
@@ -142,10 +165,15 @@ export const useProduct = () => {
       setTimeout(() => {
         setProductDbHasChanged("")
       }, 5000)
+    } else {
+      const error = await deleteProduct.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
-  const updateProduct = async (productForm) => {
+  const updateProduct = async (productForm, setProductFormIsOpen) => {
     const formData = new FormData();
     const fabric = {
       id: productForm.fabric.id
@@ -184,8 +212,11 @@ export const useProduct = () => {
     console.log(formData)
 
     try {
-      const updatedProduct = await fetch(`http://localhost:8080/productos/update-product/${productForm.id}`, {
+      const updatedProduct = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/update-product/${productForm.id}`, {
         method: "PUT",
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        },
         body: formData
       })
 
@@ -202,8 +233,14 @@ export const useProduct = () => {
             img: imgUrl
           }
           dispatchUpdateProduct(responseWithImage);
+          setProductFormIsOpen(false)
         } else {
           dispatchUpdateProduct(response);
+        }
+      } else {
+        const error = await updateProduct.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
         }
       }
     } catch (error) {
@@ -214,10 +251,19 @@ export const useProduct = () => {
 
   const searchProductByString = async (string) => {
     try {
-      const res = await fetch(`http://localhost:8080/productos/find-by-string/${string}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/find-by-string/${string}`, {
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
+      });
       if (res.ok) {
         const resJson = await res.json();
         dispatchAllProducts(convertProductListToProductsWithImgList(resJson));
+      } else {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
     } catch (error) {
 
@@ -237,29 +283,32 @@ export const useProduct = () => {
     return productsWithImgs;
   }
 
-  // const calculateCost = async (id) => {
-  //   console.log("calculate cost")
-  //   const res = await fetch(`http://localhost:8080/productos/product-cost/${id}`);
-  //   console.log(res);
-  //   if (res.ok) {
-  //     const resJson = await res.json();
-  //     console.log(typeof resJson)
-  //     return resJson;
-  //   }
-  // }
 
   const calculateCost = async (id) => {
     try {
-      const res = await fetch(`http://localhost:8080/productos/product-cost/${id}`);
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/product-cost/${id}`, {
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
+      });
       console.log(res);
       if (res.ok) {
         const resJson = await res.json();
         console.log(typeof resJson) // Esto debería imprimir el tipo de dato de resJson
         return resJson;
+        // } else {
+        //   const error = new Error("Error en la solicitud");
+        //   error.response = res;
+        //   throw error;
       } else {
-        const error = new Error("Error en la solicitud");
-        error.response = res;
-        throw error;
+        const error = await getAllProducts.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        } else {
+          const error = new Error("Error en la solicitud");
+          error.response = res;
+          throw error;
+        }
       }
 
     } catch (error) {
@@ -269,6 +318,41 @@ export const useProduct = () => {
     }
   }
 
+  const searchProductsDtoByString = async (string, setProductsFound) => {
+    try {
+      const getProductsDto = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/dto/${string}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': sessionStorage.getItem('token')
+        }
+      })
+
+      if (getProductsDto.ok) {
+        const resJson = await getProductsDto.json();
+        const productsWithImg = resJson.map(p => {
+          const imgUrl = `data:image/jpeg;base64,${p.img}`
+          if (p.img) {
+            return {
+              ...p,
+              img: imgUrl
+            };
+          };
+          return {
+            ...p,
+            img: null
+          }
+        })
+        setProductsFound(productsWithImg);
+      } else {
+        const error = await getProductsDto.json();
+        if (error.message === "Pleas Login") {
+          handlerLogout();
+        }
+      }
+    } catch (error) {
+      console.log(error + " Error en fetch producto dto para product multi selector")
+    }
+  }
 
   return {
     products,
@@ -281,6 +365,7 @@ export const useProduct = () => {
     searchProductByString,
     calculateCost,
     productDbHasChanged,
-    productPaginator
+    productPaginator,
+    searchProductsDtoByString
   }
 }

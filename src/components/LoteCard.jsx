@@ -6,13 +6,21 @@ import { PreparationSpreadSheet } from "./PreparationSpreadSheet"
 import { useLote } from "../hooks/lotes/useLote"
 import { WorkshopSpreadSheep } from "./WorkshopSpreadSheet"
 import { ControlSpreadSheet } from "./ControlSpreadSheet"
+import { useCutSpreadsheet } from "../hooks/lotes/useCutSpreadsheet"
+import { usePreparationSpreadsheet } from "../hooks/lotes/usePreparationSpreadsheet"
+import { useWorkshopSpreadsheet } from "../hooks/lotes/useWorkshopSpreadsheet"
+import { useControlSpreadsheet } from "../hooks/lotes/useControlSpreadsheet"
+import { PreviousLoteStatus } from "./buttons/PreviousLoteStatus"
 
 export const LoteCard = ({ lote }) => {
 
   const { changeStatus,
-    findCutSpreadSheetById
-
+    previousState
   } = useLote();
+
+  const { findCutSpreadSheetById } = useCutSpreadsheet();
+
+  const { findPreparationSpreadSheetById } = usePreparationSpreadsheet();
 
   const [cutSpreadSheetIsOpen, setCutSpreadSheetIsOpen] = useState(false);
 
@@ -30,12 +38,9 @@ export const LoteCard = ({ lote }) => {
 
   const [controlSpreadSheet, setControlSpreadSheet] = useState({})
 
-  // const { dispatchRemoveQueueLote,
-  //   dispatchRemoveCutLotes,
-  //   dispatchRemovePreparationLote,
-  //   dispatchRemoveWorkshopLote,
-  //   dispatchRemoveControlLote,
-  // } = useContext(LoteContext);
+  const { findWorkshopSpreadsheetById } = useWorkshopSpreadsheet();
+
+  const { findControlSpreedSheetById } = useControlSpreadsheet();
 
 
   const onChangeStatus = (id, status) => {
@@ -47,165 +52,35 @@ export const LoteCard = ({ lote }) => {
   }
 
   const findPreparationSpreadSheet = (id) => {
-    const findPreparationSpreadSheetById = async (id) => {
-      const res = await fetch(`http://localhost:8080/preparation-spreadsheet/dto/${id}`)
-
-      if (res.ok) {
-        const resJson = await res.json();
-        console.log(resJson);
-
-        let inputsImage = "";
-        if (resJson.img !== null) {
-          inputsImage = `data:image/jpeg;base64,${resJson.img}`
-        } else {
-          inputsImage = null;
-        }
-
-        setPreparationSpreadsheet({
-          ...resJson,
-          amountPerSizeForProductDTOs: resJson.amountPerSizeForProductDTOs.map(amount => {
-            const imgUrl = `data:image/jpeg;base64,${amount.productForLoteDTO.img}`;
-            if (amount.productForLoteDTO.img) {
-              return {
-                ...amount,
-                productForLoteDTO: {
-                  ...amount.productForLoteDTO,
-                  img: imgUrl
-                }
-              }
-            }
-            return {
-              ...amount,
-              productForLoteDTO: {
-                ...amount.productForLoteDTO,
-                img: null
-              }
-            }
-
-          }),
-          img: inputsImage
-          // img: `data:image/jpeg;base64,${resJson.img}`
-        })
-        console.log(preparationSpreadSheet);
-      }
-
-    }
     if (!preparationSpreadSheet.id) {
-      findPreparationSpreadSheetById(id)
+      findPreparationSpreadSheetById(id, setPreparationSpreadsheet);
     }
   }
 
   const findWorkshopSpreadsheet = (id) => {
-
-    const findWorkshopSpreadsheetById = async (id) => {
-      try {
-        const res = await fetch(`http://localhost:8080/workshop-spreadsheet/dto/${id}`);
-
-        if (res.ok) {
-          const resJson = await res.json();
-          console.log(resJson)
-
-          setWorkshopSpreadSheet({
-            ...resJson,
-            amountPerSizeForProducts: resJson.amountPerSizeForProducts.map(amount => {
-              if (amount.productForLoteDTO.img) {
-                return {
-                  ...amount,
-                  productForLoteDTO: {
-                    ...amount.productForLoteDTO,
-                    img: `data:image/jpeg;base64,${amount.productForLoteDTO.img}`
-                  }
-                }
-              }
-              return {
-                ...amount,
-                productForLoteDTO: {
-                  ...amount.productForLoteDTO,
-                  img: null
-                }
-              }
-            }),
-            amountPerSizeDefectiveForProducts: resJson.amountPerSizeDefectiveForProducts.map(amountDefective => {
-              if (amountDefective.productForLoteDTO.img) {
-                return {
-                  ...amountDefective,
-                  productForLoteDTO: {
-                    ...amountDefective.productForLoteDTO,
-                    img: `data:image/jpeg;base64,${amountDefective.productForLoteDTO.img}`
-                  }
-                }
-              }
-              return {
-                ...amountDefective,
-                productForLoteDTO: {
-                  ...amountDefective.productForLoteDTO,
-                  img: null
-                }
-              }
-            })
-
-
-          });
-        }
-      } catch (error) {
-
-      }
-    }
     if (!workshopSpreadSheet.id) {
-      findWorkshopSpreadsheetById(id);
+      findWorkshopSpreadsheetById(id, setWorkshopSpreadSheet);
     }
-
   }
 
   const findControlSpreadSheet = (id) => {
-
-    const findControlSpreedSheetById = async (id) => {
-
-      try {
-        const res = await fetch(`http://localhost:8080/control-spreadsheet/dto/${id}`);
-
-        if (res.ok) {
-          const resJson = await res.json();
-          console.log(resJson);
-          setControlSpreadSheet({
-            ...resJson,
-            amountPerSizeForProductDTO: resJson.amountPerSizeForProductDTO.map(a => {
-              if (a.productForLoteDTO.img) {
-                return {
-                  ...a,
-                  productForLoteDTO: {
-                    ...a.productForLoteDTO,
-                    img: `data:image/jpeg;base64,${a.productForLoteDTO.img}`
-                  }
-                }
-              }
-              return {
-                ...a,
-                productForLoteDTO: {
-                  ...a.productForLoteDTO,
-                  img: null
-                }
-              }
-            })
-          })
-        }
-
-      } catch (error) {
-
-      }
-
-
-
-    }
-    findControlSpreedSheetById(id);
+    findControlSpreedSheetById(id, setControlSpreadSheet);
   }
 
   return (
     <>
 
       <div className="card mb-3 border-primary">
-        <div className="card-header">
+        <div className="card-header d-flex justify-content-between">
           <h4 className="text-primary-emphasis"><b>Lote: {lote.id}</b></h4>
+          {
+            lote.status !== "COLA" &&
+            <PreviousLoteStatus
+              loteId={lote.id}
+              // status={lote.status}
+              status={lote.status}
+            />
+          }
         </div>
         <div className="card-body">
 

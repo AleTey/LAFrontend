@@ -36,7 +36,7 @@ const validationGanchoForm = (ganchoForm) => {
   return errors;
 }
 
-export const GanchoForm = ({ ganchoFormData = ganchoFormInitialState, suppliers, formIsOpen}) => {
+export const GanchoForm = ({ ganchoFormData = ganchoFormInitialState, suppliers, formIsOpen }) => {
 
   // const [ganchos, setGanchos] = useState(ganchoFormData);
 
@@ -51,21 +51,14 @@ export const GanchoForm = ({ ganchoFormData = ganchoFormInitialState, suppliers,
   const { addGancho,
     updateGancho,
     dataEnumTipoGancho,
-    setDataEnumTipoGancho } = useGancho();
+    setDataEnumTipoGancho,
+    getTipoGanchos } = useGancho();
 
 
   useEffect(() => {
-    const getTipoGanchos = async () => {
-      console.log("en el use Effect de GanchoForm")
-      const tipoGanchos = await fetch("http://localhost:8080/tiposGancho")
-      if (tipoGanchos.ok) {
-        console.log(tipoGanchos)
-        const tipoGanchosJson = await tipoGanchos.json();
-        setTipoGanchos(tipoGanchosJson);
-      }
-    }
+
     if (tipoGanchosDb.length === 0) {
-      getTipoGanchos();
+      getTipoGanchos(setTipoGanchos);
     }
   }, [])
 

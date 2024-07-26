@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable";
+import { useWorkshopSpreadsheet } from "../hooks/lotes/useWorkshopSpreadsheet";
 
 export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadSheet, setWorkshopSpreadSheetIsOpen }) => {
 
   const [workshopSpreedSheetForm, setWorkshopSpreadSheetForm] = useState({});
 
   const [editMode, setEditMode] = useState(false);
+
+  const { updateWorkshopSpreadSheet } = useWorkshopSpreadsheet();
 
   useEffect(() => {
     setWorkshopSpreadSheetForm(workshopSpreadSheet)
@@ -86,28 +89,7 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
 
 
   const onSubmit = () => {
-    console.log('FROM MAPPER')
-    console.log(workshopSpreadSheetToSendMapper(workshopSpreedSheetForm));
-
-    const updateWorkshopSpreadSheet = async (updatedWorkshopSpreadSheet) => {
-      const res = await fetch('http://localhost:8080/workshop-spreadsheet', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedWorkshopSpreadSheet)
-      })
-      if (res.ok) {
-        const resJson = await res.json();
-        console.log('JSON RES')
-        console.log(resJson);
-        setWorkshopSpreadSheet(workshopSpreedSheetForm);
-        setEditMode(false);
-      }
-    }
-
-    updateWorkshopSpreadSheet(workshopSpreadSheetToSendMapper(workshopSpreedSheetForm));
-
+    updateWorkshopSpreadSheet(workshopSpreadSheetToSendMapper(workshopSpreedSheetForm), setWorkshopSpreadSheet, workshopSpreedSheetForm, setEditMode);
   }
 
   return (

@@ -1,5 +1,7 @@
-import { useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
+import { useFabric } from "../hooks/useFabric";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
 export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelected, setFabricsSelected, ancho, telasSeleccionadas, onCancelFabric }) => {
 
@@ -7,13 +9,21 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
 
   const [fabricPageContent, setFabricPageContent] = useState([]);
 
-  const [fabricsFound, setFabricFound] = useState([])
+  const [fabricsFound, setFabricFound] = useState([]);
+
+  const { getAllFabricsPages } = useFabric()
+
+  const { handlerLogout } = useContext(AuthContext);
 
 
 
   useEffect(() => {
     const getFabricPage = async () => {
-      const getFabricPage = await fetch("http://localhost:8080/fabrics/page/1/2");
+      const getFabricPage = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/page/1/2`, {
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
+      });
       if (getFabricPage.ok) {
         const fabricPageJson = await getFabricPage.json();
         setFabricPage(fabricPageJson);
@@ -37,28 +47,23 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
     getFabricPage();
   }, [])
 
-  // const onClickAgregar = (e, fabric) => {
-  //   e.preventDefault();
-  //   const { value } = e.target;
-  //   setFabricsSelected([
-  //     ...fabricsSelected,
-  //     fabric
-  //   ]);
-  // }
-
-  // const onCancelFabric = (e, fabricId) => {
-  //   setFabricsSelected(
-  //     fabricsSelected.filter(fabric => fabric.id !== fabricId)
-  //   )
-  // }
-
   const searchFabric = async (fabric) => {
-
-    const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
+    console.log("entrando searchFabric")
+    console.log(fabric);
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/searchByString`);
+    url.searchParams.append('string', fabric);
+    url.searchParams.append('page', 0);
+    url.searchParams.append('size', 15);
+    const getFabricsFound = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getFabricsFound.ok) {
       const fabricFoundJson = await getFabricsFound.json();
+      console.log(fabricFoundJson)
       setFabricPage(fabricFoundJson);
-      const fabricsWithImg = fabricFoundJson.map(fabric => {
+      const fabricsWithImg = fabricFoundJson.content.map(fabric => {
         const imageBase64 = fabric.img;
         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
         if (fabric.img) {
@@ -75,6 +80,90 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
       setFabricFound(fabricsWithImg);
     };
   };
+
+  const onClickAgregar = (e, fabric) => {
+    e.preventDefault();
+    const { value } = e.target;
+    setFabricsSelected([
+      ...fabricsSelected,
+      fabric
+    ]);
+  }
+
+  // const onCancelFabric = (e, fabricId) => {
+  //   setFabricsSelected(
+  //     fabricsSelected.filter(fabric => fabric.id !== fabricId)
+  //   )
+  // }
+  // const searchFabric = async (string, page = 0) => {
+  //   const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/searchByString`);
+  //   url.searchParams.append('string', string);
+  //   url.searchParams.append('page', page);
+  //   url.searchParams.append('size', 15);
+  //   const res = await fetch(url.toString(), {
+  //     headers: {
+  //       "Authorization": sessionStorage.getItem("token")
+  //     }
+  //   });
+  //   if (res.ok) {
+  //     const json = await res.json();
+  //     const fabricsWithImageURL = json.content.map((fabric) => {
+
+  //       const imageBase64 = fabric.img;
+  //       const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+  //       if (fabric.img) {
+  //         return {
+  //           ...fabric,
+  //           img: imageUrl,
+  //         };
+  //       }
+  //       return {
+  //         ...fabric,
+  //         img: null,
+  //       };
+  //     });
+
+  //     dispatch({
+  //       type: 'GET_ALL_FABRICS',
+  //       payload: fabricsWithImageURL,
+  //     });
+
+  //     console.log(json)
+  //   } else {
+  //     const error = await res.json();
+  //     if (error.message === "Please Login") {
+  //       handlerLogout();
+  //     }
+  //   }
+  // };
+
+  // const searchFabric = async (fabric) => {
+
+  //   const getFabricsFound = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/searchByString/${fabric}`, {
+  //     headers: {
+  //       "Authorization": sessionStorage.getItem("token")
+  //     }
+  //   });
+  //   if (getFabricsFound.ok) {
+  //     const fabricFoundJson = await getFabricsFound.json();
+  //     setFabricPage(fabricFoundJson);
+  //     const fabricsWithImg = fabricFoundJson.map(fabric => {
+  //       const imageBase64 = fabric.img;
+  //       const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+  //       if (fabric.img) {
+  //         return {
+  //           ...fabric,
+  //           img: imageUrl
+  //         };
+  //       };
+  //       return {
+  //         ...fabric,
+  //         img: null
+  //       };
+  //     });
+  //     setFabricFound(fabricsWithImg);
+  //   };
+  // };
 
 
 

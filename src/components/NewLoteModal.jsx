@@ -4,6 +4,8 @@ import { ProductSelectedAtFormCard } from "./ProductSelectedAtFormCard";
 import { LoteContext } from "../context/LoteContext";
 import { FetchTopAlert } from "./alerts/FetchTopAlert";
 import { useLote } from "../hooks/lotes/useLote";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { useWorkshop } from "../hooks/useWorkshop";
 
 const newLoteFormInitialValue = {
   products: [],
@@ -42,18 +44,13 @@ export const NewLoteModal = ({ loteFormData = newLoteFormInitialValue }) => {
   const { dispatchAddQueueLote,
     setLoteDbHasChanged } = useContext(LoteContext)
 
+  const { handlerLogout } = useContext(AuthContext);
+
+  const { findWorkshops } = useWorkshop();
 
 
   useEffect(() => {
-    const findWorkshops = async () => {
-      const res = await fetch('http://localhost:8080/workshops');
-
-      if (res.ok) {
-        const workshopsJson = await res.json();
-        setWorkshops(workshopsJson);
-      }
-    }
-    findWorkshops();
+    findWorkshops(setWorkshops);
   }, [])
 
   const onChangeProduct = (id) => {
@@ -105,36 +102,6 @@ export const NewLoteModal = ({ loteFormData = newLoteFormInitialValue }) => {
     }
 
   }
-
-  // const addLote = async (lote) => {
-  //   try {
-
-  //     const res = await fetch('http://localhost:8080/lotes', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify(lote)
-  //     })
-
-
-  //     if (res.ok) {
-  //       const resJson = await res.json();
-  //       setLoteDbHasChanged("Lote agregado con éxito")
-  //       setTimeout(() => {
-  //         setLoteDbHasChanged("")
-  //       }, 5000)
-  //       setNewLoteIsOpen(false);
-  //       // dispatchAddQueueLote
-  //     }
-
-  //   } catch (error) {
-  //     console.log("error: " + error)
-  //   }
-
-  // }
-
-
 
   return (
     <>

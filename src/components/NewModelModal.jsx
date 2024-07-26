@@ -102,7 +102,11 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
 
 
   const fetchTiposPrenda = async () => {
-    const getTiposPrendas = await fetch("http://localhost:8080/tiposPrenda");
+    const getTiposPrendas = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tiposPrenda`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
     if (getTiposPrendas.ok) {
       const tiposPrendasJson = await getTiposPrendas.json();
       setTiposPrendas(tiposPrendasJson);
@@ -110,7 +114,11 @@ export const NewModelModal = ({ modelData = modelFormInitialState, setModelFormI
   }
 
   const getAllTiras = async () => {
-    const getTiras = await fetch("http://localhost:8080/tiras")
+    const getTiras = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tiras`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
     if (getTiras.ok) {
       const tirasJson = await getTiras.json();
       setTiras(tirasJson);

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { FabricCard } from "../components/FabricCard"
 import { Seeker } from "../components/Seeker";
 import { NewFabricModal } from "../components/NewFabricModal";
@@ -6,6 +6,9 @@ import { useFabric } from "../hooks/useFabric";
 import { Paginator } from "../components/Paginator";
 import { useParams } from "react-router-dom";
 import { Searcher } from "../components/Searcher";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { hasAnyRole } from "../auth/utils/hasAnyRole";
+import { FabricContext } from "../context/FabricContext";
 
 
 export const Fabric = () => {
@@ -18,13 +21,17 @@ export const Fabric = () => {
 
   const [stringToSearch, setStringToSearch] = useState("")
 
+  const { login } = useContext(AuthContext);
+
+  const [paginator, setPaginator] = useState({});
+
   const {
     fabricModalIsOpen,
     fabricWasAdded,
     fabricWasEdited,
     fabricWasDeleted,
     fabrics,
-    paginator,
+    // paginator,
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabricsPages,
@@ -32,14 +39,16 @@ export const Fabric = () => {
     editFabric,
     onDeleteFabric,
     searchFabricByString,
-  } = useFabric();
+  } = useContext(FabricContext);
 
 
   useEffect(() => {
     if (searchIsActive) {
-      searchFabricByString(stringToSearch, page);
+      searchFabricByString(stringToSearch, page, setPaginator);
     } else {
-      getAllFabricsPages(page);
+      console.log("fetch fabrics")
+      console.log(paginator)
+      getAllFabricsPages(page, setPaginator);
     }
   }, [, page])
 
@@ -74,9 +83,12 @@ export const Fabric = () => {
 
         <h2 className="my-3"> Telas  </h2>
         <hr />
-        <button type="button" className="btn btn-outline-primary" onClick={onNewFabric}>
-          Nueva tela
-        </button>
+        {
+          hasAnyRole(login.user.authorities, ["CREATE_FABRIC"]) &&
+          <button type="button" className="btn btn-outline-primary" onClick={onNewFabric}>
+            Nueva tela
+          </button>
+        }
 
         <Searcher
           onClickSearch={searchFabricByString}
@@ -98,6 +110,7 @@ export const Fabric = () => {
                 />
               ))
               :
+
               <h6>No se han encontrado resultados para tu búsqueda</h6>
 
           }
@@ -130,6 +143,7 @@ export const Fabric = () => {
           } */}
         {
           !elementsFounded &&
+          // paginator.totalPages > 1 &&
           <Paginator
             paginator={paginator}
             path='fabric'

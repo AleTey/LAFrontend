@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { CorrederaForm } from "./CorrederaForm";
 import { useSuppliers } from "../hooks/useSuppliers";
 import { useCorredera } from "../hooks/inputs/useCorredera";
@@ -8,6 +8,7 @@ import { ArgollaForm } from "./ArgollaForm";
 import { GanchoForm } from "./GanchoForm";
 import { EtiquetaForm } from "./EtiquetaForm";
 import { ApliqueForm } from "./ApliqueForm";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
 export const NewInputModal = ({
   selection = "",
@@ -18,10 +19,14 @@ export const NewInputModal = ({
 
   const { toggle, selectedModal, modalSelectionHandler } = useInputModal();
 
+  const [simplestSuppliers, setSimplestSuppliers] = useState([]);
+
+  const {login} = useContext(AuthContext);
+
 
   const {
     suppliers,
-    getSuppliers
+    getSimplestSuppliers
   } = useSuppliers();
 
 
@@ -31,8 +36,8 @@ export const NewInputModal = ({
 
 
   useEffect(() => {
-    if (suppliers.length === 0) {
-      getSuppliers();
+    if (simplestSuppliers.length === 0) {
+      getSimplestSuppliers(setSimplestSuppliers);
     }
   }, [])
 
@@ -115,7 +120,7 @@ export const NewInputModal = ({
               {
                 selectedModal === "corredera" &&
                 <CorrederaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   addNewCorredera={addNewCorredera}
                   updateCorredera={updateCorredera}
                 />
@@ -125,7 +130,7 @@ export const NewInputModal = ({
                 selectedModal === "editCorredera" &&
 
                 <CorrederaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   correderaFormData={inputToEdit}
                   addNewCorredera={addNewCorredera}
                   updateCorredera={updateCorredera}
@@ -136,14 +141,14 @@ export const NewInputModal = ({
               {
                 selectedModal === "elastico" &&
                 <ElasticoForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                 />
               }
 
               {
                 selectedModal === "editElastico" &&
                 <ElasticoForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   elasticoFormData={inputToEdit}
                   formIsOpen={formIsOpen}
                 />
@@ -152,14 +157,14 @@ export const NewInputModal = ({
               {
                 selectedModal === "argolla" &&
                 <ArgollaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                 />
               }
 
               {
                 selectedModal === "editArgolla" &&
                 <ArgollaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   argollaFormData={inputToEdit}
                   formIsOpen={formIsOpen}
                 />
@@ -168,13 +173,13 @@ export const NewInputModal = ({
               {
                 selectedModal === "gancho" &&
                 <GanchoForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                 />
               }
               {
                 selectedModal === "editGancho" &&
                 <GanchoForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   ganchoFormData={inputToEdit}
                   formIsOpen={formIsOpen}
                 />
@@ -182,13 +187,13 @@ export const NewInputModal = ({
               {
                 selectedModal === "etiqueta" &&
                 <EtiquetaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                 />
               }
               {
                 selectedModal === "editEtiqueta" &&
                 <EtiquetaForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   etiquetaFormData={inputToEdit}
                   formIsOpen={formIsOpen}
                 />
@@ -197,13 +202,13 @@ export const NewInputModal = ({
               {
                 selectedModal === "aplique" &&
                 <ApliqueForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                 />
               }
               {
                 selectedModal === "editAplique" &&
                 <ApliqueForm
-                  suppliers={suppliers}
+                  suppliers={simplestSuppliers}
                   apliqueFormData={inputToEdit}
                   formIsOpen={formIsOpen}
                 />

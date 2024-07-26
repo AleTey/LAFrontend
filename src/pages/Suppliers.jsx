@@ -1,7 +1,7 @@
 import { memo, useContext, useEffect } from "react"
 import { SupplierCard } from "../components/SupplierCard"
 import { NewSupplierModal } from "../components/NewSupplierModal";
-import { useSuppliers } from "../hooks/useSuppliers";
+import { SupplierContext } from "../context/SupplierContext";
 
 
 export const Suppliers = () => {
@@ -20,12 +20,12 @@ export const Suppliers = () => {
     addSupplier,
     editSupplier,
     onDeleteSupplier
-  } = useSuppliers();
-
+  } = useContext(SupplierContext);
 
 
   useEffect(() => {
-    getSuppliers();
+    suppliers.length === 0 &&
+      getSuppliers();
   }, [])
 
 

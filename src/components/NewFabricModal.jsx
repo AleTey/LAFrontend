@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { useSuppliers } from "../hooks/useSuppliers";
 
 const newFabricFormInitialState = {
   codigo: "",
@@ -45,37 +46,17 @@ export const NewFabricModal = ({
   console.log(fabric)
   const [fabricForm, setFabricForm] = useState(fabric);
 
-  const [textileSuppliers, setTextileSuppliers] = useState([]);
+  const [simplestSuppliers, setSimplestSuppliers] = useState([]);
 
   const [fabricOnEdit, setFabricOnEdit] = useState({});
 
   const [errors, setErrors] = useState({});
 
+  const { getSimplestSuppliers } = useSuppliers();
+
   useEffect(() => {
-    if (textileSuppliers.length === 0 || fabric.id) {
-
-      const getTextileSuppliers = async () => {
-
-        try {
-          const response = await fetch("http://localhost:8080/suppliers")
-          if (response.ok) {
-            const json = await response.json();
-            setTextileSuppliers(() => (
-              json.filter(sup => sup.sector && sup.sector.toLowerCase() === "textil")
-            ))
-            if (fabricForm.id !== 0) {
-              setFabricOnEdit(() => (
-                json.filter(sup => sup.id === fabricForm.proveedor.id)
-              ))
-            } else {
-              // console.log("sin id")
-            }
-          }
-        } catch (error) {
-
-        }
-      }
-      getTextileSuppliers();
+    if (simplestSuppliers.length === 0 || fabric.id) {
+      getSimplestSuppliers(setSimplestSuppliers, setFabricOnEdit, fabricForm);
     }
 
   }, [])
@@ -102,6 +83,11 @@ export const NewFabricModal = ({
           [e.target.name]: {
             id: e.target.value
           }
+        })
+      } else if (e.target.name === "precio") {
+        setFabricForm({
+          ...fabricForm,
+          [e.target.name]: e.target.value
         })
       } else {
         setFabricForm({
@@ -217,6 +203,17 @@ export const NewFabricModal = ({
                     />
                     <label htmlFor="floatingInputStock" className="h6">Stock inicial en metros</label>
                   </div>
+                  <div className="form-floating mb-3">
+                    <input
+                      type="number"
+                      className="form-control"
+                      id="floatingInputStock"
+                      name="precio"
+                      value={fabricForm.precio}
+                      onChange={onChangeFabricForm}
+                    />
+                    <label htmlFor="floatingInputStock" className="h6">Precio en metros</label>
+                  </div>
 
                   <div className="form-floating mb-3">
                     <input
@@ -239,7 +236,7 @@ export const NewFabricModal = ({
                         onChange={onChangeFabricForm}
                       >
                         <option value={fabricOnEdit.id}>{fabricOnEdit && fabricOnEdit[0].empresa}</option>
-                        {textileSuppliers.map(sup => {
+                        {simplestSuppliers.map(sup => {
                           if (sup.id !== fabric.proveedor.id) {
                             return (<option key={sup.id} value={sup.id}>
                               {sup.empresa}
@@ -255,7 +252,7 @@ export const NewFabricModal = ({
                         onChange={onChangeFabricForm}
                       >
                         <option value="Proveedor">Proveedor</option>
-                        {textileSuppliers.map(sup => (
+                        {simplestSuppliers.map(sup => (
                           <option key={sup.id} value={sup.id}>
                             {sup.empresa}
                           </option>

@@ -1,9 +1,14 @@
 import { useState } from "react"
 import { Seeker } from "./Seeker"
+import { useProduct } from "../hooks/useProduct";
+import { Searcher } from "./Searcher";
 
 export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProductsSelected, onChangeProduct }) => {
 
   const [productsFound, setProductsFound] = useState([]);
+
+  const { searchProductsDtoByString } = useProduct();
+
 
   const productSelectedHandler = (product) => {
     productsSelected.some(pSelected => pSelected.id === product.id) ?
@@ -20,34 +25,7 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
 
 
   const searchProduct = (string) => {
-    const searchProductsDtoByString = async (string) => {
-      try {
-        const getProductsDto = await fetch(`http://localhost:8080/productos/dto/${string}`, {
-          method: 'GET'
-        })
-
-        if (getProductsDto.ok) {
-          const resJson = await getProductsDto.json();
-          const productsWithImg = resJson.map(p => {
-            const imgUrl = `data:image/jpeg;base64,${p.img}`
-            if (p.img) {
-              return {
-                ...p,
-                img: imgUrl
-              };
-            };
-            return {
-              ...p,
-              img: null
-            }
-          })
-          setProductsFound(productsWithImg);
-        }
-      } catch (error) {
-        console.log(error + " Error en fetch producto dto para product multi selector")
-      }
-    }
-    searchProductsDtoByString(string);
+    searchProductsDtoByString(string, setProductsFound);
   }
 
   return (
@@ -66,6 +44,10 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
                 <Seeker
                   onClickSearch={searchProduct}
                 />
+
+                {/* <Searcher 
+                
+                /> */}
 
                 <table className="table table-striped">
                   <thead>

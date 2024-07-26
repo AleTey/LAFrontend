@@ -18,6 +18,8 @@ import { AccordionItem } from "../components/bootstrapComponents/AccordionItem";
 import { EtiquetaCard } from "../components/EtiquetaCard";
 import { useAplique } from "../hooks/inputs/useAplique";
 import { ApliqueCard } from "../components/ApliqueCard";
+import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { hasAnyRole } from "../auth/utils/hasAnyRole";
 
 export const Inputs = () => {
 
@@ -30,6 +32,8 @@ export const Inputs = () => {
     toggle,
     selectedModal,
     inputDbHasChanged } = useInputModal();
+
+  const { login } = useContext(AuthContext);
 
   const { findAllElasticos } = useElastico();
 
@@ -101,8 +105,10 @@ export const Inputs = () => {
       <div className="container">
         <h2 className="my-3"> Insumos  </h2>
         <hr />
-        <button className="btn btn-outline-primary mb-3" onClick={toggle}>Nuevo Insumo</button>
-        {/* <Seeker /> */}
+        {
+          hasAnyRole(login.user.authorities, ["CREATE_INPUT", "UPDATE_INPUT"]) &&
+          <button className="btn btn-outline-primary mb-3" onClick={toggle}>Nuevo Insumo</button>
+        }
 
         <div className="accordion" id="accordionPanelsStayOpenExample">
 

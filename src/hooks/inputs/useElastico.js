@@ -4,6 +4,7 @@ import { useInputModal } from "./useInputModal";
 import Swal from "sweetalert2";
 import { elasticoReducer } from "../../reducers/elasticoReducer";
 import { ElasticosContext } from "../../context/ElasticosContext";
+import { AuthContext } from "../../auth/context/AuthContext.Jsx";
 
 
 export const useElastico = () => {
@@ -18,17 +19,26 @@ export const useElastico = () => {
 
   const { toggle, modalSelectionHandler, setInputDbHasChanged } = useInputModal();
 
-  // const [elasticos, dispatch] = useReducer(elasticoReducer, elasticosDb);
+  const { handlerLogout } = useContext(AuthContext);
 
 
 
   const findAllElasticos = async () => {
-    const getElasticos = await fetch("http://localhost:8080/elasticos")
+    const getElasticos = await fetch(`${import.meta.env.VITE_API_BASE_URL}/elasticos`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
     if (getElasticos.ok) {
       const elasticosJson = await getElasticos.json();
 
       dispatchAllElasticos(elasticosJson);
 
+    } else {
+      const error = await getElasticos.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
     }
   }
 
@@ -39,9 +49,10 @@ export const useElastico = () => {
     }
 
     try {
-      const saveElastico = await fetch("http://localhost:8080/elasticos", {
+      const saveElastico = await fetch(`${import.meta.env.VITE_API_BASE_URL}/elasticos`, {
         method: "POST",
         headers: {
+          "Authorization": sessionStorage.getItem("token"),
           "Content-Type": "application/json"
         },
         body: JSON.stringify(elasticoForm)
@@ -58,6 +69,11 @@ export const useElastico = () => {
         setTimeout(() => {
           setInputDbHasChanged("")
         }, 8000)
+      } else {
+        const error = await saveElastico.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
 
     } catch (error) {
@@ -78,8 +94,11 @@ export const useElastico = () => {
 
     try {
 
-      const putElastico = await fetch(`http://localhost:8080/elasticos/${id}?${params}`, {
+      const putElastico = await fetch(`${import.meta.env.VITE_API_BASE_URL}/elasticos/${id}?${params}`, {
         method: "PUT",
+        headers: {
+          "Authorization": sessionStorage.getItem("token")
+        }
       })
 
       if (putElastico.ok) {
@@ -94,6 +113,11 @@ export const useElastico = () => {
           setInputDbHasChanged("")
         }, 8000)
         formIsOpen(false);
+      } else {
+        const error = await putElastico.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
 
     } catch (error) {
@@ -105,9 +129,10 @@ export const useElastico = () => {
 
     try {
 
-      const deleteElastico = await fetch(`http://localhost:8080/elasticos/${id}`, {
+      const deleteElastico = await fetch(`${import.meta.env.VITE_API_BASE_URL}/elasticos/${id}`, {
         method: "DELETE",
         headers: {
+          "Authorization": sessionStorage.getItem("token"),
           "Content-Type": "application/json"
         }
       })
@@ -125,6 +150,11 @@ export const useElastico = () => {
           setInputDbHasChanged("");
         }, 8000)
 
+      } else {
+        const error = await deleteElastico.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
       }
     } catch (error) {
       console.log(error);

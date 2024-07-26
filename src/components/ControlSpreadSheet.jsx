@@ -1,11 +1,14 @@
 import { useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable";
+import { useControlSpreadsheet } from "../hooks/lotes/useControlSpreadsheet";
 
 export const ControlSpreadSheet = ({ controlSpreadSheet, setControlSpreadSheet, setControlSpreadSheetIsOpen }) => {
 
   const [controlSpreadSheetForm, setControlSpreadSheetForm] = useState();
 
   const [editMode, setEditMode] = useState(false);
+
+  const { updateControlSpreadSheet } = useControlSpreadsheet();
 
 
   useEffect(() => {
@@ -61,22 +64,7 @@ export const ControlSpreadSheet = ({ controlSpreadSheet, setControlSpreadSheet, 
   }
 
   const onSubmit = () => {
-    const updateControlSpreadSheet = async (updatedControlSpreadSheet) => {
-      const res = await fetch('http://localhost:8080/control-spreadsheet', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedControlSpreadSheet)
-      })
-      if (res.ok) {
-        const resJson = await res.json();
-        // console.log(resJson);
-        setControlSpreadSheet(controlSpreadSheetForm);
-        setEditMode(false);
-      }
-    }
-    updateControlSpreadSheet(controlSpreadSheetToSendMapper(controlSpreadSheetForm))
+    updateControlSpreadSheet(controlSpreadSheetToSendMapper(controlSpreadSheetForm), setControlSpreadSheet, setEditMode, controlSpreadSheetForm)
   };
 
   return (
