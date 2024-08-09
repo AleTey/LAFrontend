@@ -49,10 +49,10 @@ export const ApliqueCard = ({ aplique }) => {
           <li className="list-group-item"><b>Proveedor:</b> {aplique.proveedor.empresa || ""}</li>
           <li className="list-group-item"><b>Detalle:</b> {aplique.detalle}</li>
           <li className="list-group-item"><b>Color:</b> {aplique.color}</li>
-          <li className="list-group-item"><b>Cantidad por Pack:</b> {aplique.cantPorPack}</li>
-          <li className="list-group-item"><b>Precio Pack:</b> {aplique.precioPorPack}</li>
+          {/* <li className="list-group-item"><b>Cantidad por Pack:</b> {aplique.cantPorPack}</li> */}
+          {/* <li className="list-group-item"><b>Precio Pack:</b> {aplique.precioPorPack}</li> */}
           <li className="list-group-item"><b>Precio unidad:</b> {aplique.precioUnidad}</li>
-          <li className="list-group-item"><b>Stock packs:</b> {aplique.stockPacks}</li>
+          <li className="list-group-item"><b>Stock:</b> {aplique.stock}</li>
         </ul>
         <div className="card-body grid">
 

@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2'
-export const messageInfo = ({ message }) => {
+export const messageInfo = ( message ) => {
   Swal.fire({
     title: message,
     showClass: {

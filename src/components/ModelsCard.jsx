@@ -72,7 +72,7 @@ export const ModelsCard = ({ modelo }) => {
                         }
                       </div>
                     </div>
-                    <a href="#" className="btn btn-primary">Ir a insumo</a>
+                    {/* <a href="#" className="btn btn-primary">Ir a insumo</a> */}
                   </div>
                   {/* <div class="card-footer text-muted">
                     2 days ago

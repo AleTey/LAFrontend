@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { ProductCardBasicThumbnail } from "./ProductCardBasicThumbnail"
 import { LoteButtonsActions } from "./LoteButtonsActions"
 import { CutSpreadSheet } from "./CutSpreadSheet"
@@ -11,6 +11,8 @@ import { usePreparationSpreadsheet } from "../hooks/lotes/usePreparationSpreadsh
 import { useWorkshopSpreadsheet } from "../hooks/lotes/useWorkshopSpreadsheet"
 import { useControlSpreadsheet } from "../hooks/lotes/useControlSpreadsheet"
 import { PreviousLoteStatus } from "./buttons/PreviousLoteStatus"
+import { AuthContext } from "../auth/context/AuthContext"
+import { hasAnyRole } from "../auth/utils/hasAnyRole"
 
 export const LoteCard = ({ lote }) => {
 
@@ -41,6 +43,8 @@ export const LoteCard = ({ lote }) => {
   const { findWorkshopSpreadsheetById } = useWorkshopSpreadsheet();
 
   const { findControlSpreedSheetById } = useControlSpreadsheet();
+
+  const { login } = useContext(AuthContext);
 
 
   const onChangeStatus = (id, status) => {
@@ -74,6 +78,7 @@ export const LoteCard = ({ lote }) => {
         <div className="card-header d-flex justify-content-between">
           <h4 className="text-primary-emphasis"><b>Lote: {lote.id}</b></h4>
           {
+            hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
             lote.status !== "COLA" &&
             <PreviousLoteStatus
               loteId={lote.id}

@@ -5,14 +5,15 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
 
-  const { login, handlerLogin, handlerLogout } = useAuth();
+  const { login, handlerLogin, handlerLogout, changePassword } = useAuth();
 
   return (
     <AuthContext.Provider value={
       {
         login,
         handlerLogin,
-        handlerLogout
+        handlerLogout,
+        changePassword
       }
     }>
       {children}

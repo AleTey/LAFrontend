@@ -1,3 +1,5 @@
+import { useOrderAmountPerSize } from "../utils/useOrderAmountPerSize";
+
 export const usePreparationSpreadsheet = () => {
 
   const findPreparationSpreadSheetById = async (id, setPreparationSpreadsheet) => {
@@ -25,6 +27,7 @@ export const usePreparationSpreadsheet = () => {
           if (amount.productForLoteDTO.img) {
             return {
               ...amount,
+              amountPerSize: useOrderAmountPerSize(amount.amountPerSize),
               productForLoteDTO: {
                 ...amount.productForLoteDTO,
                 img: imgUrl
@@ -33,6 +36,7 @@ export const usePreparationSpreadsheet = () => {
           }
           return {
             ...amount,
+            amountPerSize: useOrderAmountPerSize(amount.amountPerSize),
             productForLoteDTO: {
               ...amount.productForLoteDTO,
               img: null

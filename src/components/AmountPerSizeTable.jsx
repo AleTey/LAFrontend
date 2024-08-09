@@ -40,8 +40,10 @@ export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 's
                           name={key}
                           value={value}
                           type="number"
+                          min= "0"
                           style={{ maxWidth: "6rem" }}
-                          onChange={(e) => onSheetChange(e, amount.id)} />
+                          onChange={(e) => onSheetChange(e, amount.id)} 
+                          />
                       }
                     </th>
                   </tr>

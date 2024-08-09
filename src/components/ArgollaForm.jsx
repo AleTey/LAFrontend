@@ -12,15 +12,15 @@ const argollaFormInitialState = {
     id: 0
   },
   detalle: "",
-  forma: "",
+  // forma: "",
   circunferenciaInterna: "",
   circunferenciaExterna: "",
   material: "",
   color: "",
-  cantPorPack: 0,
-  precioPorPack: 0,
+  // cantPorPack: 0,
+  // precioPorPack: 0,
   precioUni: 0,
-  stockPacks: 0
+  stock: 0
 }
 
 const validationArgollaForm = (argollaForm) => {
@@ -95,7 +95,7 @@ export const ArgollaForm = ({ argollaFormData = argollaFormInitialState, supplie
     setArgollaFormErrors({});
     if (Object.keys(validationArgollaForm(argollaForm)).length === 0) {
 
-      const nameArgolla = "Argolla " + argollaForm.circunferenciaInterna.trim() + "/" + argollaForm.circunferenciaInterna.trim() + ` (${argollaForm.forma})`;
+      const nameArgolla = "Argolla " + argollaForm.circunferenciaInterna.trim() + "/" + argollaForm.circunferenciaInterna.trim();
       argollaForm.nombre = nameArgolla;
 
       if (argollaForm.id) {
@@ -151,13 +151,13 @@ export const ArgollaForm = ({ argollaFormData = argollaFormInitialState, supplie
             placeHolder="Circunferencia externa Ej: 10mm"
             onChangeInput={onChangeArgollaForm}
           />
-          <Input
+          {/* <Input
             name="forma"
             value={argollaForm.forma}
             type="text"
             placeHolder="Forma"
             onChangeInput={onChangeArgollaForm}
-          />
+          /> */}
           <Input
             name="material"
             value={argollaForm.material}
@@ -172,20 +172,20 @@ export const ArgollaForm = ({ argollaFormData = argollaFormInitialState, supplie
             placeHolder="Color"
             onChangeInput={onChangeArgollaForm}
           />
-          <Input
+          {/* <Input
             name="cantPorPack"
             value={argollaForm.cantPorPack}
             type="number"
             placeHolder="Cant por pack"
             onChangeInput={onChangeArgollaForm}
-          />
-          <Input
+          /> */}
+          {/* <Input
             name="precioPorPack"
             value={argollaForm.precioPorPack}
             type="number"
             placeHolder="Precio por pack"
             onChangeInput={onChangeArgollaForm}
-          />
+          /> */}
           <Input
             name="precioUni"
             value={argollaForm.precioUni}
@@ -194,10 +194,10 @@ export const ArgollaForm = ({ argollaFormData = argollaFormInitialState, supplie
             onChangeInput={onChangeArgollaForm}
           />
           <Input
-            name="stockPacks"
-            value={argollaForm.stockPacks}
+            name="stock"
+            value={argollaForm.stock}
             type="number"
-            placeHolder="Stock packs"
+            placeHolder="Stock"
             onChangeInput={onChangeArgollaForm}
           />
           <Input

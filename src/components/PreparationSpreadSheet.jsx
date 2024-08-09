@@ -1,10 +1,13 @@
 import { useContext, useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable"
 import { InputQuantityTable } from "./InputQuantityTable";
-import { ImageModal } from "./imageModal";
+// import { ImageModal } from "./imageModal";
 import { hasAnyRole, hasAnyRoleV2 } from "../auth/utils/hasAnyRole";
 import { usePreparationSpreadsheet } from "../hooks/lotes/usePreparationSpreadsheet";
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { ImageModal } from "./ImageModal";
+import "../acss/general.css";
+
 
 export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationSpreadSheet, setPreparationSpreadSheetIsOpen }) => {
 
@@ -105,7 +108,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
       {imageModalIsOpen &&
         <ImageModal
           image={preparationSpreadSheetForm.img}
-          title="titulo"
+          // title="titulo"
           modalIsOpen={setImageModalIsOpen}
         />
       }
@@ -173,7 +176,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
 
         {/* <div className="container"> */}
         <div onClick={() => { setImageModalIsOpen(true) }} style={{ maxWidth: "12rem" }}>
-          <img src={preparationSpreadSheetForm.img || 'src/db/imgs/image-not-found.jpg'} style={{ maxWidth: "10rem" }} alt="" />
+          <img className="pointer" src={preparationSpreadSheetForm.img || 'src/db/imgs/image-not-found.jpg'} style={{ maxWidth: "10rem" }} alt="" />
         </div>
 
         {/* </div> */}

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
 import { useCutSpreadsheet } from "../hooks/lotes/useCutSpreadsheet";
+import { hasAnyRole } from "../auth/utils/hasAnyRole";
 
 
 export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpreadSheetIsOpen }) => {
@@ -8,6 +9,8 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
   const [cutSpreadSheetForm, setCutSpreadSheetForm] = useState(cutSpreadSheet);
 
   const [editMode, setEditMode] = useState(false);
+
+  const { login } = useContext(AuthContext);
 
 
   const { updateCutSpreadSheet } = useCutSpreadsheet();
@@ -129,7 +132,7 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
                 <div className="d-flex row">
                   <div className="d-flex row gap-2 col justify-content-center">
                     <b>{amount.productForLoteDTO.nombre}</b>
-                    <img src={amount.productForLoteDTO.img} alt={amount.productForLoteDTO.nombre} style={{ maxWidth: "10rem", minWidth: "10rem" }} />
+                    <img src={amount.productForLoteDTO.img} alt={amount.productForLoteDTO.nombre} style={{ maxHeight: "10rem", maxWidth: "10rem", minWidth: "10rem", objectFit: "cover" }} />
                   </div>
                   <div className="container col">
 
@@ -183,7 +186,7 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
                   {fabricDetails.fabricNombreCodigoTipoImgDTO.id}
                 </div>
                 <div className="col-3">
-                  <img src={fabricDetails.fabricNombreCodigoTipoImgDTO.img} alt={fabricDetails.fabricNombreCodigoTipoImgDTO.nombre} style={{ maxWidth: "4rem" }} />
+                  <img src={fabricDetails.fabricNombreCodigoTipoImgDTO.img} alt={fabricDetails.fabricNombreCodigoTipoImgDTO.nombre} style={{maxHeight: "6rem", maxWidth: "4rem" }} />
                 </div>
                 <div className="col-2">
                   {fabricDetails.fabricNombreCodigoTipoImgDTO.nombre}
@@ -210,6 +213,7 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
         <hr />
         <div>
           <b>Largo de la mesa:</b>
+
           {
             !editMode ?
               ` ${cutSpreadSheetForm.tableLength}`
@@ -248,35 +252,39 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
         }
 
 
-        <div className="container mt-4 mb-3 d-flex row gap-3">
-          {
-            !editMode ?
-              <button
-                className="btn btn-primary"
-                onClick={() => setEditMode(true)}
-              >
-                Editar planilla
-              </button>
-              :
-              <button
-                className="btn btn-primary"
-                onClick={onSubmit}
-              >
-                Guardar Cambios
-              </button>
-          }
+        {
+          hasAnyRole(login.user.authorities, ["UPDATE_CUT_SPREADSHEET"]) &&
 
-          {
-            editMode &&
-            <button
-              className="btn btn-danger"
-              onClick={onCancelarCambios}
-            > Cancelar cambios
-            </button>
-          }
-        </div>
+          <div div className="container mt-4 mb-3 d-flex row gap-3">
+            {
+              !editMode ?
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setEditMode(true)}
+                >
+                  Editar planilla
+                </button>
+                :
+                <button
+                  className="btn btn-primary"
+                  onClick={onSubmit}
+                >
+                  Guardar Cambios
+                </button>
+            }
 
-      </div>
+            {
+              editMode &&
+              <button
+                className="btn btn-danger"
+                onClick={onCancelarCambios}
+              > Cancelar cambios
+              </button>
+            }
+          </div>
+        }
+
+      </div >
 
     </>
   )

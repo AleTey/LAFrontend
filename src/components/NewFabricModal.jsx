@@ -22,9 +22,9 @@ const fabricValidationForm = (fabricForm) => {
   let errors = {};
 
 
-  if (!fabricForm.color.trim()) {
-    errors.color = "El color es un campo obligatorio"
-  }
+  // if (!fabricForm.color.trim()) {
+  //   errors.color = "El color es un campo obligatorio"
+  // }
 
 
   if (fabricForm.proveedor.id === 0 || fabricForm.proveedor.id === "Proveedor") {
@@ -212,7 +212,7 @@ export const NewFabricModal = ({
                       value={fabricForm.precio}
                       onChange={onChangeFabricForm}
                     />
-                    <label htmlFor="floatingInputStock" className="h6">Precio en metros</label>
+                    <label htmlFor="floatingInputStock" className="h6">Precio/metro</label>
                   </div>
 
                   <div className="form-floating mb-3">

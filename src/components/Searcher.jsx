@@ -38,6 +38,7 @@ export const Searcher = ({ onClickSearch, pageNumber = 0, setSearchIsActive, pat
   const handleKeyDow = (e) => {
     if (inputContent.trim()) {
       if (e.key === 'Enter') {
+        e.preventDefault();
         onClickSearch(inputContent, pageNumber);
         if (setSearchIsActive) {
           setSearchIsActive(true);

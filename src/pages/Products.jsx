@@ -29,30 +29,26 @@ export const Products = () => {
     getAllProducts,
     getPageOfProductsOnSearch,
     productDbHasChanged,
-    productPaginator
+    productPaginator,
+    getAllProductsCardDtoPage,
+    getPageOfProductsCardDtoPageByString
   } = useProduct();
 
   const [productFormIsOpen, setProductFormIsOpen] = useState(false);
 
   useEffect(() => {
-    // console.log(page)
     if (searchIsActive) {
-      getPageOfProductsOnSearch(stringToSearch, page)
+      getPageOfProductsCardDtoPageByString(stringToSearch, page)
     } else {
-      getAllProducts(page);
+      getAllProductsCardDtoPage(page);
     }
-    console.log("PRODUCTS  USE EFFECT")
-    console.log(productPaginator)
-    console.log(productPaginator.totalPages)
   }, [, page])
-  useEffect(() => {
-    // getPageOfProductsOnSearch
-    console.log("PRODUCTS  USE EFFECT")
-    console.log(productPaginator)
-    console.log(productPaginator.totalPages)
-  }, [])
-
-
+  // useEffect(() => {
+  //   // getPageOfProductsOnSearch
+  //   console.log("PRODUCTS  USE EFFECT")
+  //   console.log(productPaginator)
+  //   console.log(productPaginator.totalPages)
+  // }, [])
 
   return (
     <>
@@ -82,7 +78,7 @@ export const Products = () => {
           setElementsFounded={searchProductByString}
         /> */}
         <Searcher
-          onClickSearch={getPageOfProductsOnSearch}
+          onClickSearch={getPageOfProductsCardDtoPageByString}
           pageNumber={page}
           setSearchIsActive={setSearchIsActive}
           path={'products'}

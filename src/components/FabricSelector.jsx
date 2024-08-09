@@ -1,28 +1,24 @@
-import { useContext, useEffect, useState } from "react"
-import { Seeker } from "./Seeker";
-import { Paginator } from "./Paginator";
+import { useState } from "react"
 import { useParams } from "react-router-dom";
 import { Searcher } from "./Searcher";
-import { useFabric } from "../hooks/useFabric";
-import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
 export const FabricSelector = ({ closeModal, onChangeFabric, fabricSelected, setFabricSelected, onChangeFabricForTira }) => {
 
   const [fabricPage, setFabricPage] = useState({});
 
-  const [fabricPageContent, setFabricPageContent] = useState([]);
+  // const [fabricPageContent, setFabricPageContent] = useState([]);
 
   const [fabricsFound, setFabricFound] = useState([])
 
-  const [paginator, setPaginator] = useState({});
+  // const [paginator, setPaginator] = useState({});
 
   const [fabricToSearch, setFabricToSearch] = useState("");
 
   const { page } = useParams();
 
-  const { searchFabricByString } = useFabric();
+  // const { searchFabricByString } = useFabric();
 
-  const {login} = useContext(AuthContext);
+  // const {login} = useContext(AuthContext);
 
 
 

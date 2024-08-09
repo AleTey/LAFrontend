@@ -147,7 +147,7 @@ export const ApliqueForm = ({ apliqueFormData = apliqueFormInitialState, supplie
             onChangeInput={onChangeApliqueForm}
           />
 
-          <Input
+          {/* <Input
             name='cantPorPack'
             placeHolder='Cantidad por pack'
             type='number'
@@ -160,7 +160,7 @@ export const ApliqueForm = ({ apliqueFormData = apliqueFormInitialState, supplie
             type='number'
             value={apliqueForm.precioPorPack}
             onChangeInput={onChangeApliqueForm}
-          />
+          /> */}
           <Input
             name='precioUnidad'
             placeHolder='Precio unidad'

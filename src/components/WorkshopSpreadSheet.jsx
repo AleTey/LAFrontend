@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable";
 import { useWorkshopSpreadsheet } from "../hooks/lotes/useWorkshopSpreadsheet";
+import { hasAnyRole } from "../auth/utils/hasAnyRole";
+import { AuthContext } from "../auth/context/AuthContext";
 
 export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadSheet, setWorkshopSpreadSheetIsOpen }) => {
 
@@ -9,6 +11,8 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
   const [editMode, setEditMode] = useState(false);
 
   const { updateWorkshopSpreadSheet } = useWorkshopSpreadsheet();
+
+  const {login} = useContext(AuthContext);
 
   useEffect(() => {
     setWorkshopSpreadSheetForm(workshopSpreadSheet)
@@ -53,10 +57,13 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
 
   const onChangeDetails = (e) => {
     const { name, value } = e.target;
-    setWorkshopSpreadSheetForm({
+    console.log("name: " + name)
+    console.log("value: " + value)
+    setWorkshopSpreadSheetForm({      
       ...workshopSpreedSheetForm,
       [name]: value
     })
+    console.log(workshopSpreedSheetForm)
   }
 
   const onCancelChanges = () => {
@@ -83,7 +90,7 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
           }
         }
       }),
-      details: workshopSpreadSheet.details
+      details: workshopSpreedSheetForm.details
     }
   }
 
@@ -152,34 +159,37 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
           }
 
           <hr />
-          <div className="container mt-4 mb-3 d-flex row gap-3">
-            {
-              !editMode ?
-                <button
-                  className="btn btn-primary"
-                  onClick={() => setEditMode(true)}
-                >
-                  Editar planilla
-                </button>
-                :
-                <button
-                  className="btn btn-primary"
-                  onClick={onSubmit}
-                >
-                  Guardar Cambios
-                </button>
-            }
+          {
+            hasAnyRole(login.user.authorities, ["UPDATE_WORKSHOP_SPREADSHEET"]) &&
+            <div className="container mt-4 mb-3 d-flex row gap-3">
+              {
+                !editMode ?
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => setEditMode(true)}
+                  >
+                    Editar planilla
+                  </button>
+                  :
+                  <button
+                    className="btn btn-primary"
+                    onClick={onSubmit}
+                  >
+                    Guardar Cambios
+                  </button>
+              }
 
-            {
-              editMode &&
-              <button
-                className="btn btn-danger"
-                onClick={onCancelChanges}
-              > Cancelar cambios
-              </button>
-            }
+              {
+                editMode &&
+                <button
+                  className="btn btn-danger"
+                  onClick={onCancelChanges}
+                > Cancelar cambios
+                </button>
+              }
 
-          </div>
+            </div>
+          }
         </div>
       </div>
     </>

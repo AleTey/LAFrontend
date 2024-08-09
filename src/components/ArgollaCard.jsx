@@ -78,15 +78,15 @@ export const ArgollaCard = ({ argolla }) => {
           <li className="list-group-item"><b>Codigo de Fabrica:</b> {argolla.codigo}</li>
           <li className="list-group-item"><b>Proveedor:</b> {argolla.proveedor.empresa || ""}</li>
           <li className="list-group-item"><b>Detalle:</b> {argolla.detalle}</li>
-          <li className="list-group-item"><b>Forma:</b> {argolla.forma}</li>
+          {/* <li className="list-group-item"><b>Forma:</b> {argolla.forma}</li> */}
           <li className="list-group-item"><b>Circunferencia interna:</b> {argolla.circunferenciaInterna} </li>
           <li className="list-group-item"><b>Circunferencia externa:</b> {argolla.circunferenciaExterna} </li>
           <li className="list-group-item"><b>Material:</b> {argolla.material}</li>
           <li className="list-group-item"><b>Color:</b> {argolla.color}</li>
-          <li className="list-group-item"><b>Cantidad por Pack:</b> {argolla.cantPorPack}</li>
-          <li className="list-group-item"><b>Precio Pack:</b> {argolla.precioPorPack}</li>
+          {/* <li className="list-group-item"><b>Cantidad por Pack:</b> {argolla.cantPorPack}</li> */}
+          {/* <li className="list-group-item"><b>Precio Pack:</b> {argolla.precioPorPack}</li> */}
           <li className="list-group-item"><b>Precio unidad:</b> {argolla.precioUni}</li>
-          <li className="list-group-item"><b>Stock packs:</b> {argolla.stockPacks}</li>
+          <li className="list-group-item"><b>Stock:</b> {argolla.stock}</li>
         </ul>
         <div className="card-body grid">
 

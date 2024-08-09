@@ -63,11 +63,11 @@ export const ElasticoCard = ({ elastico }) => {
             <li className="list-group-item"><b>Detalle:</b> {elastico.detalle}</li>
             <li className="list-group-item"><b>Ancho:</b> {elastico.ancho}</li>
             <li className="list-group-item"><b>Material:</b> {elastico.material}</li>
-            <li className="list-group-item"><b>Color:</b> {elastico.color}</li>
-            <li className="list-group-item"><b>Metros por Rollo:</b> {elastico.mtsPorRollo}</li>
-            <li className="list-group-item"><b>Precio Rollo:</b> {elastico.precioRollo}</li>
+            {/* <li className="list-group-item"><b>Color:</b> {elastico.color}</li> */}
+            {/* <li className="list-group-item"><b>Metros por Rollo:</b> {elastico.mtsPorRollo}</li> */}
+            {/* <li className="list-group-item"><b>Precio Rollo:</b> {elastico.precioRollo}</li> */}
             <li className="list-group-item"><b>Precio Metro:</b> {elastico.precioMtr}</li>
-            <li className="list-group-item"><b>Stock Rollos:</b> {elastico.stockEnRollos}</li>
+            <li className="list-group-item"><b>Stock metros:</b> {elastico.stock}</li>
           </ul>
           {/* <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           <a href="#" class="card-link">Card link</a>

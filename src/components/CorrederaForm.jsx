@@ -8,14 +8,14 @@ const newCorrederaInitialForm = {
     id: 0
   },
   detalle: "",
-  forma: "",
+  // forma: "",
   medida: "",
   material: "",
   color: "",
-  cantPorPack: 0,
-  precioPorPack: 0,
+  // cantPorPack: 0,
+  // precioPorPack: 0,
   precioUni: 0,
-  stockPacks: 0
+  stock: 0
 }
 
 
@@ -172,10 +172,10 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
 
           {formErrors.proveedor && <p className="text-danger">{formErrors.proveedor}</p>}
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input name="forma" value={correderaForm.forma} type="text" className="form-control" id="correderaForma" placeholder="forma" onChange={onChangeCorrederaForm} />
             <label htmlFor="correderaForma">Forma</label>
-          </div>
+          </div> */}
 
           <div className="form-floating mb-3">
             <input name="medida" value={correderaForm.medida} type="text" className="form-control" id="correderaMedida" placeholder="medida" onChange={onChangeCorrederaForm} />
@@ -194,15 +194,15 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
             <label htmlFor="correderaColor">Color</label>
           </div>
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input name="cantPorPack" value={correderaForm.cantPorPack} type="number" className="form-control" id="correderaCantPorPack" onChange={onChangeCorrederaForm} />
             <label htmlFor="correderaCantPorPack">Cantidad de correderas por bolsa o pack</label>
-          </div>
+          </div> */}
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input name="precioPorPack" value={correderaForm.precioPorPack} type="number" className="form-control" id="correderaPrecioPorPack" onChange={onChangeCorrederaForm} />
             <label htmlFor="correderaPrecioPorPack">Precio por bolsa o pack</label>
-          </div>
+          </div> */}
 
           <div className="form-floating mb-3">
             <input name="precioUni" value={correderaForm.precioUni} type="number" className="form-control" id="correderaPrecioUni" onChange={onChangeCorrederaForm} />
@@ -210,8 +210,8 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
           </div>
 
           <div className="form-floating mb-3">
-            <input name="stockPacks" value={correderaForm.stockPacks} type="number" className="form-control" id="correderaStockPacks" onChange={onChangeCorrederaForm} />
-            <label htmlFor="correderaStockPacks">Stock packs</label>
+            <input name="stock" value={correderaForm.stock} type="number" className="form-control" id="correderaStockPacks" onChange={onChangeCorrederaForm} />
+            <label htmlFor="correderaStockPacks">Stock</label>
           </div>
 
           <div className="form-floating mb-3">
@@ -220,9 +220,7 @@ export const CorrederaForm = ({ suppliers, correderaFormData = newCorrederaIniti
           </div>
 
 
-          <button className="btn btn-primary" onClick={onSubmit}>Agregar corredera</button>
-
-
+          <button className="btn btn-primary" onClick={onSubmit}>{`${correderaForm.id ? "Confirmar cambios" : "Agregar corredera"}`}</button>
 
         </form>
 

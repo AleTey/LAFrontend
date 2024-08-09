@@ -16,11 +16,6 @@ export const FabricCard = ({
 
   const { login } = useContext(AuthContext);
 
-  // const {
-  //   orderList,
-  //   setOrderList
-  // } = useContext(OrderContext);
-
   const { orderList,
     setOrderList,
     onAddOrderList } = useOrders();
@@ -33,13 +28,6 @@ export const FabricCard = ({
     setEditFormIsOpen(true)
   }
 
-  // const onAddOrderList = (fabric) => {
-  //   setOrderList([
-  //     ...orderList,
-  //     fabric
-  //   ])
-  // }
-
   return (
     <>
       {
@@ -48,7 +36,7 @@ export const FabricCard = ({
       <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
         {/* <img src={img} className="card-img-top" alt="..." /> */}
         {fabric.img ?
-          <img src={fabric.img} className="card-img-top" alt="..." />
+          <img src={fabric.img} className="card-img-top" alt="..." style={{ maxHeight: "18rem" }} />
           :
           <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={fabric.color} />
         }
@@ -62,17 +50,23 @@ export const FabricCard = ({
           <li className="list-group-item">Color: {fabric.color}</li>
           <li className="list-group-item">Codigo de Fabrica: {fabric.codigo}</li>
           <li className="list-group-item">Id: {fabric.id}</li>
-          <li className="list-group-item">Proveedor : {fabric.proveedor.empresa}</li>
+          {
+            hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
+            <li className="list-group-item">Proveedor : {fabric.proveedor?.empresa}</li>
+          }
           <li className="list-group-item">Tipo: {fabric.tipo}</li>
           <li className="list-group-item">Stock: {fabric.stock} M
             <button className="btn btn-outline-success btn-sm ms-3" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Agregar</button>
           </li>
           <li className="list-group-item">Temporada: {fabric.temporada}</li>
           <li className="list-group-item">Tags: {fabric.tags}</li>
-          <li className="list-group-item">Precio: : {fabric.precio}</li>
+          {
+            hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
+            <li className="list-group-item">Precio: {fabric.precio}</li>
+          }
         </ul>
-        <div className="card-body grid">
 
+        <div className="card-body grid">
           {
             hasAnyRole(login.user.authorities, ["ROLE_MANAGER", "ROLE_ADMIN"]) &&
             <abbr title="Agregar a pedidos" className="initialism">

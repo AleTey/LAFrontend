@@ -1,8 +1,6 @@
 import { useState, useEffect, useContext } from "react"
 import { FabricCard } from "../components/FabricCard"
-import { Seeker } from "../components/Seeker";
 import { NewFabricModal } from "../components/NewFabricModal";
-import { useFabric } from "../hooks/useFabric";
 import { Paginator } from "../components/Paginator";
 import { useParams } from "react-router-dom";
 import { Searcher } from "../components/Searcher";
@@ -23,7 +21,7 @@ export const Fabric = () => {
 
   const { login } = useContext(AuthContext);
 
-  const [paginator, setPaginator] = useState({});
+  // const [paginator, setPaginator] = useState({});
 
   const {
     fabricModalIsOpen,
@@ -31,26 +29,40 @@ export const Fabric = () => {
     fabricWasEdited,
     fabricWasDeleted,
     fabrics,
-    // paginator,
+    paginator,
+    setPaginator,
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabricsPages,
+    getAllFabricsDtoPages,
     addNewFabric,
     editFabric,
     onDeleteFabric,
     searchFabricByString,
+    searchFabricDtoByString,
   } = useContext(FabricContext);
 
 
   useEffect(() => {
     if (searchIsActive) {
-      searchFabricByString(stringToSearch, page, setPaginator);
+      hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) ?
+        searchFabricByString(stringToSearch, page, setPaginator)
+        :
+        searchFabricDtoByString(stringToSearch, page, setPaginator)
     } else {
-      console.log("fetch fabrics")
-      console.log(paginator)
-      getAllFabricsPages(page, setPaginator);
+      hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) ?
+        getAllFabricsPages(page, setPaginator)
+        :
+        getAllFabricsDtoPages(page, setPaginator)
     }
   }, [, page])
+
+  const onSearch = (stringToSearch, page) => {
+    hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) ?
+      searchFabricByString(stringToSearch, page, setPaginator)
+      :
+      searchFabricDtoByString(stringToSearch, page, setPaginator)
+  }
 
 
 
@@ -91,7 +103,7 @@ export const Fabric = () => {
         }
 
         <Searcher
-          onClickSearch={searchFabricByString}
+          onClickSearch={onSearch}
           pageNumber={page}
           path='fabric'
           setSearchIsActive={setSearchIsActive}
@@ -120,33 +132,13 @@ export const Fabric = () => {
           searchIsActive &&
           <h6 className="mt-3">{paginator.numberOfElements}/{paginator.totalElements} Telas encontrados</h6>
         }
-        {/* {
 
-            elementsFounded ?
-              elementsFounded.map(fabric => (
-                <FabricCard
-                  key={fabric.id}
-                  fabric={fabric}
-                  editFabric={editFabric}
-                  onDeleteFabric={onDeleteFabric}
-                />
-              ))
-              :
-              fabrics.map(fabric => (
-                <FabricCard
-                  key={fabric.id}
-                  fabric={fabric}
-                  editFabric={editFabric}
-                  onDeleteFabric={onDeleteFabric}
-                />
-              ))
-          } */}
         {
           !elementsFounded &&
-          // paginator.totalPages > 1 &&
           <Paginator
             paginator={paginator}
             path='fabric'
+
           />
         }
       </div>

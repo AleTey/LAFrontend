@@ -9,6 +9,8 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
 
   const { searchProductsDtoByString } = useProduct();
 
+  const [stringToSearch, setStringToSearch] = useState("");
+
 
   const productSelectedHandler = (product) => {
     productsSelected.some(pSelected => pSelected.id === product.id) ?
@@ -30,7 +32,7 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
 
   return (
     <>
-      <div className="modal fade show sm-0" id="staticBackdrop" style={{ display: "block" }} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div className="modal fade show sm-0" id="staticBackdrop" style={{ display: "block" }} data-bs-backdrop="static" data-bs-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel">
         <div className="modal-dialog sm-0">
           <div className="modal-content sm-0">
             <div className="modal-header">
@@ -40,14 +42,15 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
             <div className="modal-body sm-0">
 
               <div className="container sm-0">
-
+{/* 
                 <Seeker
                   onClickSearch={searchProduct}
-                />
-
-                {/* <Searcher 
-                
                 /> */}
+
+                <Searcher
+                  onClickSearch={searchProduct}
+                  setStringToSearch={setStringToSearch}
+                />
 
                 <table className="table table-striped">
                   <thead>

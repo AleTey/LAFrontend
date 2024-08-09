@@ -25,14 +25,9 @@ export const Navbar = () => {
               <li className="nav-item">
                 <NavLink className="nav-link" to="/">Home</NavLink>
               </li>
-              {/* {
-                hasAnyRole(login.user.authorities, ["READ_PRODUCT"]) &&
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="/products">Productos</NavLink>
-                </li>
-              } */}
 
               {
+                hasAnyRole(login.user.authorities, ["READ_LOTE_WORKSHOP"]) &&
                 <li className="nav-item">
                   <NavLink className="nav-link" to="lotes-taller">Cortes</NavLink>
                 </li>
@@ -75,12 +70,6 @@ export const Navbar = () => {
                 </li>
               }
 
-              {/* {
-                hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
-                <li className="nav-item">
-                  <NavLink className="nav-link" to="orders">Pedidos</NavLink>
-                </li>
-              } */}
               {
                 hasAnyRole(login.user.authorities, ["READ_INPUT"]) &&
                 <li className="nav-item">
@@ -95,7 +84,13 @@ export const Navbar = () => {
                 </a>
                 <ul className="dropdown-menu">
                   <li><a className="dropdown-item" href="#">Action</a></li>
-                  <li><a className="dropdown-item" href="#">Another action</a></li>
+
+                  <li>
+                    {/* <a className="dropdown-item" href="#">Cambiar contraseña</a> */}
+                  <NavLink className="dropdown-item" to="change-password">
+                Cambiar contraseña
+                  </NavLink>
+                  </li>
 
                   {
                     login && login.isAuth &&

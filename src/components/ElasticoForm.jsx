@@ -14,7 +14,7 @@ const newElasticoInitialForm = {
   precioRollo: 0,
   mtsPorRollo: 0,
   precioMtr: 0,
-  stockEnRollos: 0
+  stock: 0
 }
 
 const validationElasticoForm = (elastico) => {
@@ -30,9 +30,9 @@ const validationElasticoForm = (elastico) => {
     errors.ancho = "Se debe indicar el numero y la unidad de medida"
   }
 
-  if (!elastico.color.trim()) {
-    errors.color = "Ingresar el color del elástico"
-  }
+  // if (!elastico.color.trim()) {
+  //   errors.color = "Ingresar el color del elástico"
+  // }
 
   return errors;
 }
@@ -97,7 +97,7 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
     e.preventDefault();
     setFormErrors({});
     if (Object.keys(validationElasticoForm(elasticoForm)).length === 0) {
-      const nameElastico = "Elastico " + elasticoForm.ancho.trim() + " " + elasticoForm.color.trim();
+      const nameElastico = "Elastico " + elasticoForm.ancho.trim();
       elasticoForm.nombre = nameElastico;
 
       if (elasticoForm.id) {
@@ -201,7 +201,7 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
             {/* {formErrors.material && <p className="text-danger">{formErrors.material}</p>} */}
           </div>
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input
               name="color"
               value={elasticoForm.color}
@@ -213,9 +213,9 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
             />
             <label htmlFor="elasticoColor">Color</label>
             {formErrors.color && <p className="text-danger">{formErrors.color}</p>}
-          </div>
+          </div> */}
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input
               name="precioRollo"
               value={elasticoForm.precioRollo}
@@ -225,9 +225,9 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
               onChange={onChangeElasticoForm}
             />
             <label htmlFor="elasticoPrecioRollo">Precio rollo</label>
-          </div>
+          </div> */}
 
-          <div className="form-floating mb-3">
+          {/* <div className="form-floating mb-3">
             <input
               name="mtsPorRollo"
               value={elasticoForm.mtsPorRollo}
@@ -236,7 +236,7 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
               id="elasticoMtsPorRollo" onChange={onChangeElasticoForm}
             />
             <label htmlFor="elasticoMtsPorRollo">Metros por rollo</label>
-          </div>
+          </div> */}
 
           <div className="form-floating mb-3">
             <input
@@ -252,14 +252,14 @@ export const ElasticoForm = ({ suppliers, elasticoFormData = newElasticoInitialF
 
           <div className="form-floating mb-3">
             <input
-              name="stockEnRollos"
-              value={elasticoForm.stockEnRollos}
+              name="stock"
+              value={elasticoForm.stock}
               type="number"
               className="form-control"
               id="elasticoStockEnRollos"
               onChange={onChangeElasticoForm}
             />
-            <label htmlFor="elasticoStockEnRollos">Stock rollos</label>
+            <label htmlFor="elasticoStockEnRollos">Stock</label>
           </div>
 
           <div className="form-floating mb-3">

@@ -120,6 +120,54 @@ export const useFabric = () => {
       console.error('Error fetching fabrics:', error);
     }
   }
+  const getAllFabricsDtoPages = async (page = 0, setPaginator) => {
+    try {
+      console.log("function")
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/page-dto/${page}/3`, {
+        headers: {
+          "Authorization": sessionStorage.getItem('token')
+        }
+      });
+      // const res = await fetch(`http://localhost:8080/fabrics/page/${page}/3`);
+
+      if (res.ok) {
+        const json = await res.json();
+
+        const fabricsWithImageURL = json.content.map((fabric) => {
+
+          const imageBase64 = fabric.img;
+          const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+          if (fabric.img) {
+            return {
+              ...fabric,
+              img: imageUrl,
+            };
+          }
+          return {
+            ...fabric,
+            img: null,
+          };
+        });
+
+        dispatch({
+          type: 'GET_ALL_FABRICS',
+          payload: fabricsWithImageURL,
+        });
+
+        setPaginator(json)
+        console.log(json)
+      } else {
+        const error = await res.json();
+        if (error.message === "Please Login") {
+          handlerLogout();
+        }
+      }
+
+
+    } catch (error) {
+      console.error('Error fetching fabrics:', error);
+    }
+  }
 
 
   const addNewFabric = async (fabricForm) => {
@@ -346,6 +394,7 @@ export const useFabric = () => {
     });
     if (res.ok) {
       const json = await res.json();
+      console.log(json)
       const fabricsWithImageURL = json.content.map((fabric) => {
 
         const imageBase64 = fabric.img;
@@ -376,31 +425,96 @@ export const useFabric = () => {
       }
     }
   };
-  // const searchFabricByString = async (fabric) => {
-  //   const getFabricsFound = await fetch(`http://localhost:8080/fabrics/searchByString/${fabric}`);
-  //   if (getFabricsFound.ok) {
-  //     const fabricFoundJson = await getFabricsFound.json();
-  //     // setFabricPage(fabricFoundJson);
-  //     const fabricsWithImg = fabricFoundJson.map(fabric => {
-  //       const imageBase64 = fabric.img;
-  //       const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-  //       if (fabric.img) {
-  //         return {
-  //           ...fabric,
-  //           img: imageUrl
-  //         };
-  //       };
-  //       return {
-  //         ...fabric,
-  //         img: null
-  //       };
-  //     });
-  //     dispatch({
-  //       type: 'GET_ALL_FABRICS',
-  //       payload: fabricsWithImg,
-  //     });
-  //   };
-  // };
+  const searchFabricDtoByString = async (string, page = 0, setPaginator) => {
+    // console.log("searchFabricDtoByString");
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/search-dto-ByString`);
+    url.searchParams.append('string', string);
+    url.searchParams.append('page', page);
+    url.searchParams.append('size', 1);
+    const res = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
+    if (res.ok) {
+      const json = await res.json();
+      console.log(json)
+      const fabricsWithImageURL = json.content.map((fabric) => {
+
+        const imageBase64 = fabric.img;
+        const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (fabric.img) {
+          return {
+            ...fabric,
+            img: imageUrl,
+          };
+        }
+        return {
+          ...fabric,
+          img: null,
+        };
+      });
+
+      dispatch({
+        type: 'GET_ALL_FABRICS',
+        payload: fabricsWithImageURL,
+      });
+
+      setPaginator(json)
+      console.log(json)
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  };
+
+  const findSeasons = async (setSeasons) => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/seasons`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+      setSeasons(resJson);
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  }
+
+  const findFabricsBySeason = async (season, setSeasonFabrics) => {
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/by-season/${season}`, {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+      console.log(resJson)
+      setSeasonFabrics(fabricImgMapper(resJson));
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  }
+
+  const fabricImgMapper = (fabrics) => {
+
+    return fabrics.map(fabric => {
+      return {
+        ...fabric,
+        img: `data:image/jpeg;base64,${fabric.img}`
+      }
+    })
+
+  }
 
   return {
     fabricModalIsOpen,
@@ -415,9 +529,13 @@ export const useFabric = () => {
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabricsPages,
+    getAllFabricsDtoPages,
     addNewFabric,
     editFabric,
     onDeleteFabric,
     searchFabricByString,
+    searchFabricDtoByString,
+    findSeasons,
+    findFabricsBySeason
   }
 }

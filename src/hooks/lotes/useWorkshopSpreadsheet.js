@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../auth/context/AuthContext.Jsx";
+import { useOrderAmountPerSize } from "../utils/useOrderAmountPerSize";
 
 export const useWorkshopSpreadsheet = () => {
 
@@ -24,6 +25,7 @@ export const useWorkshopSpreadsheet = () => {
             if (amount.productForLoteDTO.img) {
               return {
                 ...amount,
+                amountPerSize: useOrderAmountPerSize(amount.amountPerSize),
                 productForLoteDTO: {
                   ...amount.productForLoteDTO,
                   img: `data:image/jpeg;base64,${amount.productForLoteDTO.img}`
@@ -32,6 +34,7 @@ export const useWorkshopSpreadsheet = () => {
             }
             return {
               ...amount,
+              amountPerSize: useOrderAmountPerSize(amount.amountPerSize),
               productForLoteDTO: {
                 ...amount.productForLoteDTO,
                 img: null
@@ -42,6 +45,7 @@ export const useWorkshopSpreadsheet = () => {
             if (amountDefective.productForLoteDTO.img) {
               return {
                 ...amountDefective,
+                amountPerSize: useOrderAmountPerSize(amountDefective.amountPerSize),
                 productForLoteDTO: {
                   ...amountDefective.productForLoteDTO,
                   img: `data:image/jpeg;base64,${amountDefective.productForLoteDTO.img}`
@@ -50,6 +54,7 @@ export const useWorkshopSpreadsheet = () => {
             }
             return {
               ...amountDefective,
+              amountPerSize: useOrderAmountPerSize(amountDefective.amountPerSize),
               productForLoteDTO: {
                 ...amountDefective.productForLoteDTO,
                 img: null
@@ -70,6 +75,7 @@ export const useWorkshopSpreadsheet = () => {
 
 
   const updateWorkshopSpreadSheet = async (updatedWorkshopSpreadSheet, setWorkshopSpreadSheet, workshopSpreedSheetForm, setEditMode) => {
+    console.log(updatedWorkshopSpreadSheet);
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/workshop-spreadsheet`, {
       method: 'PUT',
       headers: {

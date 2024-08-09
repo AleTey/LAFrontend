@@ -2,6 +2,7 @@ import { useReducer } from "react";
 import { loginReducer } from "../reducers/loginReducer";
 import Swal from 'sweetalert2'
 import { useNavigate } from "react-router-dom";
+import { messageInfo } from "../../components/alerts/messageInfo";
 
 // const initialLogin = JSON.parse(sessionStorage.getItem('login')) || {
 //   isAuth: false,
@@ -46,8 +47,6 @@ export const useAuth = () => {
         const resJson = await res.json();
         const token = resJson.jwt;
         const claims = JSON.parse(atob(token.split(".")[1]));
-        console.log(claims);
-        console.log(resJson);
         dispatch({
           type: 'LOGIN',
           payload: {
@@ -85,10 +84,32 @@ export const useAuth = () => {
     navigate(`${import.meta.env.VITE_API_BASE_URL}/login`)
   };
 
+  const changePassword = async (changePasswordRequest) => {
+
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/users/change-pass`, {
+      method: "PUT",
+      headers: {
+        "Authorization": sessionStorage.getItem("token"),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(changePasswordRequest)
+    })
+    if (res.ok) {
+      const resJson = await res.text();
+      handlerLogout();
+    } else {
+      const resJson = await res.text();
+      console.log(resJson)
+
+      messageInfo("d");
+    }
+  }
+
   return {
     login,
     handlerLogin,
-    handlerLogout
+    handlerLogout,
+    changePassword
   };
 
 }

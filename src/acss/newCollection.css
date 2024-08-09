@@ -1,0 +1,48 @@
+
+.fabrics-container{
+  border: solid rgba(0, 0, 0, 0.1) 2px;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.img-container{
+  max-width: 6rem;
+  max-height: 6rem;
+}
+
+
+.hover-img:hover {
+  /* background-color: #4CAF50; Color de fondo inicial */
+  /* color: white; Color de texto inicial */
+  padding: 2px 2px; /* Espaciado interno */
+  border: solid rgba(0, 0, 0, 0.1) 1px; /* Sin borde */
+  /* cursor: pointer; Cambia el cursor al pasar sobre el botón */
+}
+
+.squad{
+  border: solid rgba(0, 0, 0, 0.2) 2px;
+  min-width: 20rem;
+  min-height: 30rem;
+  padding: 1rem;
+}
+
+.selected{
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.draggable{
+  /* background-color: lightblue; */
+  /* display: flex; */
+  cursor: pointer;
+}
+.hiddenOverflow{
+    /* width: 200px; Establece el ancho del contenedor */
+    /* height: 100px; Establece el alto del contenedor */
+    /* border: 1px solid black; */
+    max-width: 8rem;
+    max-height: 10rem;
+
+    overflow: hidden; /* Oculta el desbordamiento */
+    white-space: nowrap; /* Impide que el texto se envuelva en una nueva línea */
+    text-overflow: ellipsis; /* Añade puntos suspensivos al final del texto que no cabe */
+}

@@ -162,7 +162,7 @@ export const EtiquetaForm = ({ suppliers, etiquetaFormData = newEtiquetaInitialS
             onChangeInput={onChange}
           />
 
-          <button className="btn btn-primary" onClick={onSubmit}>{!etiquetaForm.id ? "Agregar etiqueta" : "Editar Etiqueta"}</button>
+          <button className="btn btn-primary" onClick={onSubmit}>{!etiquetaForm.id ? "Agregar etiqueta" : "Confirmar cambios"}</button>
 
         </form>
       </div>

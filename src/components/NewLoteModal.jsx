@@ -44,7 +44,6 @@ export const NewLoteModal = ({ loteFormData = newLoteFormInitialValue }) => {
   const { dispatchAddQueueLote,
     setLoteDbHasChanged } = useContext(LoteContext)
 
-  const { handlerLogout } = useContext(AuthContext);
 
   const { findWorkshops } = useWorkshop();
 

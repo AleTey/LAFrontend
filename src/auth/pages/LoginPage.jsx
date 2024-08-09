@@ -1,6 +1,4 @@
 import { useContext, useEffect, useReducer, useState } from "react";
-import { loginReducer } from "../reducers/loginReducer";
-import { useAuth } from "../hook/useAuth";
 import { AuthContext } from "../context/AuthContext.Jsx";
 
 const initialLoginForm = {
@@ -11,30 +9,21 @@ export const LoginPage = () => {
 
   const [loginForm, setLoginForm] = useState(initialLoginForm);
 
-
   const { handlerLogin } = useContext(AuthContext);
 
 
   const onChangeLoginForm = (e) => {
     const { name, value } = e.target;
-
     setLoginForm({
       ...loginForm,
       [name]: value
     })
-  }
-
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Lógica de inicio de sesión aquí
-
     handlerLogin(loginForm);
-    console.log('Username:', loginForm.username);
-    console.log('Password:', loginForm.password);
   };
-
-
 
   return (
     <>
@@ -56,6 +45,7 @@ export const LoginPage = () => {
                       name="username"
                       value={loginForm.username}
                       onChange={onChangeLoginForm}
+                      autoComplete="username"
                       required
                     />
                   </div>
@@ -68,6 +58,7 @@ export const LoginPage = () => {
                       name="password"
                       value={loginForm.password}
                       onChange={onChangeLoginForm}
+                      autoComplete="current-password"
                       required
                     />
                   </div>
@@ -76,9 +67,6 @@ export const LoginPage = () => {
                   </button>
                 </form>
               </div>
-              {/* <div className="card-footer text-center">
-                <a href="/forgot-password">¿Olvidaste tu contraseña?</a>
-              </div> */}
             </div>
           </div>
         </div>

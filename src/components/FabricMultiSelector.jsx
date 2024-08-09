@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
 import { useFabric } from "../hooks/useFabric";
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { Searcher } from "./Searcher";
 
 export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelected, setFabricsSelected, ancho, telasSeleccionadas, onCancelFabric }) => {
 
@@ -10,6 +11,8 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
   const [fabricPageContent, setFabricPageContent] = useState([]);
 
   const [fabricsFound, setFabricFound] = useState([]);
+
+  const [stringToSearch, setStringToSearch] = useState("");
 
   const { getAllFabricsPages } = useFabric()
 
@@ -180,9 +183,15 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
 
               <div className="container sm-0">
 
-                <Seeker
+                <Searcher
                   onClickSearch={searchFabric}
+                  pageNumber={0}
+                  setStringToSearch={setStringToSearch}
                 />
+
+                {/* <Seeker
+                  onClickSearch={searchFabric}
+                /> */}
 
                 <table className="table table-striped">
 

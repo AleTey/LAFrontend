@@ -2,6 +2,7 @@ import { useContext, useState } from "react";
 import { useWarehouse } from "../hooks/useWarehouse";
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
 import { hasAnyRole } from "../auth/utils/hasAnyRole";
+import { useOrderAmountPerSize } from "../hooks/utils/useOrderAmountPerSize";
 
 export const WarehouseCard = ({ warehouse, onUpdateWarehouseList }) => {
 
@@ -15,6 +16,8 @@ export const WarehouseCard = ({ warehouse, onUpdateWarehouseList }) => {
 
   const onChangeAmounts = (e) => {
     const { name, value } = e.target;
+    console.log(name)
+    console.log(value)
     setWarehouseForm({
       ...warehouseForm,
       amountPerSize: {
@@ -54,39 +57,39 @@ export const WarehouseCard = ({ warehouse, onUpdateWarehouseList }) => {
 
   return (
     <>
-      <div className="container d-flex justify-content-center column" style={{ maxWidth: "50rem" }}>
+      <div className="container d-flex justify-content-center" style={{ maxWidth: "30rem" }}>
         <div className="card mb-3">
-          <div className="row ">
-            <div className="col-md-4">
+          <div className="row">
+            <div className="col-sm-6 d-flex justify-content-center">
               {
                 warehouse.product.img &&
-                <img src={warehouse.product.img} className="img-fluid rounded-start" alt="..." />
+                <img src={warehouse.product.img} className="img-fluid rounded-start" alt="..." style={{ maxWidth: "15rem", maxHeight: "12rem", objectFit: "cover" }} />
               }
             </div>
-            <div className="col-md-6">
-              <div className="card-body d-flex column">
+            <div className="col-sm-6 d-flex justify-content-center row">
+              <div className="card-body d-flex justify-content-center">
                 <div>
                   <h5 className="card-title">{warehouse.product.nombre}</h5>
                   <p className="card-text">{warehouse.product.modelAndStripsForProduct.model.tipoPrenda}</p>
                 </div>
-                <div className="container d-flex row gap-2">
-                  {
-                    Object.entries(warehouseForm.amountPerSize).map(([key, value]) => (
-                      <div key={key} className="container d-flex column gap-2 align-middle">
-                        <p className="align-middle"><b>{key}</b>:</p>
-                        {
-                          hasAnyRole(login.user.authorities, ["UPDATE_WAREHOUSE"]) ?
-                            <input className="form-control" type="number" name={key} value={value} style={{ maxWidth: "8rem" }} onChange={onChangeAmounts} />
-                            :
-                            <div>{value}</div>
-                        }
-                      </div>
-
-                    ))
-                  }
-                </div>
+              </div>
+              <div className="container d-flex justify-content-center row gap-2">
+                {
+                  Object.entries(warehouseForm.amountPerSize).map(([key, value]) => (
+                    <div key={key} className="container d-flex column gap-2 align-middle" style={{maxWidth: "10rem"}}>
+                      <span className="align-middle text-end align-button" style={{minWidth: "2.1rem"}}><b>{key}</b>:</span>
+                      {
+                        hasAnyRole(login.user.authorities, ["UPDATE_WAREHOUSE"]) ?
+                          <input className="form-control" type="number" name={key} value={value} style={{ maxWidth: "8rem" }} onChange={onChangeAmounts} />
+                          :
+                          <div>{value}</div>
+                      }
+                    </div>
+                  ))
+                }
               </div>
             </div>
+
           </div>
 
           {

@@ -17,6 +17,7 @@ import { useContext } from "react"
 import { AuthContext } from "./auth/context/AuthContext.Jsx"
 import { hasAnyRole } from "./auth/utils/hasAnyRole"
 import { LotesWorkshopState } from "./pages/LotesWorkshopState"
+import { ChangePasswordPage } from "./auth/pages/ChangePasswordPage"
 
 export const AppRouter = () => {
 
@@ -30,10 +31,10 @@ export const AppRouter = () => {
         <Route path="/login" element={<Navigate to={"/"} />} />
         <Route path="/" element={<Home />} />
 
-      
-        
-          <Route path="lotes-taller" element={<LotesWorkshopState />} />
-      
+
+
+        <Route path="lotes-taller" element={<LotesWorkshopState />} />
+
 
         {
           hasAnyRole(login.user.authorities, ["READ_FABRIC"]) ?
@@ -73,6 +74,10 @@ export const AppRouter = () => {
           <Route path="models" element={<Models />} />
         }
         {
+          hasAnyRole(login.user.authorities, ["READ_MODEL"]) &&
+          <Route path="models/page/:page" element={<Models />} />
+        }
+        {
           hasAnyRole(login.user.authorities, ["READ_PRODUCT"]) &&
           <Route path="products" element={<Products />} />
         }
@@ -95,6 +100,10 @@ export const AppRouter = () => {
         {
           hasAnyRole(login.user.authorities, ["READ_NEW_COLLECTION"]) &&
           <Route path="new-collection" element={<NewCollection />} />
+        }
+        {
+          login.isAuth &&
+          <Route path="change-password" element={<ChangePasswordPage />} />
         }
 
       </Routes>

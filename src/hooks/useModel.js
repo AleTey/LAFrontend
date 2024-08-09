@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ModelContext } from "../context/ModelContext";
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
 
@@ -12,6 +12,8 @@ export const useModel = () => {
     modelDbHasChanged,
     setModelDbHasChanged } = useContext(ModelContext)
 
+  const [paginator, setPaginator] = useState({});
+
   const { handlerLogout } = useContext(AuthContext);
 
   const getAllModels = async () => {
@@ -22,7 +24,6 @@ export const useModel = () => {
     })
     if (res.ok) {
       const json = await res.json();
-      // setModels(json);
       dispatchAllModels(json);
     } else {
       const error = await res.json();
@@ -33,6 +34,7 @@ export const useModel = () => {
   }
 
   const saveModel = async (modelForm, setModelFormIsOpen) => {
+    console.log(modelForm);
     const saveModel = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models`, {
       method: 'POST',
       headers: {
@@ -47,6 +49,8 @@ export const useModel = () => {
       dispatchModel(savedModel);
       setModelDbHasChanged("Modelo guardado")
       setTimeout(() => setModelDbHasChanged(""), 8000)
+      console.log("RESPUESTA MODEL")
+      console.log(savedModel)
     } else {
       const error = await saveModel.json();
       if (error.message === "Please Login") {
@@ -102,12 +106,62 @@ export const useModel = () => {
     }
   }
 
+  const findAllPageModel = async (page = 0, setPaginator) => {
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/models/find-all/page`);
+    url.searchParams.append('page', page)
+    url.searchParams.append('size', 2)
+    const res = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+      dispatchAllModels(resJson.content);
+      setPaginator(resJson);
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  }
+
+  const getModelPageByString = async (string, page) => {
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/models/by-string/page`)
+    url.searchParams.append('string', string);
+    url.searchParams.append('page', page);
+    url.searchParams.append('size', 2);
+
+    const res = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    })
+    if (res.ok) {
+      const resJson = await res.json();
+      console.log(resJson);
+      dispatchAllModels(resJson.content);
+      setPaginator(resJson);
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+
+  }
+
   return {
     models,
     getAllModels,
+    findAllPageModel,
+    getModelPageByString,
     saveModel,
     updateModel,
     deleteModel,
-    modelDbHasChanged
+    modelDbHasChanged,
+    paginator,
+    setPaginator
   }
 }

@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
+import { useOrderAmountPerSize } from "./utils/useOrderAmountPerSize";
 
 export const useWarehouse = () => {
 
@@ -42,7 +43,7 @@ export const useWarehouse = () => {
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/warehouse/page/search`)
     url.searchParams.append('string', string);
     url.searchParams.append('page', page);
-    url.searchParams.append('size', 1);
+    url.searchParams.append('size', 3);
     const res = await fetch(url.toString(), {
       headers: {
         "Authorization": sessionStorage.getItem("token")
@@ -56,6 +57,7 @@ export const useWarehouse = () => {
         if (w.product.img) {
           return {
             ...w,
+            amountPerSize: useOrderAmountPerSize(w.amountPerSize),
             product: {
               ...w.product,
               img: `data:image/jpeg;base64,${w.product.img}`
@@ -64,6 +66,7 @@ export const useWarehouse = () => {
         } else {
           return {
             ...w,
+            amountPerSize: useOrderAmountPerSize(w.amountPerSize),
             product: {
               ...w.product,
               img: null

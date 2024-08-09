@@ -1,5 +1,6 @@
 import { useContext } from "react";
 import { AuthContext } from "../../auth/context/AuthContext.Jsx";
+import { useOrderAmountPerSize } from "../utils/useOrderAmountPerSize";
 
 export const useCutSpreadsheet = () => {
 
@@ -26,6 +27,7 @@ export const useCutSpreadsheet = () => {
               if (d.productForLoteDTO.img) {
                 return {
                   ...d,
+                  amountPerSize: useOrderAmountPerSize(d.amountPerSize),
                   productForLoteDTO: {
                     ...d.productForLoteDTO,
                     img: imgUrl
@@ -34,6 +36,7 @@ export const useCutSpreadsheet = () => {
               };
               return {
                 ...d,
+                amountPerSize: useOrderAmountPerSize(d.amountPerSize),
                 productForLoteDTO: {
                   ...d.productForLoteDTO,
                   img: null

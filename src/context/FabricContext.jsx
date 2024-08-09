@@ -5,6 +5,8 @@ export const FabricContext = createContext();
 
 export const FabricProvider = ({ children }) => {
 
+  const [paginator, setPaginator] = useState({})
+
 
   const { fabricModalIsOpen,
     fabricWasAdded,
@@ -18,10 +20,12 @@ export const FabricProvider = ({ children }) => {
     setFabricModalIsOpen,
     onNewFabric,
     getAllFabricsPages,
+    getAllFabricsDtoPages,
     addNewFabric,
     editFabric,
     onDeleteFabric,
-    searchFabricByString, } = useFabric();
+    searchFabricByString,
+    searchFabricDtoByString, } = useFabric();
 
   // const [paginator, setPaginator] = useState(usePaginator || {});
 
@@ -33,15 +37,17 @@ export const FabricProvider = ({ children }) => {
         fabricWasEdited,
         fabricWasDeleted,
         fabrics,
-        // paginator,
-        // setPaginator,
+        paginator,
+        setPaginator,
         setFabricModalIsOpen,
         onNewFabric,
         getAllFabricsPages,
+        getAllFabricsDtoPages,
         addNewFabric,
         editFabric,
         onDeleteFabric,
         searchFabricByString,
+        searchFabricDtoByString,
       }}
     >
       {children}

@@ -16,10 +16,10 @@ const ganchoFormInitialState = {
   medida: "",
   material: "",
   color: "",
-  cantPorPack: 0,
-  precioPorPack: 0,
+  // cantPorPack: 0,
+  // precioPorPack: 0,
   precioUni: 0,
-  stockPacks: 0
+  stock: 0
 }
 
 const validationGanchoForm = (ganchoForm) => {
@@ -194,21 +194,21 @@ export const GanchoForm = ({ ganchoFormData = ganchoFormInitialState, suppliers,
             onChangeInput={onChangeGanchoForm}
           />
 
-          <Input
+          {/* <Input
             name="cantPorPack"
             value={ganchoForm.cantPorPack}
             type="text"
             placeHolder="Cant por pack"
             onChangeInput={onChangeGanchoForm}
-          />
+          /> */}
 
-          <Input
+          {/* <Input
             name="precioPorPack"
             value={ganchoForm.precioPorPack}
             type="text"
             placeHolder="Precio por pack"
             onChangeInput={onChangeGanchoForm}
-          />
+          /> */}
 
           <Input
             name="precioUni"
@@ -219,10 +219,10 @@ export const GanchoForm = ({ ganchoFormData = ganchoFormInitialState, suppliers,
           />
 
           <Input
-            name="stockPacks"
-            value={ganchoForm.stockPacks}
+            name="stock"
+            value={ganchoForm.stock}
             type="text"
-            placeHolder="Stock packs"
+            placeHolder="Stock"
             onChangeInput={onChangeGanchoForm}
           />
 

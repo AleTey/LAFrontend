@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import { ProductContext } from "../context/ProductContext";
 import { messageInfo } from "../components/alerts/messageInfo";
+import { AuthContext } from "../auth/context/AuthContext";
 
 export const useProduct = () => {
 
@@ -17,11 +18,54 @@ export const useProduct = () => {
     setProductPaginator
   } = useContext(ProductContext);
 
+  const { handlerLogout } = useContext(AuthContext);
+
   const getAllProducts = async (pageNumber = 0) => {
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page`)
     url.searchParams.append('page', pageNumber);
     url.searchParams.append('size', 3);
     console.log(url.toString());
+    const getAllProducts = await fetch(url.toString(), {
+      method: 'GET',
+      headers: {
+        "Authorization": sessionStorage.getItem("token"),
+        'Content-Type': 'application/json'
+      }
+    });
+    if (getAllProducts.ok) {
+      const getAllProductsJson = await getAllProducts.json();
+      const productWithImgUrl = getAllProductsJson.content.map(product => {
+        const imageBase64 = product.img;
+        const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (product.img) {
+          return {
+            ...product,
+            img: imageUrl
+          };
+        };
+        return {
+          ...product,
+          img: null
+        };
+      })
+      dispatchAllProducts(productWithImgUrl);
+      setProductPaginator(getAllProductsJson);
+      setProductPaginator({
+        ...Object.entries(getAllProductsJson)
+          .filter(([key, value]) => key !== 'content')
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      });
+    } else {
+      const error = await getAllProducts.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  }
+  const getAllProductsCardDtoPage = async (pageNumber = 0) => {
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/card-dto`)
+    url.searchParams.append('page', pageNumber);
+    url.searchParams.append('size', 3);
     const getAllProducts = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -101,8 +145,50 @@ export const useProduct = () => {
       }
     }
   }
+  const getPageOfProductsCardDtoPageByString = async (string, pageNumber = 0) => {
+    console.log(pageNumber)
+    const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/card-dto/by-string`);
+    url.searchParams.append('string', string);
+    url.searchParams.append('page', pageNumber);
+    url.searchParams.append('size', 4);
+    const res = await fetch(url.toString(), {
+      headers: {
+        "Authorization": sessionStorage.getItem("token")
+      }
+    });
+
+    if (res.ok) {
+      const resJson = await res.json();
+      const productsWithImg = resJson.content.map(p => {
+        if (p.img) {
+          return {
+            ...p,
+            img: `data:image/jpeg;base64,${p.img}`
+          }
+        }
+        return {
+          ...p,
+          img: null
+        }
+      })
+      console.log(productsWithImg);
+      dispatchAllProducts(productsWithImg);
+      setProductsFounded(productsWithImg);
+      setProductPaginator({
+        ...Object.entries(resJson)
+          .filter(([key, value]) => key !== 'content')
+          .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+      });
+    } else {
+      const error = await res.json();
+      if (error.message === "Please Login") {
+        handlerLogout();
+      }
+    }
+  }
 
   const addNewProduct = async (productForm, setProductFormIsOpen) => {
+    console.log(productForm)
     const formData = new FormData();
     formData.append('nombre', productForm.nombre);
     formData.append('colorForro', productForm.colorForro);
@@ -296,11 +382,11 @@ export const useProduct = () => {
         const resJson = await res.json();
         console.log(typeof resJson) // Esto debería imprimir el tipo de dato de resJson
         return resJson;
-        // } else {
-        //   const error = new Error("Error en la solicitud");
-        //   error.response = res;
-        //   throw error;
       } else {
+        if (res.status === 409) {
+          messageInfo("No hay lotes suficientes para calcular el costo");
+        }
+        console.log(res.status)
         const error = await getAllProducts.json();
         if (error.message === "Please Login") {
           handlerLogout();
@@ -366,6 +452,9 @@ export const useProduct = () => {
     calculateCost,
     productDbHasChanged,
     productPaginator,
-    searchProductsDtoByString
+    searchProductsDtoByString,
+    getAllProductsCardDtoPage,
+    getPageOfProductsCardDtoPageByString
+
   }
 }

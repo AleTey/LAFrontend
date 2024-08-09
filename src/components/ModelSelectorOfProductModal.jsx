@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react"
 import { Seeker } from "./Seeker";
+import { useProduct } from "../hooks/useProduct";
+import { Searcher } from "./Searcher";
 
 export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSelected, setModelSelected }) => {
 
   const [fabricPage, setFabricPage] = useState({});
 
-  const [models, setModels] = useState([])
+  const [models, setModels] = useState([]);
 
+  const [stringToSearch, setStringToSearch] = useState("");
 
 
   const onClickSelect = (e, model) => {
@@ -14,11 +17,12 @@ export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSe
     const { value } = e.target;
     console.log(model);
     setModelSelected(model);
+    closeModal(false);
   }
 
-  const searchModel = async (model) => {
+  const searchModel = async (stringToSearch) => {
 
-    const getFoundedModels = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models/searchByString/${model}`, {
+    const getFoundedModels = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models/searchByString/${stringToSearch}`, {
       headers: {
         "Authorization": sessionStorage.getItem("token")
       }
@@ -42,15 +46,20 @@ export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSe
         <div className="modal-dialog sm-0">
           <div className="modal-content sm-0">
             <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">Seleccionador tela</h1>
+              <h1 className="modal-title fs-5" id="staticBackdropLabel">Seleccionador Modelo</h1>
               <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={() => closeModal(false)}></button>
             </div>
             <div className="modal-body sm-0">
 
               <div className="container sm-0">
 
-                <Seeker
+                {/* <Seeker
+                  // onClickSearch={searchModel}
+                /> */}
+                <Searcher
                   onClickSearch={searchModel}
+                  pageNumber={0}
+                  setStringToSearch={setStringToSearch}
                 />
 
                 <table className="table table-striped">
@@ -77,7 +86,7 @@ export const ModelSelectorOfProductModal = ({ closeModal, onChangeModel, modelSe
                                 <button
                                   className="btn btn-outline-primary btn-sm"
                                   value={model}
-                                  onClick={(e) => { onClickSelect(e, model), onChangeModel(model) }}
+                                  onClick={(e) => { onClickSelect(e, model), onChangeModel(model), closeModal(false) }}
                                 >
                                   Seleccionar
                                 </button>

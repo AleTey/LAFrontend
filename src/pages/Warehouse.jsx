@@ -38,15 +38,17 @@ export const Warehouse = () => {
           setStringToSearch={setStringToSearch}
         />
 
-        {
-          warehouses && warehouses.map(w => (
-            <WarehouseCard
-              key={w.id}
-              warehouse={w}
-              onUpdateWarehouseList={onUpdateWarehouseList}
-            />
-          ))
-        }
+        {/* <div className="row"> */}
+          {
+            warehouses && warehouses.map(w => (
+              <WarehouseCard
+                key={w.id}
+                warehouse={w}
+                onUpdateWarehouseList={onUpdateWarehouseList}
+              />
+            ))
+          }
+        {/* </div> */}
 
         <Paginator
           paginator={paginator}

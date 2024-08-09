@@ -52,15 +52,15 @@ export const CorrederaCard = ({ corredera, onDeleteCorredera, updateCorredera })
           <li className="list-group-item"><b>Codigo de Fabrica:</b> {corredera.codigo}</li>
           <li className="list-group-item"><b>Proveedor:</b> {corredera.proveedor.empresa}</li>
           <li className="list-group-item"><b>Detalle:</b> {corredera.detalle}</li>
-          <li className="list-group-item"><b>Forma:</b> {corredera.forma}</li>
+          {/* <li className="list-group-item"><b>Forma:</b> {corredera.forma}</li> */}
           <li className="list-group-item"><b>Medida:</b> {corredera.medida} </li>
           <li className="list-group-item"><b>Material:</b> {corredera.material}</li>
           <li className="list-group-item"><b>Tags:</b> {corredera.detalle}</li>
           <li className="list-group-item"><b>Color:</b> {corredera.color}</li>
-          <li className="list-group-item"><b>Cantidad por Pack:</b> {corredera.cantPorPack}</li>
-          <li className="list-group-item"><b>Precio Pack:</b> {corredera.precioPorPack}</li>
+          {/* <li className="list-group-item"><b>Cantidad por Pack:</b> {corredera.cantPorPack}</li> */}
+          {/* <li className="list-group-item"><b>Precio Pack:</b> {corredera.precioPorPack}</li> */}
           <li className="list-group-item"><b>Precio unidad:</b> {corredera.precioUni}</li>
-          <li className="list-group-item"><b>Stock packs:</b> {corredera.stockPacks}</li>
+          <li className="list-group-item"><b>Stock packs:</b> {corredera.stock}</li>
         </ul>
         <div className="card-body grid">
 

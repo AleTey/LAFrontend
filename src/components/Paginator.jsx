@@ -15,7 +15,7 @@ export const Paginator = ({ paginator, path }) => {
 
   return (
     <>
-      <div className="container d-flex justify-content-center">
+      <div className="container d-flex justify-content-center mt-4">
 
         {/* <h6>pages</h6> */}
         {
@@ -61,8 +61,8 @@ export const Paginator = ({ paginator, path }) => {
                     </svg>
                   </button>
                 </li>
-            }
-            <h4 className="text-primary"> {paginator.pageable.pageNumber + 1} </h4>
+            }          
+              <h4 className="text-primary"> {paginator.pageable.pageNumber + 1} </h4>         
             {
               !paginator.last ?
                 <li className="page-item">

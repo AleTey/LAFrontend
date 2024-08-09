@@ -1,5 +1,18 @@
 import { useContext } from "react";
 import { AuthContext } from "../../auth/context/AuthContext.Jsx";
+import { useOrderAmountPerSize } from "../utils/useOrderAmountPerSize";
+
+// const spreadSheetValidator = (amountPerSize) => {
+//   let errors = {};
+
+//   Object.values(amountPerSize).map(amount=>{
+//     if (amount < 0) {
+//       errors.valorNegativo = "Valores negativos no permitidos"
+//     }
+//   })
+
+//   return errors
+// }
 
 export const useControlSpreadsheet = () => {
 
@@ -23,6 +36,7 @@ export const useControlSpreadsheet = () => {
             if (a.productForLoteDTO.img) {
               return {
                 ...a,
+                amountPerSize: useOrderAmountPerSize(a.amountPerSize),
                 productForLoteDTO: {
                   ...a.productForLoteDTO,
                   img: `data:image/jpeg;base64,${a.productForLoteDTO.img}`
@@ -31,6 +45,7 @@ export const useControlSpreadsheet = () => {
             }
             return {
               ...a,
+              amountPerSize: useOrderAmountPerSize(a.amountPerSize),
               productForLoteDTO: {
                 ...a.productForLoteDTO,
                 img: null
