@@ -22,6 +22,8 @@ export const Products = () => {
 
   const [pageOneAllProducts, setPageOneAllProducts] = useState([]);
 
+  // const [isLoading, setIsLoading] = useState(true);
+
   const { login } = useContext(AuthContext);
 
   const { products,
@@ -31,7 +33,9 @@ export const Products = () => {
     productDbHasChanged,
     productPaginator,
     getAllProductsCardDtoPage,
-    getPageOfProductsCardDtoPageByString
+    getPageOfProductsCardDtoPageByString,
+    isLoading,
+    setIsLoading
   } = useProduct();
 
   const [productFormIsOpen, setProductFormIsOpen] = useState(false);
@@ -43,12 +47,20 @@ export const Products = () => {
       getAllProductsCardDtoPage(page);
     }
   }, [, page])
-  // useEffect(() => {
-  //   // getPageOfProductsOnSearch
-  //   console.log("PRODUCTS  USE EFFECT")
-  //   console.log(productPaginator)
-  //   console.log(productPaginator.totalPages)
-  // }, [])
+
+  {
+    if (isLoading) {
+      return (
+        <>
+          <div className="container position-absolute top-50 start-50 translate-middle" style={{width: "100vw"}}>
+            <div className="spinner-border text-info" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        </>
+      )
+    }
+  }
 
   return (
     <>

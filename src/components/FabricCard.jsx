@@ -34,9 +34,10 @@ export const FabricCard = ({
         editFormIsOpen && <NewFabricModal fabric={fabric} setEditFormIsOpen={setEditFormIsOpen} editFabric={editFabric} />
       }
       <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
-        {/* <img src={img} className="card-img-top" alt="..." /> */}
-        {fabric.img ?
-          <img src={fabric.img} className="card-img-top" alt="..." style={{ maxHeight: "18rem" }} />
+        {fabric.img || fabric.urlFile ?
+          <a href={fabric.urlFile}  target="_blank">
+            <img src={fabric.img || fabric.urlFile} className="card-img-top" alt="..." style={{ maxHeight: "18rem" }} />
+          </a>
           :
           <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={fabric.color} />
         }

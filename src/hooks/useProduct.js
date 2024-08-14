@@ -15,7 +15,9 @@ export const useProduct = () => {
     productDbHasChanged,
     setProductDbHasChanged,
     productPaginator,
-    setProductPaginator
+    setProductPaginator,
+    isLoading,
+    setIsLoading
   } = useContext(ProductContext);
 
   const { handlerLogout } = useContext(AuthContext);
@@ -63,6 +65,7 @@ export const useProduct = () => {
     }
   }
   const getAllProductsCardDtoPage = async (pageNumber = 0) => {
+    setIsLoading(true)
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/card-dto`)
     url.searchParams.append('page', pageNumber);
     url.searchParams.append('size', 3);
@@ -74,6 +77,7 @@ export const useProduct = () => {
       }
     });
     if (getAllProducts.ok) {
+      setIsLoading(false);
       const getAllProductsJson = await getAllProducts.json();
       const productWithImgUrl = getAllProductsJson.content.map(product => {
         const imageBase64 = product.img;
@@ -97,6 +101,7 @@ export const useProduct = () => {
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       });
     } else {
+      setIsLoading(false);
       const error = await getAllProducts.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -210,12 +215,12 @@ export const useProduct = () => {
         console.log(newProduct)
         const response = await newProduct.json();
         console.log(response)
-        if (response.img) {
-          const imageBase64 = response.img;
-          const imgUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (response.urlFile) {
+          // const imageBase64 = response.img;
+          // const imgUrl = `data:image/jpeg;base64,${imageBase64}`;
           const responseWithImg = {
             ...response,
-            img: imgUrl
+            urlFile: response.urlFile
           }
           dispatchProduct(responseWithImg);
           setProductFormIsOpen(false);
@@ -282,20 +287,12 @@ export const useProduct = () => {
         })
 
     }
-    console.log("modelAndStripsFroProduct")
-    console.log(modelAndStripsForProduct);
+
     formData.append('nombre', productForm.nombre);
     formData.append('colorForro', productForm.colorForro);
     formData.append('imageFile', productForm.img);
     formData.append('fabricJson', JSON.stringify(fabric));
     formData.append('modelAndStripsForProductJson', JSON.stringify(modelAndStripsForProduct));
-
-    console.log(productForm.nombre)
-    console.log(productForm.colorForro)
-    console.log(productForm.fabric)
-    console.log(productForm.modelAndStripsForProduct)
-
-    console.log(formData)
 
     try {
       const updatedProduct = await fetch(`${import.meta.env.VITE_API_BASE_URL}/productos/update-product/${productForm.id}`, {
@@ -307,21 +304,20 @@ export const useProduct = () => {
       })
 
       if (updatedProduct.ok) {
-        console.log("updated product: ")
-        console.log(updatedProduct);
 
         const response = await updatedProduct.json();
-        if (response.img) {
-          const imageBase64 = response.img;
-          const imgUrl = `data:image/jpeg;base64,${imageBase64}`;
+        if (response.urlFile) {
+          // const imageBase64 = response.img;
+          // const imgUrl = `data:image/jpeg;base64,${imageBase64}`;
           const responseWithImage = {
             ...response,
-            img: imgUrl
+            urlFile: response.urlFile
           }
           dispatchUpdateProduct(responseWithImage);
           setProductFormIsOpen(false)
         } else {
           dispatchUpdateProduct(response);
+          setProductFormIsOpen(false)
         }
       } else {
         const error = await updateProduct.json();
@@ -454,7 +450,8 @@ export const useProduct = () => {
     productPaginator,
     searchProductsDtoByString,
     getAllProductsCardDtoPage,
-    getPageOfProductsCardDtoPageByString
-
+    getPageOfProductsCardDtoPageByString,
+    isLoading,
+    setIsLoading
   }
 }

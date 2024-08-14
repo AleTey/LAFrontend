@@ -9,6 +9,8 @@ export const ProductProvider = ({ children }) => {
 
   const [productPaginator, setProductPaginator] = useState({});
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const [productDbHasChanged, setProductDbHasChanged] = useState("");
 
   const dispatchAllProducts = (products) => dispatch({ type: "GET_ALL_PRODUCTS", payload: products });
@@ -32,7 +34,9 @@ export const ProductProvider = ({ children }) => {
       productDbHasChanged,
       setProductDbHasChanged,
       productPaginator,
-      setProductPaginator
+      setProductPaginator,
+      isLoading,
+      setIsLoading
     }}>
       {children}
     </ProductContext.Provider>

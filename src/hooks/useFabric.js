@@ -31,46 +31,6 @@ export const useFabric = () => {
 
   const { handlerLogout } = useContext(AuthContext);
 
-  // const getAllFabrics = async () => {
-  //   try {
-  //     const res = await fetch("http://localhost:8080/fabrics");
-  //     if (res.ok) {
-  //       const json = await res.json();
-
-  //       const fabricsWithImageURL = json.map((fabric) => {
-
-  //         const imageBase64 = fabric.img;
-  //         const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-  //         if (fabric.img) {
-  //           return {
-  //             ...fabric,
-  //             img: imageUrl,
-  //           };
-  //         }
-  //         return {
-  //           ...fabric,
-  //           img: null,
-  //         };
-  //       });
-
-  //       dispatch({
-  //         type: 'GET_ALL_FABRICS',
-  //         payload: fabricsWithImageURL,
-  //       });
-  //       // console.log(fabrics)
-
-  //     } else {
-  //       const error = await res.json();
-  //       if (error.message === "Please Login") {
-  //         handlerLogout();
-  //       }
-  //     }
-
-
-  //   } catch (error) {
-  //     console.error('Error fetching fabrics:', error);
-  //   }
-  // }
 
   const getAllFabricsPages = async (page = 0, setPaginator) => {
     try {
@@ -202,17 +162,23 @@ export const useFabric = () => {
           })
           if (imgResponse.ok) {
             let imgJson = await imgResponse.json();
-
+            console.log(imgJson);
             const fabricWithImageURL = () => {
               const imageBase64 = imgJson.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
               const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
               if (imgJson.img) {
                 return {
                   ...imgJson,
-                  img: imageUrl
+                  img: imageUrl,
+                  urlFile: imgJson.urlFile
+                }
+              } else {
+                return {
+                  ...imgJson,
+                  urlFile: imgJson.urlFile
                 }
               }
-              return json;
+              
             }
             dispatch({
               type: 'ADD_FABRIC',
@@ -290,12 +256,12 @@ export const useFabric = () => {
             let imgJson = await imgResponse.json();
 
             const fabricWithImageURL = () => {
-              const imageBase64 = imgJson.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
-              const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
-              if (imgJson.img) {
+              // const imageBase64 = imgJson.img; // Suponiendo que 'img' contiene los datos binarios de la imagen
+              // const imageUrl = `data:image/jpeg;base64,${imageBase64}`;
+              if (imgJson.urlFile) {
                 return {
                   ...imgJson,
-                  img: imageUrl
+                  urlFile: imgJson.urlFile
                 }
               }
               return json;

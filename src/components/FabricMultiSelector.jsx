@@ -210,8 +210,10 @@ export const FabricMultiSelector = ({ closeModal, onChangeFabric, fabricsSelecte
                         <tr key={fabric.id}>
                           <th className="align-middle">{fabric.id}</th>
                           {
-                            fabric.img ?
-                              <th><img src={fabric.img} alt="" style={{ maxWidth: '5rem' }} className="img-thumbnail" /></th>
+                            fabric.img || fabric.urlFile ?
+                              <a href={fabric.urlFile} target="_blank">
+                                <th><img src={fabric.img || fabric.urlFile} alt="" style={{ maxWidth: '5rem' }} className="img-thumbnail" /></th>
+                              </a>
                               :
                               <th><img src="src/db/imgs/image-not-found.jpg" alt="" style={{ maxWidth: '30%' }} className="img-fluid img-fluid" /></th>
 

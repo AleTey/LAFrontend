@@ -52,8 +52,10 @@ export const ProductCard = ({ product }) => {
 
       <div className="card g-0 mx-2 my-2" style={{ width: " 18rem" }}>
         {/* <img src={img} className="card-img-top" alt="..." /> */}
-        {product.img ?
-          <img src={product.img} className="card-img-top" alt="..." style={{ objectFit: "cover", maxHeight: "15rem", maxWidth: "100%" }} />
+        {product.urlFile ?
+        <a href={product.urlFile} target="_blank">
+          <img src={product.urlFile} className="card-img-top" alt="..." style={{ objectFit: "cover", maxHeight: "15rem", maxWidth: "100%" }} />
+        </a>
           :
           <img src="src/db/imgs/image-not-found.jpg" className="card-img-top" alt={product.fabric} style={{ objectFit: "cover", maxWidth: "100%" }} />
         }

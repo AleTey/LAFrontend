@@ -27,7 +27,7 @@ export const Navbar = () => {
               </li>
 
               {
-                hasAnyRole(login.user.authorities, ["READ_LOTE_WORKSHOP"]) &&
+                hasAnyRole(login.user.authorities, ["ROLE_WORKSHOP"]) &&
                 <li className="nav-item">
                   <NavLink className="nav-link" to="lotes-taller">Cortes</NavLink>
                 </li>
