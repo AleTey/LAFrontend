@@ -118,7 +118,9 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
     <>
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
-          <h1 className="modal-title fs-5" id="staticBackdropLabel">Planilla corte</h1>
+          {/* <h1 className="modal-title fs-5" id="staticBackdropLabel">Planilla corte</h1> */}
+          <h2 className="modal-title" id="staticBackdropLabel">Planilla corte</h2>
+
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setCutSpreadSheetIsOpen(false)} ></button>
         </div>
         <hr />
@@ -132,7 +134,9 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
                 <div className="d-flex row">
                   <div className="d-flex row gap-2 col justify-content-center">
                     <b>{amount.productForLoteDTO.nombre}</b>
-                    <img src={amount.productForLoteDTO.img} alt={amount.productForLoteDTO.nombre} style={{ maxHeight: "10rem", maxWidth: "10rem", minWidth: "10rem", objectFit: "cover" }} />
+                    <a href={amount.productForLoteDTO.urlFile} target="_blank">
+                      <img src={amount.productForLoteDTO.urlFile} alt={amount.productForLoteDTO.nombre} style={{ maxHeight: "10rem", maxWidth: "10rem", minWidth: "10rem", objectFit: "cover" }} />
+                    </a>
                   </div>
                   <div className="container col">
 
@@ -186,7 +190,9 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
                   {fabricDetails.fabricNombreCodigoTipoImgDTO.id}
                 </div>
                 <div className="col-3">
-                  <img src={fabricDetails.fabricNombreCodigoTipoImgDTO.img} alt={fabricDetails.fabricNombreCodigoTipoImgDTO.nombre} style={{maxHeight: "6rem", maxWidth: "4rem" }} />
+                  <a href={fabricDetails.fabricNombreCodigoTipoImgDTO.urlFile} target="_blank">
+                    <img src={fabricDetails.fabricNombreCodigoTipoImgDTO.urlFile} alt={fabricDetails.fabricNombreCodigoTipoImgDTO.nombre} style={{ maxHeight: "6rem", maxWidth: "4rem" }} />
+                  </a>
                 </div>
                 <div className="col-2">
                   {fabricDetails.fabricNombreCodigoTipoImgDTO.nombre}

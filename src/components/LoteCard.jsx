@@ -52,7 +52,9 @@ export const LoteCard = ({ lote }) => {
   }
 
   const findCutSpreadSheet = (id) => {
-    findCutSpreadSheetById(id, setCutSpreadSheet);
+    if (!cutSpreadSheet.id) {
+      findCutSpreadSheetById(id, setCutSpreadSheet);
+    }
   }
 
   const findPreparationSpreadSheet = (id) => {
@@ -69,6 +71,14 @@ export const LoteCard = ({ lote }) => {
 
   const findControlSpreadSheet = (id) => {
     findControlSpreedSheetById(id, setControlSpreadSheet);
+  }
+
+  const openCloseSheetManager = (setSpreadsheetOpen) => {
+    setCutSpreadSheetIsOpen(false);
+    setPreparationSpreadSheetIsOpen(false);
+    setWorkshopSpreadsheetIsOpen(false);
+    setControlSpreadSheetIsOpen(false);
+    setSpreadsheetOpen(true);
   }
 
   return (
@@ -120,6 +130,7 @@ export const LoteCard = ({ lote }) => {
             findWorkshopSpreadsheet={findWorkshopSpreadsheet}
             findControlSpreadSheet={findControlSpreadSheet}
             setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
+            openCloseSheetManager={openCloseSheetManager}
           />
 
         </div>

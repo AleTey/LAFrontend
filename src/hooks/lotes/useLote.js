@@ -3,6 +3,7 @@ import { LoteContext } from "../../context/LoteContext";
 import { messageInfo } from "../../components/alerts/messageInfo";
 import { AuthContext } from "../../auth/context/AuthContext.Jsx";
 import { hasAnyRole, hasAnyRoleV2 } from "../../auth/utils/hasAnyRole";
+import { areUSure } from "../../components/alerts/areUSure";
 
 export const useLote = () => {
 
@@ -206,21 +207,28 @@ export const useLote = () => {
     }
   }
 
-  const changeStatus = (id, status) => {
-    if (hasAnyRole(login.user.authorities, ["ROLE_WORKSHOP"])) {
-      changeStateWorkshop(id, status);
-    }
-    if (hasAnyRole(login.user.authorities, ["ROLE_ADMIN"])) {
-      changeStateAdmin(id, status);
-    }
-    if (hasAnyRole(login.user.authorities, ["ROLE_CONTROLLER"])) {
-      changeStateController(id, status);
-    }
+  const changeStatus = async (id, status) => {
 
-    if (hasAnyRole(login.user.authorities, ["ROLE_CUTTER"])) {
-      changeStateCutter(id, status);
-    }
+    const confirmed = await areUSure({
+      question: "¿Estás seguro de que deseas confirmar el cambio de estado?",
+      message: "Por favor, asegúrate de haber realizado todos los cambios necesarios antes de proceder."
+    });
 
+    if (confirmed) {
+      if (hasAnyRole(login.user.authorities, ["ROLE_WORKSHOP"])) {
+        changeStateWorkshop(id, status);
+      }
+      if (hasAnyRole(login.user.authorities, ["ROLE_ADMIN"])) {
+        changeStateAdmin(id, status);
+      }
+      if (hasAnyRole(login.user.authorities, ["ROLE_CONTROLLER"])) {
+        changeStateController(id, status);
+      }
+
+      if (hasAnyRole(login.user.authorities, ["ROLE_CUTTER"])) {
+        changeStateCutter(id, status);
+      }
+    }
   }
 
   const changeStateAdmin = async (id, status, direction = "") => {

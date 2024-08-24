@@ -14,7 +14,8 @@ export const LoteButtonsActions = ({
   setWorkshopSpreadsheetIsOpen,
   findWorkshopSpreadsheet,
   findControlSpreadSheet,
-  setControlSpreadSheetIsOpen
+  setControlSpreadSheetIsOpen,
+  openCloseSheetManager,
 
 }) => {
 
@@ -22,22 +23,29 @@ export const LoteButtonsActions = ({
 
   const CutSheetButton = () => {
     findCutSpreadSheet(lote.cutSpreadsheetForLoteDTO.id)
-    setCutSpreadSheetIsOpen(true)
+    openCloseSheetManager(setCutSpreadSheetIsOpen)
+    // setCutSpreadSheetIsOpen(true)
   }
 
   const preparationSpreadSheetBtn = () => {
     findPreparationSpreadSheet(lote.preparationSpreadSheetForDTO.id);
-    setPreparationSpreadSheetIsOpen(true);
+    openCloseSheetManager(setPreparationSpreadSheetIsOpen)
+
+    // setPreparationSpreadSheetIsOpen(true);
   }
 
   const workshopSpreadSheet = () => {
     findWorkshopSpreadsheet(lote.workShopSpreadSheetForDTO.id);
-    setWorkshopSpreadsheetIsOpen(true);
+    // setWorkshopSpreadsheetIsOpen(true);
+    openCloseSheetManager(setWorkshopSpreadsheetIsOpen)
+
   }
 
   const controlSpreadSheetBtn = () => {
     findControlSpreadSheet(lote.controlSpreadSheetForDTO.id);
-    setControlSpreadSheetIsOpen(true);
+    openCloseSheetManager(setControlSpreadSheetIsOpen)
+
+    // setControlSpreadSheetIsOpen(true);
   }
 
   return (

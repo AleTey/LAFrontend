@@ -8,6 +8,7 @@ export const useCutSpreadsheet = () => {
 
 
   const findCutSpreadSheetById = async (id, setCutSpreadSheet) => {
+    // console.log("BUSCANDO SPREADSHEET")
     const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/cut-spreadsheets/${id}`, {
       headers: {
         'Authorization': sessionStorage.getItem('token'),

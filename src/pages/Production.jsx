@@ -74,7 +74,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseOne"
                 onClick={() => onClickSectionLote('COLA')}
               >
-                Cola corte
+               En cola corte
               </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse">
@@ -102,7 +102,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseTwo"
                 onClick={() => onClickSectionLote('CORTE')}
               >
-                Corte
+                En corte
               </button>
             </h2>
             <div id="panelsStayOpen-collapseTwo" className="accordion-collapse collapse">
@@ -130,7 +130,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseThree"
                 onClick={() => onClickSectionLote('PREPARADO')}
               >
-                Preparación de corte
+                En preparación
               </button>
             </h2>
             <div id="panelsStayOpen-collapseThree" className="accordion-collapse collapse">
@@ -158,7 +158,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseTalleres"
                 onClick={() => onClickSectionLote('TALLER')}
               >
-                Talleres
+                En talleres
               </button>
             </h2>
             <div id="panelsStayOpen-collapseTalleres" className="accordion-collapse collapse">
@@ -185,7 +185,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseControl"
                 onClick={() => onClickSectionLote('CONTROL')}
               >
-                Control
+                En control
               </button>
             </h2>
             <div id="panelsStayOpen-collapseControl" className="accordion-collapse collapse">

@@ -72,7 +72,9 @@ export const ControlSpreadSheet = ({ controlSpreadSheet, setControlSpreadSheet, 
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
           {/* <div className="d-flex justify-content-center"> */}
-          <h2 className="modal-title" id="staticBackdropLabel"><b>Planilla control</b></h2>
+          {/* <h2 className="modal-title" id="staticBackdropLabel"><b>Planilla control</b></h2> */}
+          <h2 className="modal-title" id="staticBackdropLabel">Planilla control</h2>
+
           {/* </div> */}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setControlSpreadSheetIsOpen(false)} ></button>
         </div>

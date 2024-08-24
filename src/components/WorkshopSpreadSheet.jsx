@@ -104,7 +104,9 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
           {/* <div className="d-flex justify-content-center"> */}
-          <h2 className="modal-title" id="staticBackdropLabel"><b>Planilla taller</b></h2>
+          {/* <h2 className="modal-title" id="staticBackdropLabel"><b>Planilla taller</b></h2> */}
+          <h2 className="modal-title" id="staticBackdropLabel">Planilla taller</h2>
+
           {/* </div> */}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setWorkshopSpreadSheetIsOpen(false)} ></button>
         </div>
