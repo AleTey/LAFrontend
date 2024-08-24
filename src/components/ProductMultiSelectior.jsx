@@ -70,8 +70,8 @@ export const ProductMultiSelector = ({ modalIsOpen, productsSelected, setProduct
                         <tr key={product.id}>
                           <th>{product.id}</th>
                           {
-                            product.img ?
-                              <th><img src={product.img} alt={product.nombre} style={{ maxWith: '4rem' }} className="img-thumbnail" /></th>
+                            product.urlFile ?
+                              <th><img src={product.urlFile} alt={product.nombre} style={{ maxWith: '4rem' }} className="img-thumbnail" /></th>
                               :
                               <th><img src="src/db/imgs/image-not-found.jpg" alt="" style={{ maxWidth: '30%' }} className="img-fluid img-fluid" /></th>
                           }

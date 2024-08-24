@@ -9,6 +9,8 @@ export const ModelProvider = ({ children }) => {
 
   const [modelDbHasChanged, setModelDbHasChanged] = useState("");
 
+  const [modelIsLoading, setModelIsLoading] = useState(false);
+
   const dispatchAllModels = (models) => dispatch({ type: "GET_ALL_MODELS", payload: models });
 
   const dispatchModel = (model) => dispatch({ type: "ADD_MODEL", payload: model });
@@ -25,7 +27,9 @@ export const ModelProvider = ({ children }) => {
       dispatchUpdateModel,
       dispatchDeleteModel,
       modelDbHasChanged,
-      setModelDbHasChanged
+      setModelDbHasChanged,
+      modelIsLoading, 
+      setModelIsLoading
     }}>
       {children}
     </ModelContext.Provider>

@@ -15,7 +15,7 @@ export const Navbar = () => {
       <nav className="navbar navbar-default"></nav>
       <nav className="navbar navbar-expand-lg bg-dark fixed-top" data-bs-theme="dark">
         <div className="container-md">
-          <NavLink className="navbar-brand nav-link" to="/"><span className="h4">Love Africa</span></NavLink>
+          <NavLink className="navbar-brand nav-link" to="/"><span className="h4">Loveafrica</span></NavLink>
           {/* <a className="navbar-brand" href="#"><span className="h4">Love Africa</span></a> */}
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>

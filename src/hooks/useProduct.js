@@ -25,7 +25,7 @@ export const useProduct = () => {
   const getAllProducts = async (pageNumber = 0) => {
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page`)
     url.searchParams.append('page', pageNumber);
-    url.searchParams.append('size', 3);
+    url.searchParams.append('size', 4);
     console.log(url.toString());
     const getAllProducts = await fetch(url.toString(), {
       method: 'GET',
@@ -68,7 +68,7 @@ export const useProduct = () => {
     setIsLoading(true)
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/card-dto`)
     url.searchParams.append('page', pageNumber);
-    url.searchParams.append('size', 3);
+    url.searchParams.append('size', 4);
     const getAllProducts = await fetch(url.toString(), {
       method: 'GET',
       headers: {
@@ -151,7 +151,8 @@ export const useProduct = () => {
     }
   }
   const getPageOfProductsCardDtoPageByString = async (string, pageNumber = 0) => {
-    console.log(pageNumber)
+    // console.log(pageNumber)
+setIsLoading(true);
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/productos/page/card-dto/by-string`);
     url.searchParams.append('string', string);
     url.searchParams.append('page', pageNumber);
@@ -176,7 +177,8 @@ export const useProduct = () => {
           img: null
         }
       })
-      console.log(productsWithImg);
+      // console.log(productsWithImg)
+      setIsLoading(false);
       dispatchAllProducts(productsWithImg);
       setProductsFounded(productsWithImg);
       setProductPaginator({
@@ -185,6 +187,7 @@ export const useProduct = () => {
           .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
       });
     } else {
+      setIsLoading(false);
       const error = await res.json();
       if (error.message === "Please Login") {
         handlerLogout();

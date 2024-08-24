@@ -5,7 +5,7 @@ export const ProductCardBasicThumbnail = ({ product }) => {
       <div className="card" >
         <div className="row g-0">
           <div className="col-md-4" style={{ maxWidth: '4rem' }}>
-            <img src={product.img} className="img-thumbnail" style={{ maxWidth: '4rem' }} alt={product.nombre} />
+            <img src={product.urlFile} className="img-thumbnail" style={{ maxWidth: '4rem' }} alt={product.nombre} />
           </div>
           <div className="col-md-8">
             <div className="card-body">

@@ -22,7 +22,7 @@ export const Menu = () => {
           <div className="col container-img" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/fabric">
               <MenuIcon
-                img="src/assets/lycra-fabric.jpg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/lycra-fabric.jpg"
                 text="Telas"
                 color="black"
               />
@@ -36,7 +36,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/inputs">
               <MenuIcon
-                img="src/assets/accesorios-para-bikinis-o-lenceria.jpg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/accesorios.jpg"
                 text="Insumos"
                 color="black"
               />
@@ -50,7 +50,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/suppliers">
               <MenuIcon
-                img="src/assets/supplier.png"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/supplier.png"
                 text="Proveedores"
                 color="black"
               />
@@ -63,7 +63,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/models">
               <MenuIcon
-                img="src/assets/moldes.png"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/moldes.png"
                 text="Modelos"
                 color="black"
               />
@@ -76,7 +76,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/products">
               <MenuIcon
-                img="src/assets/products2.jpg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/hunter-messi.webp"
                 text="Productos"
                 color="black"
               />
@@ -89,7 +89,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/production">
               <MenuIcon
-                img="src/assets/maquina.jpg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/maquina.jpg"
                 text="Producción"
                 color="black"
               />
@@ -105,7 +105,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/warehouse">
               <MenuIcon
-                img="src/assets/warehouse.jpeg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/warehouse.jpg"
                 text="Deposito"
                 color="black"
               />
@@ -119,7 +119,7 @@ export const Menu = () => {
           <div className="col" style={{ maxWidth: "200px" }}>
             <NavLink className="nav-link" to="/new-collection">
               <MenuIcon
-                img="src/assets/nuevaColeccion.jpg"
+                img="https://file-uploads-la.s3.sa-east-1.amazonaws.com/nuevaColeccion.jpg"
                 text="Nueva Colección"
                 color="black"
               />

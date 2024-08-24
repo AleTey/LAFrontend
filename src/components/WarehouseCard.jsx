@@ -62,8 +62,10 @@ export const WarehouseCard = ({ warehouse, onUpdateWarehouseList }) => {
           <div className="row">
             <div className="col-sm-6 d-flex justify-content-center">
               {
-                warehouse.product.img &&
-                <img src={warehouse.product.img} className="img-fluid rounded-start" alt="..." style={{ maxWidth: "15rem", maxHeight: "12rem", objectFit: "cover" }} />
+                warehouse.product.urlFile &&
+                <a href={warehouse.product.urlFile} target="_blank">
+                <img src={warehouse.product.urlFile} className="img-fluid rounded-start" alt="..." style={{ maxWidth: "15rem", maxHeight: "12rem", objectFit: "cover" }} />
+                </a>
               }
             </div>
             <div className="col-sm-6 d-flex justify-content-center row">

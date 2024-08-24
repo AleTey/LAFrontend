@@ -15,7 +15,7 @@ export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 's
             <b>{amount.productForLoteDTO.nombre}</b>
           </div>
           <div className="container d-flex justify-content-center">
-            <img src={amount.productForLoteDTO.img} alt={amount.productForLoteDTO.nombre} style={{ maxWidth: "10rem", minWidth: "10rem" }} />
+            <img src={amount.productForLoteDTO.urlFile} alt={amount.productForLoteDTO.nombre} style={{ maxWidth: "10rem", minWidth: "10rem" }} />
           </div>
         </div>
         <div className="container col">

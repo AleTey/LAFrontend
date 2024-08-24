@@ -8,10 +8,11 @@ import { hasAnyRole } from "../auth/utils/hasAnyRole";
 import { Searcher } from "../components/Searcher";
 import { useParams } from "react-router-dom";
 import { Paginator } from "../components/Paginator";
+import { Spinner } from "../components/layout/Spinner";
 
 export const Models = () => {
 
-  const { models, getAllModels, modelDbHasChanged, findAllPageModel, getModelPageByString, paginator, setPaginator } = useModel();
+  const { models, getAllModels, modelDbHasChanged, findAllPageModel, getModelPageByString, paginator, setPaginator, modelIsLoading } = useModel();
 
   const [modelFormIsOpen, setModelFormIsOpen] = useState(false);
 
@@ -37,6 +38,12 @@ export const Models = () => {
     console.log(paginator);
 
   }, [])
+
+  if (modelIsLoading) {
+    return (
+      <Spinner />
+    )
+  }
 
   return (
     <>

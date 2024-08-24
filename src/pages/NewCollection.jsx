@@ -80,14 +80,32 @@ export const NewCollection = () => {
             <div className="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabIndex="0">TELAS
 
 
-              <div className="container fabrics-container d-flex column m-4">
+              <div className="row gap-1 mt-4">
                 {
                   seasonFabrics?.map(fabric => (
-                    <div key={fabric.id} className="m-1 image-container">
+                    <div key={fabric.id} className="col-sm-6 col-md-4 col-lg-3 mb-3" style={{width: "8rem"}}>
+
+                    <div key={fabric.id} className="card" style={{ width: "8rem" }}>
                       <abbr title={fabric.nombre} className="initialism">
-                        <img className="hover-img" src={fabric.img} alt={fabric.nombre} style={{ maxWidth: "6rem", maxHeight: "6rem" }} />
+                        <a href={fabric.urlFile} target="_blank">
+                          {/* <img src={fabric.urlFile} className="card-img-top" style={{ objectFit: "cover", maxHeight: "15rem", maxWidth: "100%" }} alt="..." /> */}
+                          <img src={fabric.urlFile} className="card-img-top" alt="..." style={{ maxHeight: "8rem", objectFit: "fill" }} />
+
+                        </a>
                       </abbr>
+
+                      {/* <div className="card-body">
+                      </div> */}
+                      </div>
                     </div>
+
+                    // <div key={fabric.id} className="m-1" style={{ maxWidth: "6rem" }}>
+                    //   <abbr title={fabric.nombre} className="initialism">
+                    //     <a href={fabric.urlFile} target="_blank">
+                    //       <img className="hover-img" src={fabric.urlFile} alt={fabric.nombre} style={{ maxWidth: "100%", maxHeight: "6rem", objectFit: "cover" }} />
+                    //     </a>
+                    //   </abbr>
+                    // </div>
                   ))
                 }
               </div>

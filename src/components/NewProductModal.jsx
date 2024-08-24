@@ -465,10 +465,10 @@ export const NewProductModal = ({ setProductFormIsOpen, productData = productFor
                                               <th scope="row">{detail.fabric.id}</th>
                                               {
                                                 telasSeleccionadasParaTiras.length > 0 &&
-                                                  telasSeleccionadasParaTiras.find(f => f.id === detail.fabric.id)?.img ?
+                                                  telasSeleccionadasParaTiras.find(f => f.id === detail.fabric.id)?.urlFile ?
                                                   <th>
                                                     <img
-                                                      src={telasSeleccionadasParaTiras.find(f => f.id === detail.fabric.id).img}
+                                                      src={telasSeleccionadasParaTiras.find(f => f.id === detail.fabric.id).urlFile}
                                                       alt=""
                                                       style={{ maxWidth: '20%' }}
                                                       className="img-thumbnail"

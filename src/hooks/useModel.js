@@ -10,7 +10,9 @@ export const useModel = () => {
     dispatchUpdateModel,
     dispatchDeleteModel,
     modelDbHasChanged,
-    setModelDbHasChanged } = useContext(ModelContext)
+    setModelDbHasChanged,
+    modelIsLoading,
+    setModelIsLoading } = useContext(ModelContext)
 
   const [paginator, setPaginator] = useState({});
 
@@ -34,7 +36,8 @@ export const useModel = () => {
   }
 
   const saveModel = async (modelForm, setModelFormIsOpen) => {
-    console.log(modelForm);
+    // console.log(modelForm);
+    setModelIsLoading(true)
     const saveModel = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models`, {
       method: 'POST',
       headers: {
@@ -46,12 +49,14 @@ export const useModel = () => {
     if (saveModel.ok) {
       const savedModel = await saveModel.json();
       setModelFormIsOpen(false)
+      setModelIsLoading(false);
       dispatchModel(savedModel);
       setModelDbHasChanged("Modelo guardado")
       setTimeout(() => setModelDbHasChanged(""), 8000)
       console.log("RESPUESTA MODEL")
       console.log(savedModel)
     } else {
+      setModelIsLoading(false);
       const error = await saveModel.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -61,6 +66,7 @@ export const useModel = () => {
 
   const updateModel = async (modelForm, setModelFormIsOpen) => {
     try {
+      setModelIsLoading(true);
       const updateModel = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models/${modelForm.id}`, {
         method: 'PUT',
         headers: {
@@ -71,11 +77,13 @@ export const useModel = () => {
       })
       if (updateModel.ok) {
         const updatedModelJson = await updateModel.json();
+        setModelIsLoading(false);
         dispatchUpdateModel(updatedModelJson);
         setModelFormIsOpen(false);
         setModelDbHasChanged("Modelo actualizado")
         setTimeout(() => setModelDbHasChanged(""), 8000);
       } else {
+        setModelIsLoading(false);
         const error = await updateModel.json();
         if (error.message === "Please Login") {
           handlerLogout();
@@ -88,6 +96,7 @@ export const useModel = () => {
   }
 
   const deleteModel = async (id) => {
+    setModelIsLoading(true);
     const deleteModel = await fetch(`${import.meta.env.VITE_API_BASE_URL}/models/${id}`, {
       method: 'DELETE',
       headers: {
@@ -95,10 +104,12 @@ export const useModel = () => {
       }
     })
     if (deleteModel.ok) {
+      setModelIsLoading(false);
       dispatchDeleteModel(id);
       setModelDbHasChanged("Modelo eliminado");
       setTimeout(() => setModelDbHasChanged(""), 8000)
     } else {
+      setModelIsLoading(false);
       const error = await deleteModel.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -107,9 +118,10 @@ export const useModel = () => {
   }
 
   const findAllPageModel = async (page = 0, setPaginator) => {
+    setModelIsLoading(true);
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/models/find-all/page`);
     url.searchParams.append('page', page)
-    url.searchParams.append('size', 2)
+    url.searchParams.append('size', 4)
     const res = await fetch(url.toString(), {
       headers: {
         "Authorization": sessionStorage.getItem("token")
@@ -117,9 +129,11 @@ export const useModel = () => {
     })
     if (res.ok) {
       const resJson = await res.json();
+      setModelIsLoading(false);
       dispatchAllModels(resJson.content);
       setPaginator(resJson);
     } else {
+      setModelIsLoading(false);
       const error = await res.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -128,10 +142,11 @@ export const useModel = () => {
   }
 
   const getModelPageByString = async (string, page) => {
+    setModelIsLoading(true);
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/models/by-string/page`)
     url.searchParams.append('string', string);
     url.searchParams.append('page', page);
-    url.searchParams.append('size', 2);
+    url.searchParams.append('size', 4);
 
     const res = await fetch(url.toString(), {
       headers: {
@@ -142,8 +157,10 @@ export const useModel = () => {
       const resJson = await res.json();
       console.log(resJson);
       dispatchAllModels(resJson.content);
+      setModelIsLoading(false);
       setPaginator(resJson);
     } else {
+      setModelIsLoading(false);
       const error = await res.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -162,6 +179,8 @@ export const useModel = () => {
     deleteModel,
     modelDbHasChanged,
     paginator,
-    setPaginator
+    setPaginator,
+    modelIsLoading,
+    setModelIsLoading
   }
 }

@@ -22,6 +22,11 @@ export const useFabric = () => {
 
   const [fabrics, dispatch] = useReducer(fabricReducer, []);
 
+  const [fabricIsLoading, setFabricIsLoading] = useState(false);
+
+  // const { fabricIsLoading,
+  //   setFabricIsLoading } = FabricContext;
+
   // const [paginator, setPaginator] = useState({});
   // const [usePaginator, setUsePaginator] = useState({});
 
@@ -33,9 +38,10 @@ export const useFabric = () => {
 
 
   const getAllFabricsPages = async (page = 0, setPaginator) => {
+    setFabricIsLoading(true);
     try {
       console.log("function")
-      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/page/${page}/3`, {
+      const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/page/${page}/8`, {
         headers: {
           "Authorization": sessionStorage.getItem('token')
         }
@@ -65,7 +71,7 @@ export const useFabric = () => {
           type: 'GET_ALL_FABRICS',
           payload: fabricsWithImageURL,
         });
-
+        setFabricIsLoading(false)
         setPaginator(json)
         console.log(json)
       } else {
@@ -178,7 +184,7 @@ export const useFabric = () => {
                   urlFile: imgJson.urlFile
                 }
               }
-              
+
             }
             dispatch({
               type: 'ADD_FABRIC',
@@ -222,6 +228,7 @@ export const useFabric = () => {
     console.log("ENTRANDO EN EDITFABRIC")
     let imgIsPresent = false;
     let imageFile = new FormData();
+    setFabricIsLoading(true);
     if (fabricForm.img) {
       // if (fabricForm.img.split(",")[0] !== "data:image/jpeg;base64") {
       if (typeof fabricForm.img !== 'string') {
@@ -286,12 +293,13 @@ export const useFabric = () => {
             payload: fabricForm
           })
         }
-
+        setFabricIsLoading(false);
         setFabricWasEdited(true);
         setTimeout(() => {
           setFabricWasEdited(false);
         }, 8000)
       } else {
+        setFabricIsLoading(false);
         const error = await res.json();
         if (error.message === "Please Login") {
           handlerLogout();
@@ -303,7 +311,6 @@ export const useFabric = () => {
   }
 
   const onDeleteFabric = (id) => {
-
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -315,6 +322,7 @@ export const useFabric = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         const deleteFabric = async () => {
+          setFabricIsLoading(true)
           try {
             // const response = await fetch(`http://localhost:3000/colors/${id}`, {
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/fabrics/${id}`, {
@@ -329,11 +337,13 @@ export const useFabric = () => {
                 type: "REMOVE_FABRIC",
                 payload: id
               });
+              setFabricIsLoading(false);
               setFabricWasDeleted(true);
               setTimeout(() => {
                 setFabricWasDeleted(false);
               }, 8000)
             } else {
+              setFabricIsLoading(false);
               const error = await res.json();
               if (error.message === "Please Login") {
                 handlerLogout();
@@ -349,10 +359,11 @@ export const useFabric = () => {
   }
 
   const searchFabricByString = async (string, page = 0, setPaginator) => {
+    setFabricIsLoading(true);
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/searchByString`);
     url.searchParams.append('string', string);
     url.searchParams.append('page', page);
-    url.searchParams.append('size', 1);
+    url.searchParams.append('size', 4);
     const res = await fetch(url.toString(), {
       headers: {
         "Authorization": sessionStorage.getItem("token")
@@ -381,10 +392,11 @@ export const useFabric = () => {
         type: 'GET_ALL_FABRICS',
         payload: fabricsWithImageURL,
       });
-
+      setFabricIsLoading(false);
       setPaginator(json)
       console.log(json)
     } else {
+      setFabricIsLoading(false);
       const error = await res.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -393,10 +405,11 @@ export const useFabric = () => {
   };
   const searchFabricDtoByString = async (string, page = 0, setPaginator) => {
     // console.log("searchFabricDtoByString");
+    setFabricIsLoading(true)
     const url = new URL(`${import.meta.env.VITE_API_BASE_URL}/fabrics/search-dto-ByString`);
     url.searchParams.append('string', string);
     url.searchParams.append('page', page);
-    url.searchParams.append('size', 1);
+    url.searchParams.append('size', 4);
     const res = await fetch(url.toString(), {
       headers: {
         "Authorization": sessionStorage.getItem("token")
@@ -425,10 +438,11 @@ export const useFabric = () => {
         type: 'GET_ALL_FABRICS',
         payload: fabricsWithImageURL,
       });
-
+      setFabricIsLoading(false);
       setPaginator(json)
       console.log(json)
     } else {
+      setFabricIsLoading(false);
       const error = await res.json();
       if (error.message === "Please Login") {
         handlerLogout();
@@ -502,6 +516,8 @@ export const useFabric = () => {
     searchFabricByString,
     searchFabricDtoByString,
     findSeasons,
-    findFabricsBySeason
+    findFabricsBySeason,
+    fabricIsLoading,
+    setFabricIsLoading
   }
 }
