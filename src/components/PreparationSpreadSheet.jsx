@@ -7,7 +7,22 @@ import { usePreparationSpreadsheet } from "../hooks/lotes/usePreparationSpreadsh
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
 import { ImageModal } from "./ImageModal";
 import "../acss/general.css";
+import { errorAlert } from "./alerts/errorAlert";
 
+const preparationSpreadSheetValidator = (sheet) => {
+  let errors = {};
+  sheet.amountPerSizeForProductDTOs.forEach(a => (
+    Object.values(a.amountPerSize).forEach(value => {
+      console.log(value)
+      if (value < 0 || value === "" || value === null || value === undefined) {
+        errors.invalidAmount = "Todos los valores deben ser igual o mayores que cero"
+      }
+    })
+  ));
+
+  return errors;
+
+}
 
 export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationSpreadSheet, setPreparationSpreadSheetIsOpen }) => {
 
@@ -96,11 +111,15 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
   }
 
   const onSubmit = () => {
-    updatePreparationSpreadSheet(preparationSpreadSheetToSendMapper(preparationSpreadSheetForm), preparationSpreadSheetForm, setPreparationSpreadSheet, setEditMode);
-
-    if (typeof preparationSpreadSheet.img != "string") {
-      updateImagePreparationSpreadSheet(preparationSpreadSheetForm.id, newImg, preparationSpreadSheetForm, setPreparationSpreadSheet);
+    if (Object.keys(preparationSpreadSheetValidator(preparationSpreadSheetForm)).length === 0) {
+      updatePreparationSpreadSheet(preparationSpreadSheetToSendMapper(preparationSpreadSheetForm), preparationSpreadSheetForm, setPreparationSpreadSheet, setEditMode);
+    } else {
+      errorAlert({ title: "Error en las cantidades", text: "Las cantidades deben ser mayor o igual a 0" })
     }
+
+    // if (typeof preparationSpreadSheet.img != "string") {
+    //   updateImagePreparationSpreadSheet(preparationSpreadSheetForm.id, newImg, preparationSpreadSheetForm, setPreparationSpreadSheet);
+    // }
   }
 
   return (

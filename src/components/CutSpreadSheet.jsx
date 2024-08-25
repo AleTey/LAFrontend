@@ -2,6 +2,22 @@ import { useContext, useEffect, useState } from "react"
 import { AuthContext } from "../auth/context/AuthContext.Jsx";
 import { useCutSpreadsheet } from "../hooks/lotes/useCutSpreadsheet";
 import { hasAnyRole } from "../auth/utils/hasAnyRole";
+import { errorAlert } from "./alerts/errorAlert";
+
+const cutSpreadSheetValidator = (sheet) => {
+  let errors = {};
+  sheet.amountPerSizeForProductDTO.forEach(a => (
+    Object.values(a.amountPerSize).forEach(value => {
+      console.log(value)
+      if (value < 0 || value === "" || value === null || value === undefined) {
+        errors.invalidAmount = "Todos los valores deben ser igual o mayores que cero"
+      }
+    })
+  ));
+
+  return errors;
+
+}
 
 
 export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpreadSheetIsOpen }) => {
@@ -9,6 +25,8 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
   const [cutSpreadSheetForm, setCutSpreadSheetForm] = useState(cutSpreadSheet);
 
   const [editMode, setEditMode] = useState(false);
+
+  const [errors, setErrors] = useState({});
 
   const { login } = useContext(AuthContext);
 
@@ -111,7 +129,13 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
   }
 
   const onSubmit = () => {
-    updateCutSpreadSheet(cutSpreadSheetToSendMapper(cutSpreadSheetForm), setCutSpreadSheet, setEditMode);
+    if (Object.keys(cutSpreadSheetValidator(cutSpreadSheetForm)).length === 0) {
+      setErrors({});
+      updateCutSpreadSheet(cutSpreadSheetToSendMapper(cutSpreadSheetForm), setCutSpreadSheet, setEditMode);
+    } else {
+      setErrors(Object.keys(cutSpreadSheetValidator(cutSpreadSheetForm)));
+      errorAlert({ title: "Error en las cantidades", text: "Las cantidades deben ser mayor o igual a 0" })
+    }
   }
 
   return (
@@ -125,7 +149,6 @@ export const CutSpreadSheet = ({ cutSpreadSheet, setCutSpreadSheet, setCutSpread
         </div>
         <hr />
         <div className="container d-flex row gap-3">
-
 
           {
             cutSpreadSheetForm && cutSpreadSheetForm.amountPerSizeForProductDTO &&

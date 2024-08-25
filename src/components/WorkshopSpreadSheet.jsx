@@ -3,6 +3,28 @@ import { AmountPerSizeTable } from "./AmountPerSizeTable";
 import { useWorkshopSpreadsheet } from "../hooks/lotes/useWorkshopSpreadsheet";
 import { hasAnyRole } from "../auth/utils/hasAnyRole";
 import { AuthContext } from "../auth/context/AuthContext";
+import { errorAlert } from "./alerts/errorAlert";
+
+const workshopSpreadSheetValidator = (sheet) => {
+  let errors = {};
+  sheet.amountPerSizeForProducts.forEach(a => (
+    Object.values(a.amountPerSize).forEach(value => {
+      if (value < 0 || value === "" || value === null || value === undefined) {
+        errors.invalidAmount = "Todos los valores deben ser igual o mayores que cero"
+      }
+    })
+  ));
+  sheet.amountPerSizeDefectiveForProducts.forEach(a => (
+    Object.values(a.amountPerSize).forEach(value => {
+      if (value < 0 || value === "" || value === null || value === undefined) {
+        errors.invalidAmount = "Todos los valores deben ser igual o mayores que cero"
+      }
+    })
+  ));
+
+  return errors;
+
+}
 
 export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadSheet, setWorkshopSpreadSheetIsOpen }) => {
 
@@ -12,7 +34,7 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
 
   const { updateWorkshopSpreadSheet } = useWorkshopSpreadsheet();
 
-  const {login} = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   useEffect(() => {
     setWorkshopSpreadSheetForm(workshopSpreadSheet)
@@ -59,7 +81,7 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
     const { name, value } = e.target;
     console.log("name: " + name)
     console.log("value: " + value)
-    setWorkshopSpreadSheetForm({      
+    setWorkshopSpreadSheetForm({
       ...workshopSpreedSheetForm,
       [name]: value
     })
@@ -96,7 +118,12 @@ export const WorkshopSpreadSheep = ({ workshopSpreadSheet, setWorkshopSpreadShee
 
 
   const onSubmit = () => {
-    updateWorkshopSpreadSheet(workshopSpreadSheetToSendMapper(workshopSpreedSheetForm), setWorkshopSpreadSheet, workshopSpreedSheetForm, setEditMode);
+    if (Object.keys(workshopSpreadSheetValidator(workshopSpreedSheetForm)).length === 0) {
+      updateWorkshopSpreadSheet(workshopSpreadSheetToSendMapper(workshopSpreedSheetForm), setWorkshopSpreadSheet, workshopSpreedSheetForm, setEditMode);
+    } else {
+      errorAlert({ title: "Error en las cantidades", text: "Las cantidades deben ser mayor o igual a 0" });
+    }
+
   }
 
   return (

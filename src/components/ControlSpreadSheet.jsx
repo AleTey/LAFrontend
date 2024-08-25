@@ -1,6 +1,22 @@
 import { useEffect, useState } from "react"
 import { AmountPerSizeTable } from "./AmountPerSizeTable";
 import { useControlSpreadsheet } from "../hooks/lotes/useControlSpreadsheet";
+import { errorAlert } from "./alerts/errorAlert";
+
+const controlSpreadSheetValidator = (sheet) => {
+  let errors = {};
+  sheet.amountPerSizeForProductDTO.forEach(a => (
+    Object.values(a.amountPerSize).forEach(value => {
+      console.log(value)
+      if (value < 0 || value === "" || value === null || value === undefined) {
+        errors.invalidAmount = "Todos los valores deben ser igual o mayores que cero"
+      }
+    })
+  ));
+
+  return errors;
+
+}
 
 export const ControlSpreadSheet = ({ controlSpreadSheet, setControlSpreadSheet, setControlSpreadSheetIsOpen }) => {
 
@@ -64,7 +80,11 @@ export const ControlSpreadSheet = ({ controlSpreadSheet, setControlSpreadSheet, 
   }
 
   const onSubmit = () => {
-    updateControlSpreadSheet(controlSpreadSheetToSendMapper(controlSpreadSheetForm), setControlSpreadSheet, setEditMode, controlSpreadSheetForm)
+    if (Object.keys(controlSpreadSheetValidator(controlSpreadSheetForm)).length === 0) {
+      updateControlSpreadSheet(controlSpreadSheetToSendMapper(controlSpreadSheetForm), setControlSpreadSheet, setEditMode, controlSpreadSheetForm)      
+    } else {
+      errorAlert({ title: "Error en las cantidades", text: "Las cantidades deben ser mayor o igual a 0" })
+    }
   };
 
   return (
