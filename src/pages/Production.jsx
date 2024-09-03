@@ -11,6 +11,8 @@ export const Production = () => {
 
   const [newLoteIsOpen, setNewLoteIsOpen] = useState(false);
 
+  const [stateSelected, setStateSelected] = useState("");
+
   const { lotesQueue,
     lotesPreparation,
     lotesCut,
@@ -27,6 +29,11 @@ export const Production = () => {
 
   const onClickSectionLote = (state) => {
     getLotesByState(state);
+  }
+
+  const stateSelectedHandler = (state) => {
+    setStateSelected(state)
+    onClickSectionLote(state)
   }
 
   return (
@@ -54,14 +61,91 @@ export const Production = () => {
           hasAnyRole(login.user.authorities, ["CREATE_LOTE"]) &&
           <div className="container mb-3 d-flex column gap-2">
             <button
-              className="btn btn-primary"
+              className="btn btn-success"
               onClick={() => setNewLoteFormIsOpen(true)}
             >
               Nuevo lote
             </button>
           </div>
         }
-        <div className="accordion" id="accordionPanelsStayOpenExample">
+
+        <div className="container d-flex gap-2 mb-3">
+          <button className={stateSelected === "COLA" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("COLA")}>
+            En cola
+          </button>
+
+          <button className={stateSelected === "CORTE" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("CORTE")}>
+            En corte
+          </button>
+
+          <button className={stateSelected === "PREPARADO" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("PREPARADO")}>
+            En preparación
+          </button>
+
+          <button className={stateSelected === "TALLER" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("TALLER")}>
+            En talleres
+          </button>
+
+          <button className={stateSelected === "CONTROL" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("CONTROL")}>
+            En control
+          </button>
+
+          <button className={stateSelected === "FINALIZADO" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("FINALIZADO")}>
+            Finalizados
+          </button>
+
+        </div>
+
+        {
+          stateSelected === "COLA" && lotesQueue && lotesQueue.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+        {
+          stateSelected === "CORTE" && lotesCut && lotesCut.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+        {
+          stateSelected === "PREPARADO" && lotesPreparation && lotesPreparation.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+        {
+          stateSelected === "TALLER" && lotesWorkshop && lotesWorkshop.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+        {
+          stateSelected === "CONTROL" && lotesControl && lotesControl.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+        {
+          stateSelected === "FINALIZADO" && lotesFinalizado && lotesFinalizado.map(lote => (
+            <LoteCard
+              key={lote.id}
+              lote={lote}
+            />
+          ))
+        }
+
+        {/* <div className="accordion" id="accordionPanelsStayOpenExample">
 
           <div className="accordion-item">
             <h2 className="accordion-header">
@@ -74,7 +158,7 @@ export const Production = () => {
                 aria-controls="panelsStayOpen-collapseOne"
                 onClick={() => onClickSectionLote('COLA')}
               >
-               En cola corte
+                En cola corte
               </button>
             </h2>
             <div id="panelsStayOpen-collapseOne" className="accordion-collapse collapse">
@@ -223,7 +307,7 @@ export const Production = () => {
             </div>
           </div>
 
-        </div>
+        </div> */}
       </div>
     </>
   )
