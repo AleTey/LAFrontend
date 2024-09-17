@@ -8,6 +8,7 @@ import { AuthContext } from "../auth/context/AuthContext.Jsx";
 import { ImageModal } from "./ImageModal";
 import "../acss/general.css";
 import { errorAlert } from "./alerts/errorAlert";
+import { PrintComponent } from "./PrintComponent";
 
 const preparationSpreadSheetValidator = (sheet) => {
   let errors = {};
@@ -117,13 +118,11 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
       errorAlert({ title: "Error en las cantidades", text: "Las cantidades deben ser mayor o igual a 0" })
     }
 
-    // if (typeof preparationSpreadSheet.img != "string") {
-    //   updateImagePreparationSpreadSheet(preparationSpreadSheetForm.id, newImg, preparationSpreadSheetForm, setPreparationSpreadSheet);
-    // }
   }
 
   return (
     <>
+
       {imageModalIsOpen &&
         <ImageModal
           image={preparationSpreadSheetForm.img}
@@ -139,7 +138,13 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setPreparationSpreadSheetIsOpen(false)} ></button>
         </div>
         <hr />
-        <div className="container d-flex row gap-3 justify-content-center">
+        <PrintComponent
+          data={preparationSpreadSheetForm.amountPerSizeForProductDTOs}
+          editMode={editMode}
+          onSheetChange={onSheetChange}
+          inputQuantityForSpreadSheetList={inputQuantityForSpreadSheetList}
+        />
+        {/* <div className="container d-flex row gap-3 justify-content-center">
 
           {
             preparationSpreadSheetForm && preparationSpreadSheetForm.amountPerSizeForProductDTOs &&
@@ -151,11 +156,9 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
                 editMode={editMode}
                 onSheetChange={onSheetChange}
               />
-
-              // <></>
             ))
           }
-        </div>
+        </div> */}
 
         {
           !editMode && hasAnyRole(login.user.authorities, ["UPDATE_PREPARATION_SPREADSHEET"]) &&
@@ -169,7 +172,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
           </div>
         }
 
-        {
+        {/* {
           inputQuantityForSpreadSheetList.length > 0 &&
           <div className="container">
             <h6>Cantidad de insumos</h6>
@@ -177,7 +180,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
               inputQuantityForSpreadsheet={inputQuantityForSpreadSheetList}
             />
           </div>
-        }
+        } */}
         <hr />
         <h5>Detalles</h5>
         {
