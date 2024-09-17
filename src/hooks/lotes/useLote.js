@@ -109,7 +109,6 @@ export const useLote = () => {
     } catch (error) {
       console.log("error: " + error)
     }
-
   }
 
   // const changeStatus = (id, status) =>{
@@ -297,7 +296,6 @@ export const useLote = () => {
       } catch (error) {
 
       }
-
       return false;
     }
   }
@@ -384,6 +382,21 @@ export const useLote = () => {
     return status[currentIndex + 1];
   }
 
+  const deleteLote = async (id) => {
+
+    const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/lotes/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Authorization": sessionStorage.getItem('token')
+      }
+    });
+    if (res.ok) {
+
+      return true
+    }
+    return false;
+  }
+
   return {
     lotesQueue,
     lotesPreparation,
@@ -401,6 +414,8 @@ export const useLote = () => {
     setNewLoteFormIsOpen,
     loteWithImgMapper,
     previousState,
-    changeStateAdmin
+    changeStateAdmin,
+    deleteLote,
+    dispatcherRemove
   }
 }

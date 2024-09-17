@@ -69,32 +69,41 @@ export const Production = () => {
           </div>
         }
 
-        <div className="container d-flex gap-2 mb-3">
-          <button className={stateSelected === "COLA" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("COLA")}>
+        {/* <div className="container d-flex gap-2 mb-3"> */}
+        <div className="container" >
+
+
+          <button className={stateSelected === "COLA" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("COLA")}>
             En cola
           </button>
 
-          <button className={stateSelected === "CORTE" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("CORTE")}>
+          <button className={stateSelected === "CORTE" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("CORTE")}>
             En corte
           </button>
 
-          <button className={stateSelected === "PREPARADO" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("PREPARADO")}>
+          <button className={stateSelected === "PREPARADO" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("PREPARADO")}>
             En preparación
           </button>
 
-          <button className={stateSelected === "TALLER" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("TALLER")}>
+          <button className={stateSelected === "TALLER" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("TALLER")}>
             En talleres
           </button>
 
-          <button className={stateSelected === "CONTROL" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("CONTROL")}>
+          <button className={stateSelected === "CONTROL" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("CONTROL")}>
             En control
           </button>
 
-          <button className={stateSelected === "FINALIZADO" ? "btn btn-outline-primary" : "btn btn-outline-secondary"} onClick={() => stateSelectedHandler("FINALIZADO")}>
+          <button className={stateSelected === "FINALIZADO" ? "btn btn-outline-primary me-2 mb-2" : "btn btn-outline-secondary me-2 mb-2"} onClick={() => stateSelectedHandler("FINALIZADO")}>
             Finalizados
           </button>
 
+
         </div>
+
+      </div>
+      <div className="container">
+
+
 
         {
           stateSelected === "COLA" && lotesQueue && lotesQueue.map(lote => (
@@ -104,6 +113,7 @@ export const Production = () => {
             />
           ))
         }
+
         {
           stateSelected === "CORTE" && lotesCut && lotesCut.map(lote => (
             <LoteCard
@@ -145,7 +155,9 @@ export const Production = () => {
           ))
         }
 
-        {/* <div className="accordion" id="accordionPanelsStayOpenExample">
+      </div>
+
+      {/* <div className="accordion" id="accordionPanelsStayOpenExample">
 
           <div className="accordion-item">
             <h2 className="accordion-header">
@@ -308,7 +320,7 @@ export const Production = () => {
           </div>
 
         </div> */}
-      </div>
+
     </>
   )
 }

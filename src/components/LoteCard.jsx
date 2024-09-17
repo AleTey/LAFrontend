@@ -13,10 +13,13 @@ import { useControlSpreadsheet } from "../hooks/lotes/useControlSpreadsheet"
 import { PreviousLoteStatus } from "./buttons/PreviousLoteStatus"
 import { AuthContext } from "../auth/context/AuthContext"
 import { hasAnyRole } from "../auth/utils/hasAnyRole"
+import { DeleteButton } from "./buttons/DeleteButton"
 
 export const LoteCard = ({ lote }) => {
 
   const { changeStatus,
+    deleteLote,
+    dispatcherRemove,
     previousState
   } = useLote();
 
@@ -83,108 +86,120 @@ export const LoteCard = ({ lote }) => {
 
   return (
     <>
+      {/* <div className="col-6 col-lg-3"> */}
+        <div className="card mb-3 border-primary">
+          <div className="card-header d-flex justify-content-between">
+            <h4 className="text-primary-emphasis"><b>Lote: {lote.id}</b></h4>
+            {
+              hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
+              lote.status !== "COLA" &&
+              <>
+                <div>
 
-      <div className="card mb-3 border-primary">
-        <div className="card-header d-flex justify-content-between">
-          <h4 className="text-primary-emphasis"><b>Lote: {lote.id}</b></h4>
-          {
-            hasAnyRole(login.user.authorities, ["ROLE_ADMIN"]) &&
-            lote.status !== "COLA" &&
-            <PreviousLoteStatus
+                  <PreviousLoteStatus
+                    loteId={lote.id}
+                    // status={lote.status}
+                    status={lote.status}
+                  />
+                  <DeleteButton
+                    task={deleteLote}
+                    id={lote.id}
+                    state={lote.status}
+                    dispatcherRemove={dispatcherRemove}
+                  />
+                </div>
+              </>
+            }
+          </div>
+          <div className="card-body">
+
+            {
+              <div>
+                <p><b>Taller: </b>{lote.workShopDto.name}</p>
+                <p><b>Estado: </b>{lote.status}</p>
+                <p><b>Detalles: </b>{lote.additionalDetails}</p>
+              </div>
+            }
+            <p><b>Productos:</b></p>
+            {
+              lote.productsForLoteDTO && lote.productsForLoteDTO.map(product => (
+                <ProductCardBasicThumbnail
+                  key={product.id}
+                  product={product}
+                />
+                // </div>
+              ))
+            }
+            <LoteButtonsActions
+              key={lote.id}
               loteId={lote.id}
-              // status={lote.status}
-              status={lote.status}
+              loteStatus={lote.status}
+              onChangeStatus={onChangeStatus}
+              findCutSpreadSheet={findCutSpreadSheet}
+              lote={lote}
+              setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
+              findPreparationSpreadSheet={findPreparationSpreadSheet}
+              setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
+              setWorkshopSpreadsheetIsOpen={setWorkshopSpreadsheetIsOpen}
+              findWorkshopSpreadsheet={findWorkshopSpreadsheet}
+              findControlSpreadSheet={findControlSpreadSheet}
+              setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
+              openCloseSheetManager={openCloseSheetManager}
             />
-          }
-        </div>
-        <div className="card-body">
+
+          </div>
+          <div className="card-footer text-body-secondary">
+            fecha de creación: {lote.creationDate}
+          </div>
+
+          {/* PLANILLAS */}
 
           {
-            <div>
-              <p><b>Taller: </b>{lote.workShopDto.name}</p>
-              <p><b>Estado: </b>{lote.status}</p>
-              <p><b>Detalles: </b>{lote.additionalDetails}</p>
+            cutSpreadSheetIsOpen &&
+            <div className="card-footer text-body-secondary">
+              <CutSpreadSheet
+                cutSpreadSheet={cutSpreadSheet}
+                setCutSpreadSheet={setCutSpreadSheet}
+                setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
+              />
             </div>
           }
-          <p><b>Productos:</b></p>
+
           {
-            lote.productsForLoteDTO && lote.productsForLoteDTO.map(product => (
-              <ProductCardBasicThumbnail
-                key={product.id}
-                product={product}
+            preparationSpreadSheetIsOpen &&
+            <div className="card-footer text-body-secondary d-flex justify-content-center">
+              <PreparationSpreadSheet
+                preparationSpreadSheet={preparationSpreadSheet}
+                setPreparationSpreadSheet={setPreparationSpreadsheet}
+                setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
               />
-              // </div>
-            ))
+            </div>
           }
-          <LoteButtonsActions
-            key={lote.id}
-            loteId={lote.id}
-            loteStatus={lote.status}
-            onChangeStatus={onChangeStatus}
-            findCutSpreadSheet={findCutSpreadSheet}
-            lote={lote}
-            setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
-            findPreparationSpreadSheet={findPreparationSpreadSheet}
-            setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
-            setWorkshopSpreadsheetIsOpen={setWorkshopSpreadsheetIsOpen}
-            findWorkshopSpreadsheet={findWorkshopSpreadsheet}
-            findControlSpreadSheet={findControlSpreadSheet}
-            setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
-            openCloseSheetManager={openCloseSheetManager}
-          />
+
+          {
+            workshopSpreadSheetIsOpen &&
+            <div className="card-footer text-body-secondary d-flex justify-content-center">
+              <WorkshopSpreadSheep
+                workshopSpreadSheet={workshopSpreadSheet}
+                setWorkshopSpreadSheet={setWorkshopSpreadSheet}
+                setWorkshopSpreadSheetIsOpen={setWorkshopSpreadsheetIsOpen}
+              />
+            </div>
+          }
+
+          {
+            controlSpreadSheetIsOpen &&
+            <div className="card-footer text-body-secondary d-flex justify-content-center">
+              <ControlSpreadSheet
+                controlSpreadSheet={controlSpreadSheet}
+                setControlSpreadSheet={setControlSpreadSheet}
+                setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
+              />
+            </div>
+          }
 
         </div>
-        <div className="card-footer text-body-secondary">
-          fecha de creación: {lote.creationDate}
-        </div>
-
-        {/* PLANILLAS */}
-
-        {
-          cutSpreadSheetIsOpen &&
-          <div className="card-footer text-body-secondary">
-            <CutSpreadSheet
-              cutSpreadSheet={cutSpreadSheet}
-              setCutSpreadSheet={setCutSpreadSheet}
-              setCutSpreadSheetIsOpen={setCutSpreadSheetIsOpen}
-            />
-          </div>
-        }
-
-        {
-          preparationSpreadSheetIsOpen &&
-          <div className="card-footer text-body-secondary d-flex justify-content-center">
-            <PreparationSpreadSheet
-              preparationSpreadSheet={preparationSpreadSheet}
-              setPreparationSpreadSheet={setPreparationSpreadsheet}
-              setPreparationSpreadSheetIsOpen={setPreparationSpreadSheetIsOpen}
-            />
-          </div>
-        }
-
-        {
-          workshopSpreadSheetIsOpen &&
-          <div className="card-footer text-body-secondary d-flex justify-content-center">
-            <WorkshopSpreadSheep
-              workshopSpreadSheet={workshopSpreadSheet}
-              setWorkshopSpreadSheet={setWorkshopSpreadSheet}
-              setWorkshopSpreadSheetIsOpen={setWorkshopSpreadsheetIsOpen}
-            />
-          </div>
-        }
-
-        {
-          controlSpreadSheetIsOpen &&
-          <div className="card-footer text-body-secondary d-flex justify-content-center">
-            <ControlSpreadSheet
-              controlSpreadSheet={controlSpreadSheet}
-              setControlSpreadSheet={setControlSpreadSheet}
-              setControlSpreadSheetIsOpen={setControlSpreadSheetIsOpen}
-            />
-          </div>
-        }
-
-      </div>
+      {/* </div> */}
     </>
   )
 }
