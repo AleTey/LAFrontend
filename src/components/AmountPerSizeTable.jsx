@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 
-export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 'success' }) => {
+export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 'success', empty }) => {
 
   // useEffect(() => {
   //   console.log(amount)
@@ -30,24 +30,42 @@ export const AmountPerSizeTable = ({ amount, editMode, onSheetChange, color = 's
             <tbody>
 
               {
+                empty && empty === true ?
 
-                Object.entries(amount.amountPerSize).map(([key, value]) => (
-                  <tr key={key}>
-                    <th>{key}</th>
-                    <th>
-                      {!editMode ? value :
-                        <input className="form-control"
-                          name={key}
-                          value={value}
-                          type="number"
-                          min= "0"
-                          style={{ maxWidth: "6rem" }}
-                          onChange={(e) => onSheetChange(e, amount.id)} 
+                  Object.entries(amount.amountPerSize).map(([key, value]) => (
+                    <tr key={key}>
+                      <th>{key}</th>
+                      <th>
+                        {!editMode ? "" :
+                          <input className="form-control"
+                            name={key}
+                            value=""
+                            type="text"
+                            style={{ maxWidth: "6rem" }}
+                            onChange={(e) => onSheetChange(e, amount.id)}
                           />
-                      }
-                    </th>
-                  </tr>
-                ))
+                        }
+                      </th>
+                    </tr>
+                  ))
+                  :
+                  Object.entries(amount.amountPerSize).map(([key, value]) => (
+                    <tr key={key}>
+                      <th>{key}</th>
+                      <th>
+                        {!editMode ? value :
+                          <input className="form-control"
+                            name={key}
+                            value={999}
+                            type="number"
+                            min="0"
+                            style={{ maxWidth: "6rem" }}
+                            onChange={(e) => onSheetChange(e, amount.id)}
+                          />
+                        }
+                      </th>
+                    </tr>
+                  ))
               }
             </tbody>
           </table>

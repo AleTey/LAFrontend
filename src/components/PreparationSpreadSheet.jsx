@@ -9,6 +9,8 @@ import { ImageModal } from "./ImageModal";
 import "../acss/general.css";
 import { errorAlert } from "./alerts/errorAlert";
 import { PrintComponent } from "./PrintComponent";
+import { toggle } from "../hooks/utils/toggle";
+import { Modal } from "./bootstrapComponents/Modal";
 
 const preparationSpreadSheetValidator = (sheet) => {
   let errors = {};
@@ -38,6 +40,8 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
   const [editMode, setEditMode] = useState(false);
 
   const [imageModalIsOpen, setImageModalIsOpen] = useState(false);
+
+  const [showEmptySheet, setShowEmptySheet] = useState(false);
 
   const { login } = useContext(AuthContext);
 
@@ -130,35 +134,43 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
           modalIsOpen={setImageModalIsOpen}
         />
       }
+      {
+        showEmptySheet &&
+        <Modal
+          title={"Panilla vacía"}
+          isOpen={setShowEmptySheet}
+          children={
+            <PrintComponent
+              empty={true}
+              data={preparationSpreadSheetForm.amountPerSizeForProductDTOs}
+              editMode={editMode}
+              onSheetChange={onSheetChange}
+              inputQuantityForSpreadSheetList={inputQuantityForSpreadSheetList}
+            />
+          }
+        />
+      }
       <div className="container d-flex row gap-3">
         <div className="d-flex column d-flex justify-content-between">
-          {/* <div className="d-flex justify-content-center"> */}
           <h2 className="modal-title" id="staticBackdropLabel">Planilla preparación</h2>
-          {/* </div> */}
           <button type="button" className="btn-close" aria-label="Close" onClick={() => setPreparationSpreadSheetIsOpen(false)} ></button>
         </div>
         <hr />
+        <div>
+          <button
+            className="btn btn-info"
+            onClick={() => setShowEmptySheet(toggle(showEmptySheet))}
+          >
+            Planilla vacía
+          </button>
+        </div>
+
         <PrintComponent
           data={preparationSpreadSheetForm.amountPerSizeForProductDTOs}
           editMode={editMode}
           onSheetChange={onSheetChange}
           inputQuantityForSpreadSheetList={inputQuantityForSpreadSheetList}
         />
-        {/* <div className="container d-flex row gap-3 justify-content-center">
-
-          {
-            preparationSpreadSheetForm && preparationSpreadSheetForm.amountPerSizeForProductDTOs &&
-            preparationSpreadSheetForm.amountPerSizeForProductDTOs.map(amount => (
-
-              <AmountPerSizeTable
-                key={amount.id}
-                amount={amount}
-                editMode={editMode}
-                onSheetChange={onSheetChange}
-              />
-            ))
-          }
-        </div> */}
 
         {
           !editMode && hasAnyRole(login.user.authorities, ["UPDATE_PREPARATION_SPREADSHEET"]) &&
@@ -172,15 +184,6 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
           </div>
         }
 
-        {/* {
-          inputQuantityForSpreadSheetList.length > 0 &&
-          <div className="container">
-            <h6>Cantidad de insumos</h6>
-            <InputQuantityTable
-              inputQuantityForSpreadsheet={inputQuantityForSpreadSheetList}
-            />
-          </div>
-        } */}
         <hr />
         <h5>Detalles</h5>
         {
@@ -196,12 +199,9 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
 
         <h5>Imagen de insumos enviados/ a enviar</h5>
 
-        {/* <div className="container"> */}
         <div onClick={() => { setImageModalIsOpen(true) }} style={{ maxWidth: "12rem" }}>
           <img className="pointer" src={preparationSpreadSheetForm.img || 'src/db/imgs/image-not-found.jpg'} style={{ maxWidth: "10rem" }} alt="" />
         </div>
-
-        {/* </div> */}
 
 
         {
@@ -213,7 +213,6 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
               type="file"
               id="formFile"
               name="img"
-              // value={fabricForm.img}
               onChange={onChangeImgFile}
             />
           </div>
@@ -249,11 +248,7 @@ export const PreparationSpreadSheet = ({ preparationSpreadSheet, setPreparationS
             }
           </div>
         }
-
-
       </div>
-
-
     </>
   )
 }

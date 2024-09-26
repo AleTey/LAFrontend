@@ -3,7 +3,7 @@ import ReactToPrint from 'react-to-print';
 import { AmountPerSizeTable } from './AmountPerSizeTable';
 import { InputQuantityTable } from './InputQuantityTable';
 
-export const PrintComponent = ({ data, editMode, onSheetChange, inputQuantityForSpreadSheetList, empty }) => {
+export const PrintEmptySheet = ({ data, editMode, onSheetChange, inputQuantityForSpreadSheetList }) => {
   const componentRef = useRef(null);
 
   return (
@@ -19,7 +19,7 @@ export const PrintComponent = ({ data, editMode, onSheetChange, inputQuantityFor
               <div key={amount.id}>
 
                 <AmountPerSizeTable
-                  empty={empty || false}
+                  empty={true}
                   key={amount.id}
                   amount={amount}
                   editMode={editMode}
@@ -30,13 +30,9 @@ export const PrintComponent = ({ data, editMode, onSheetChange, inputQuantityFor
           }
         </div>
         <div className="container">
-          {
-            inputQuantityForSpreadSheetList.length > 0 &&
-
-            <InputQuantityTable
-              inputQuantityForSpreadsheet={inputQuantityForSpreadSheetList}
-            />
-          }
+          <InputQuantityTable
+            inputQuantityForSpreadsheet={inputQuantityForSpreadSheetList}
+          />
         </div>
 
       </div>
